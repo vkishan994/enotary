@@ -1,0 +1,748 @@
+/* Default CSS */
+
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+
+* {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: var(--body-font);
+}
+
+body {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  font-family: var(--body-font);
+  background-color: #ffffff;
+  color: #00091f;
+  letter-spacing: 1px;
+  max-width: 1920px;
+  margin: 0 auto;
+}
+
+img {
+  max-width: 100%;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: var(--heading-font);
+}
+
+p {
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  text-decoration: none;
+  outline: none;
+  border: none;
+  font-weight: 500;
+  -webkit-transition: color 350ms ease-in-out;
+  transition: color 350ms ease-in-out;
+}
+
+a:focus,
+a:hover {
+  text-decoration: none;
+  outline: none;
+}
+
+title {
+  text-transform: capitalize;
+}
+
+:root {
+  --heading-font: "Rubik", sans-serif;
+  --body-font: "Rubik", sans-serif;
+  --primary-color: #d4ba46;
+  --secondary-color: #f3aa18;
+  --black-color: #000;
+  --lightblack: #222222;
+  --white-color: #fff;
+  --darkgrey: #868686;
+  --lightgrey: #636363;
+  --green: #069697;
+  --red: #ea3d2f;
+}
+
+.green {
+  color: var(--green) !important;
+}
+
+.lightblack {
+  color: var(--lightblack) !important;
+}
+
+.blue {
+  color: var(--primary-color) !important;
+}
+
+.red {
+  color: var(--red) !important;
+}
+
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+  background-color: #e6cb51;
+  border-color: #e6cb51;
+}
+
+.pt-80 {
+  padding-top: 80px !important;
+}
+
+.pb-80 {
+  padding-bottom: 80px !important;
+}
+
+.container-fluid {
+  padding-left: 180px;
+  padding-right: 180px;
+}
+
+
+@media screen and (max-width: 1540px) {
+  .container-fluid {
+    padding-left: 80px;
+    padding-right: 80px;
+  }
+}
+
+@media screen and (max-width: 1440px) {
+  .container-fluid {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+}
+
+@media screen and (max-width: 1200px) {
+  .container-fluid {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+}
+
+/* Custom CSS Start */
+
+.header-section .right-btn .nav-link,
+.header-section .navbar-nav .nav-link {
+  font-size: 20px;
+  line-height: 24px;
+  font-weight: 500;
+  color: #000000;
+  padding: 0px 12px;
+}
+
+.header-section .right-btn .btn-primary {
+  font-size: 22px;
+  line-height: 24px;
+  font-weight: 500;
+  color: #ffffff;
+  padding: 12px 30px;
+}
+
+.header-section .navbar-expand-lg .navbar-nav .dropdown-menu .dropdown-item {
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 500;
+  color: #000000;
+  padding: 12px 12px;
+}
+
+.header-section .navbar-toggler:focus {
+  box-shadow: none;
+}
+
+.banner-section {
+  width: 100%;
+  position: relative;
+  background: #34394c;
+  padding: 40px 0;
+}
+
+.banner-section .banner-content h2 {
+  color: #ffffff;
+  font-size: 50px;
+  line-height: 60px;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 5px solid #9f6c00;
+  width: max-content;
+}
+
+.banner-section .banner-content p {
+  color: #ffffff;
+  font-size: 24px;
+  line-height: 32px;
+  padding-bottom: 30px;
+  word-wrap: break-word;
+}
+
+.banner-section .banner-content .btn-primary {
+  background: #fffeff;
+  color: #b47e0a;
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 500;
+  padding: 12px 24px;
+}
+
+.about-section {
+  width: 100%;
+  position: relative;
+}
+
+
+.about-section .about-content h2 {
+  color: #34394c;
+  font-size: 50px;
+  line-height: 58px;
+  padding-bottom: 40px;
+  padding-bottom: 20px;
+  margin-bottom: 20px;
+  border-bottom: 5px solid #9f6c00;
+  width: max-content;
+}
+
+.about-section .about-content p {
+  color: #34394c;
+  font-size: 24px;
+  line-height: 32px;
+  padding-bottom: 20px;
+
+}
+
+.about-section .about-content .btn-primary {
+  background-color: #9f6c00;
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 500;
+  padding: 12px 24px;
+}
+
+.how-it-works-section {
+  position: relative;
+  background: #34394c;
+}
+
+.how-it-works-section .section-title h2 {
+  color: #ffffff;
+  font-size: 50px;
+  line-height: 60px;
+  padding-bottom: 20px;
+  margin: 0 auto;
+  border-bottom: 5px solid #9f6c00;
+  width: max-content;
+}
+
+.how-it-works-section .how-it-works-item .icon img {
+  height: 80px;
+  margin-bottom: 10px;
+}
+
+.how-it-works-section .how-it-works-item h4 {
+  color: #ffffff;
+  font-size: 32px;
+  line-height: 40px;
+  padding-bottom: 15px;
+  font-weight: bold;
+}
+
+.how-it-works-section .how-it-works-item p {
+  color: #ffffff;
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 400;
+}
+
+.testimonials-section .testimonial-carousel {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 1px 4px 40px rgba(0, 0, 0, 0.1);
+  padding: 50px 80px;
+  position: relative;
+}
+
+.testimonials-section .section-title h2 {
+  color: #34394c;
+  font-size: 50px;
+  line-height: 60px;
+  padding-bottom: 20px;
+  margin: 0 auto;
+  border-bottom: 5px solid #9f6c00;
+  width: max-content;
+}
+
+.testimonial-carousel .testimonial-item {
+  outline: none;
+}
+
+.testimonial-carousel .stars {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  color: #fbbf24;
+  font-size: 24px;
+}
+
+.testimonial-carousel .testimonial-text {
+  color: #34394c;
+  font-size: 24px;
+  line-height: 32px;
+  margin-bottom: 24px;
+}
+
+.testimonial-carousel .testimonial-author {
+  color: #34394c;
+  font-size: 36px;
+  line-height: 42px;
+  font-weight: 600;
+}
+
+/* Custom Navigation Buttons */
+.testimonial-carousel .slick-prev,
+.testimonial-carousel .slick-next {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #34394c !important;
+  z-index: 10;
+  transition: background 0.3s ease;
+}
+
+.testimonial-carousel .slick-prev:hover,
+.testimonial-carousel .slick-next:hover {
+  background: #1f2937 !important;
+}
+
+.testimonial-carousel .slick-prev:before,
+.testimonial-carousel .slick-next:before {
+  font-size: 20px;
+  opacity: 1;
+}
+
+.testimonial-carousel .slick-prev {
+  left: -30px;
+}
+
+.testimonial-carousel .slick-next {
+  right: -30px;
+}
+
+/* Custom Pagination Dots */
+.testimonial-carousel .slick-dots {
+  position: relative;
+  bottom: -40px;
+}
+
+.testimonial-carousel .slick-dots li button:before {
+  font-size: 10px;
+  color: #d1d5db;
+  opacity: 1;
+}
+
+.testimonial-carousel .slick-dots li.slick-active button:before {
+  color: #374151;
+  opacity: 1;
+}
+
+.testimonial-carousel .slick-dots li {
+  margin: 0 5px;
+}
+
+
+.testimonial-carousel .slick-prev:before {
+  content: "";
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%239f6c00' viewBox='0 0 512 512'%3E%3Cpath d='M134.1 244.3 278.6 99.7c9.4-9.4 9.4-24.6 0-33.9s-24.6-9.4-33.9 0L67 244.3c-9.4 9.4-9.4 24.6 0 33.9l177.7 178.6c9.4 9.4 24.6 9.4 33.9 0s9.4-24.6 0-33.9L134.1 267.7H456c13.3 0 24-10.7 24-24s-10.7-24-24-24H134.1z'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.testimonial-carousel .slick-next:before {
+  content: "";
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='%239f6c00' viewBox='0 0 512 512'%3E%3Cpath d='M377.9 267.7 233.4 412.3c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0L445 267.7c9.4-9.4 9.4-24.6 0-33.9L267.3 55.1c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l144.5 144.6H56c-13.3 0-24 10.7-24 24s10.7 24 24 24h321.9z'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.footer-section {
+  width: 100%;
+  position: relative;
+  background: #181818;
+  color: #ffffff;
+}
+
+.signup-section .signup-form-wrapper {
+  width: 100%;
+  position: relative;
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.signup-section .signup-form-wrapper .login-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.signup-section .signup-form-wrapper .login-header .logo {
+  margin-bottom: 20px;
+  display: block;
+}
+
+.signup-section .signup-form-wrapper .login-header .signup-title {
+  color: #34394c;
+  font-size: 32px;
+  line-height: 38px;
+  padding-bottom: 10px;
+}
+
+.signup-section .signup-form-wrapper .login-header p {
+  color: #34394c;
+  font-size: 16px;
+  line-height: 24px;
+  font-weight: 400;
+}
+
+.signup-section .signup-form-wrapper .form-group {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.signup-section .signup-form-wrapper .form-control {
+  padding: 0.8rem 1rem;
+}
+
+.signup-section .signup-form-wrapper .form-control:focus {
+  box-shadow: none;
+}
+
+.signup-section .signup-form-wrapper .form-group .btn-primary.btn-block {
+  width: 100%;
+  border-radius: 24px;
+  padding: 0.8rem 2rem;
+  font-size: 22px;
+  font-weight: 500;
+  background-color: #b47e0a;
+  margin-top: 30px;
+}
+
+.signup-section .signup-form-wrapper .login-header p a {
+  color: #34394c;
+  text-decoration: underline;
+}
+
+.signup-section .signup-form-wrapper .forget-password a {
+  color: #34394c;
+  font-size: 18px;
+  line-height: 24px;
+  font-weight: 400;
+  margin-top: 40px;
+  display: block;
+  text-align: right;
+  text-decoration: underline;
+}
+
+
+/* Responsive CSS Start */
+
+@media (max-width: 1540px) {
+
+  .footer-section .logo-sec img,
+  .header-section .navbar .navbar-brand img,
+  .signup-section .signup-form-wrapper .login-header img {
+    max-width: 220px;
+  }
+
+  .signup-section .signup-form-wrapper .login-header .signup-title {
+    font-size: 28px;
+    line-height: 36px;
+  }
+
+  .header-section .right-btn .nav-link,
+  .header-section .navbar-nav .nav-link {
+    font-size: 18px;
+    line-height: 24px;
+  }
+
+  .about-section .about-content .btn-primary,
+  .banner-section .banner-content .btn-primary,
+  .header-section .right-btn .btn-primary {
+    font-size: 20px;
+    line-height: 28px;
+  }
+
+  .testimonials-section .section-title h2,
+  .how-it-works-section .section-title h2,
+  .about-section .about-content h2,
+  .banner-section .banner-content h2 {
+    font-size: 42px;
+    line-height: 50px;
+  }
+
+  .testimonial-carousel .testimonial-text,
+  .how-it-works-section .how-it-works-item p,
+  .about-section .about-content p,
+  .banner-section .banner-content p {
+    font-size: 20px;
+    line-height: 28px;
+  }
+
+  .how-it-works-section .how-it-works-item .icon img {
+    height: 60px;
+  }
+
+  .testimonial-carousel .testimonial-author,
+  .how-it-works-section .how-it-works-item h4 {
+    font-size: 28px;
+    line-height: 36px;
+  }
+}
+
+@media (max-width: 1366px) {
+
+  .header-section .navbar .navbar-brand img,
+  .signup-section .signup-form-wrapper .login-header img {
+    max-width: 180px;
+  }
+
+  .header-section .right-btn .nav-link,
+  .header-section .navbar-nav .nav-link {
+    font-size: 16px;
+    line-height: 22px;
+  }
+
+  .testimonials-section .section-title h2,
+  .how-it-works-section .section-title h2,
+  .about-section .about-content h2,
+  .banner-section .banner-content h2 {
+    font-size: 36px;
+    line-height: 42px;
+  }
+
+  .testimonial-carousel .testimonial-text,
+  .how-it-works-section .how-it-works-item p,
+  .about-section .about-content p,
+  .banner-section .banner-content p {
+    font-size: 18px;
+    line-height: 25px;
+  }
+
+  .testimonial-carousel .testimonial-author,
+  .how-it-works-section .how-it-works-item h4 {
+    font-size: 24px;
+    line-height: 32px;
+  }
+
+  .how-it-works-section .how-it-works-item .icon img {
+    height: 42px;
+  }
+}
+
+
+@media (max-width: 1024px) {
+  .header-section .navbar .navbar-brand img {
+    max-width: 160px;
+  }
+
+  .header-section .right-btn .nav-link,
+  .header-section .navbar-nav .nav-link {
+    padding: 0px 6px;
+  }
+
+  .header-section .right-btn .btn-primary {
+    padding: 12px 12px;
+    font-size: 18px;
+  }
+}
+
+
+@media (min-width: 992px) {
+  .header-section .navbar-expand-lg .navbar-nav .dropdown-menu {
+    padding: 6px 10px;
+  }
+
+  .header-section .navbar-expand-lg .navbar-collapse {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 991px) {
+  .testimonials-section {
+    padding: 80px 60px;
+  }
+
+  .testimonials-section .testimonial-carousel {
+    padding: 50px 60px;
+  }
+
+  .banner-section {
+    padding: 60px 20px;
+  }
+
+  .about-section .row {
+    flex-direction: column-reverse;
+  }
+
+  .header-section .navbar-toggler {
+    padding: 8px 12px;
+  }
+
+  .header-section .navbar-nav .nav-item {
+    margin-bottom: 16px;
+  }
+
+  .header-section .navbar-collapse {
+    padding: 20px 0;
+  }
+
+  .signup-section {
+    position: relative;
+    padding: 40px 0;
+  }
+
+  .header-section .right-btn .btn-primary {
+    padding: 6px 12px;
+    margin-top: 16px;
+  }
+
+  .header-section .navbar-expand-lg .navbar-nav .dropdown-menu .dropdown-item {
+    font-size: 16px;
+    line-height: 20px;
+    padding: 8px 12px;
+  }
+}
+
+
+@media (max-width: 576px) {
+
+  .testimonials-section .section-title h2,
+  .how-it-works-section .section-title h2,
+  .about-section .about-content h2,
+  .banner-section .banner-content h2 {
+    font-size: 28px;
+    line-height: 36px;
+  }
+
+  .signup-section .signup-form-wrapper {
+    padding: 0 20px;
+  }
+
+  .testimonials-section {
+    padding: 40px 20px;
+  }
+
+  .banner-section {
+    padding: 40px 0px;
+  }
+
+  .signup-section .signup-form-wrapper .form-group .btn-primary.btn-block {
+    font-size: 20px;
+    line-height: 28px;
+  }
+
+  .pb-80 {
+    padding-bottom: 40px !important;
+  }
+
+  .pt-80 {
+    padding-top: 40px !important;
+  }
+
+  .footer-section .logo-sec p {
+    font-size: 14px;
+    line-height: 20px;
+  }
+
+  .how-it-works-item.p-4 {
+    padding: 1rem 0px !important;
+  }
+
+  .testimonial-carousel .testimonial-text,
+  .how-it-works-section .how-it-works-item p,
+  .about-section .about-content p,
+  .banner-section .banner-content p {
+    font-size: 16px;
+    line-height: 22px;
+  }
+
+  .testimonials-section .testimonial-carousel {
+    padding: 40px 60px;
+  }
+
+  .footer-section .logo-sec img,
+  .header-section .navbar .navbar-brand img,
+  .signup-section .signup-form-wrapper .login-header img {
+    max-width: 180px;
+  }
+
+  .testimonial-carousel .testimonial-author,
+  .how-it-works-section .how-it-works-item h4 {
+    font-size: 20px;
+    line-height: 28px;
+  }
+}
+
+@media (max-width: 480px) {
+  .testimonial-section {
+    padding: 30px 20px;
+  }
+
+  .testimonial-carousel .slick-prev,
+  .testimonial-carousel .slick-next {
+    width: 40px;
+    height: 40px;
+  }
+
+  .testimonial-carousel .slick-prev:before,
+  .testimonial-carousel .slick-next:before {
+    font-size: 16px;
+  }
+
+  .testimonial-carousel .slick-prev {
+    left: 10px;
+  }
+
+  .testimonial-carousel .slick-next {
+    right: 10px;
+  }
+}
+
+@media (max-width: 400px) {
+
+  .footer-section .logo-sec img,
+  .header-section .navbar .navbar-brand img,
+  .signup-section .signup-form-wrapper .login-header img {
+    max-width: 160px;
+  }
+}
