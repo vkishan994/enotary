@@ -75,7 +75,7 @@ title {
 :root {
   --heading-font: "Rubik", sans-serif;
   --body-font: "Rubik", sans-serif;
-  --primary-color: #d4ba46;
+  --primary-color: #b47e0a;
   --secondary-color: #f3aa18;
   --black-color: #000;
   --lightblack: #222222;
@@ -164,6 +164,14 @@ title {
   font-weight: 500;
   color: #ffffff;
   padding: 12px 30px;
+  transition: all 0.3s ease;
+}
+
+.header-section .right-btn .btn-primary:hover {
+  transform: scale(1.02);
+  background-color: #b17d0e;
+  border-color: #b17d0e;
+  color: #fffeff;
 }
 
 .header-section .navbar-expand-lg .navbar-nav .dropdown-menu .dropdown-item {
@@ -210,6 +218,14 @@ title {
   line-height: 32px;
   font-weight: 500;
   padding: 12px 24px;
+  transition: all 0.4s ease;
+}
+
+.banner-section .banner-content .btn-primary:hover {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: #ffffff;
+  transform: scale(1.02);
 }
 
 .about-section {
@@ -243,6 +259,15 @@ title {
   line-height: 32px;
   font-weight: 500;
   padding: 12px 24px;
+  transition: all 0.4s ease;
+}
+
+
+.about-section .about-content .btn-primary:hover {
+  background-color: #b17d0e;
+  border-color: #b17d0e;
+  color: #ffffff;
+  transform: scale(1.02);
 }
 
 .how-it-works-section {
@@ -455,6 +480,12 @@ title {
   font-weight: 500;
   background-color: #b47e0a;
   margin-top: 30px;
+  transition: all 0.4s ease;
+}
+
+.signup-section .signup-form-wrapper .form-group .btn-primary.btn-block:hover {
+  background-color: #9f6c00;
+  border-color: #9f6c00;
 }
 
 .signup-section .signup-form-wrapper .login-header p a {
