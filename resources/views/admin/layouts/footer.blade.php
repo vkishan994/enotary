@@ -1,7 +1,6 @@
 
 
 
-              </div>
               <!--/ Layout Demo -->
             </div>
             <!-- / Content -->
