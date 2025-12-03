@@ -2,13 +2,15 @@
 
 namespace App\Http\Controllers\Front;
 
-use App\Http\Controllers\Controller;
+use App\Models\Testimonial;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class FrontPagesController extends Controller
 {
     public function index()
     {
-        return view('front.home');
+        $data['testimonials'] = Testimonial::where('status', 1)->get();
+        return view('front.home')->with($data);
     }
 }

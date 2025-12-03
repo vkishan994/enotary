@@ -100,59 +100,61 @@
     <!-- How It Works Section End -->
 
     <!-- Testimonials section start -->
-    <section class="testimonials-section pt-80 pb-80">
-        <div class="container">
-            <div class="section-title text-center mb-5">
-                <h2>Testimonials</h2>
+    @if ($testimonials->count() > 0)
+        <section class="testimonials-section pt-80 pb-80">
+            <div class="container">
+                <div class="section-title text-center mb-5">
+                    <h2>Testimonials</h2>
+                </div>
+                <div class="testimonial-carousel">
+                    {{-- <div class="testimonial-item">
+                    <div class="stars">
+                        <span>★</span>
+                        <span>★</span>
+                        <span>★</span>
+                        <span>★</span>
+                        <span>★</span>
+                    </div>
+                    <p class="testimonial-text">The e-signature process was incredibly quick and easy. I completed
+                        everything online within minutes, and the notarised document was delivered instantly. Highly
+                        recommended!
+                    </p>
+                    <h5 class="testimonial-author">Stephan Bowden
+                    </h5>
+                </div>
+                <div class="testimonial-item">
+                    <div class="stars">
+                        <span>★</span>
+                        <span>★</span>
+                        <span>★</span>
+                        <span>★</span>
+                        <span>★</span>
+                    </div>
+                    <p class="testimonial-text">The e-signature process was incredibly quick and easy. I completed
+                        everything online within minutes, and the notarised document was delivered instantly. Highly
+                        recommended!
+                    </p>
+                    <h5 class="testimonial-author">Stephan Bowden
+                    </h5>
+                </div> --}}
+                    @foreach ($testimonials as $testimonial)
+                        <div class="testimonial-item">
+                            <div class="stars">
+                                @for ($i = 1; $i <= 5; $i++)
+                                    @if ($i <= $testimonial->rating)
+                                        <span>★</span> {{-- filled star --}}
+                                    @else
+                                        <span>☆</span> {{-- empty star --}}
+                                    @endif
+                                @endfor
+                            </div>
+                            <p class="testimonial-text">{!! $testimonial->content !!}</p>
+                            <h5 class="testimonial-author">{{ $testimonial->name }}</h5>
+                        </div>
+                    @endforeach
+                </div>
             </div>
-            <div class="testimonial-carousel">
-                <div class="testimonial-item">
-                    <div class="stars">
-                        <span>★</span>
-                        <span>★</span>
-                        <span>★</span>
-                        <span>★</span>
-                        <span>★</span>
-                    </div>
-                    <p class="testimonial-text">The e-signature process was incredibly quick and easy. I completed
-                        everything online within minutes, and the notarised document was delivered instantly. Highly
-                        recommended!
-                    </p>
-                    <h5 class="testimonial-author">Stephan Bowden
-                    </h5>
-                </div>
-                <div class="testimonial-item">
-                    <div class="stars">
-                        <span>★</span>
-                        <span>★</span>
-                        <span>★</span>
-                        <span>★</span>
-                        <span>★</span>
-                    </div>
-                    <p class="testimonial-text">The e-signature process was incredibly quick and easy. I completed
-                        everything online within minutes, and the notarised document was delivered instantly. Highly
-                        recommended!
-                    </p>
-                    <h5 class="testimonial-author">Stephan Bowden
-                    </h5>
-                </div>
-                <div class="testimonial-item">
-                    <div class="stars">
-                        <span>★</span>
-                        <span>★</span>
-                        <span>★</span>
-                        <span>★</span>
-                        <span>★</span>
-                    </div>
-                    <p class="testimonial-text">The e-signature process was incredibly quick and easy. I completed
-                        everything online within minutes, and the notarised document was delivered instantly. Highly
-                        recommended!
-                    </p>
-                    <h5 class="testimonial-author">Stephan Bowden
-                    </h5>
-                </div>
-            </div>
-        </div>
-    </section>
+        </section>
+    @endif
     <!-- Testimonials section end -->
 @endsection

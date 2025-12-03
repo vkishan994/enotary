@@ -21,5 +21,12 @@
                       <div data-i18n="Dashboards">Dashboards</div>
                   </a>
               </li>
+
+              <li class="menu-item">
+                  <a href="{{ route('testimonials.index') }}" class="menu-link">
+                      <i class="menu-icon tf-icons bx bx-message-dots"></i>
+                      <div data-i18n="Dashboards">Testimonials</div>
+                  </a>
+              </li>
           </ul>
       </aside>

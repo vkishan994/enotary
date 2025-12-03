@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\MyProfileController;
+use App\Http\Controllers\Admin\TestimonialController;
 
 
 
@@ -26,9 +27,12 @@ Route::get('logout', function () {
 Route::group(['prefix' => 'admin','middleware' => ['auth:admin']], function () {
     Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
 
-        // my proflie
+    // my proflie
     Route::get('/edit-profile', [MyProfileController::class, 'editProfile'])->name('admin.edit.profile');
     Route::post('/update-profile', [MyProfileController::class, 'updateProfile'])->name('admin.update.profile');
+
+    // testimonial
+    Route::resource('testimonials', TestimonialController::class);
 
 });
 
