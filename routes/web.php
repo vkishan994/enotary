@@ -19,6 +19,9 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('post-login', [AdminController::class, 'VerifyAdminlogin'])->name('adminLoginpost');
 });
 
+Route::get('/account-dashboard', [MyProfileController::class, 'accountDashboard'])->name('admin.edit.profile');
+Route::post('/', [MyProfileController::class, 'updateProfile'])->name('admin.update.profile');
+
 Route::get('logout', function () {
     Auth::guard('admin')->logout();
     return redirect()->to('admin/login');

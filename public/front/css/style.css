@@ -504,11 +504,326 @@ title {
   text-decoration: underline;
 }
 
+/* 05-12 CSS Dashboard Pages Start */
+
+.dashboard-header {
+  width: 100%;
+  position: fixed;
+  z-index: 1;
+  background: #ffffff;
+}
+
+.dashboard-header .container-fluid {
+  padding: 20px 180px 20px 100px;
+}
+
+.profile.dropdown .text-danger {
+  color: rgb(178 126 11) !important;
+}
+
+.dashboard-header .menu-toogle {
+  background: #b47e0a;
+  width: 60px;
+  height: 60px;
+  line-height: 60px;
+  border-radius: 100%;
+  text-align: center;
+  margin-left: 10px;
+}
+
+aside.sidebar {
+  position: fixed;
+  padding: 40px;
+  width: 340px;
+  background: #34394c;
+  height: 100vh;
+  top: 156px;
+}
+
+aside.sidebar .navbar-nav .nav-link {
+  font-size: 22px;
+  line-height: 28px;
+  color: #ffffff;
+  font-weight: 500;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.dashboard-header .profile.dropdown span {
+  font-size: 20px;
+  line-height: 20px;
+  font-weight: bolder;
+  color: #34394c;
+}
+
+.main-content {
+  position: relative;
+  background: #eaeaea;
+  margin-left: 340px;
+  padding: 200px 180px 40px 40px;
+}
+
+.main-content .section-title h2 {
+  font-size: 52px;
+  line-height: 60px;
+  font-weight: bold;
+  color: #34394c;
+}
+
+.document-upcoming {
+  padding: 40px 0;
+}
+
+.document-card {
+  position: relative;
+  background: #ffffff;
+  border-radius: 10px;
+  padding: 30px;
+  width: 100%;
+  height: 240px;
+  overflow-y: auto;
+}
+
+.document-card h4 {
+  color: #34394c;
+  font-size: 28px;
+  line-height: 36px;
+  font-weight: bolder;
+  padding-bottom: 10px;
+}
+
+.document-card p {
+  color: #34394c;
+  font-size: 20px;
+  line-height: 28px;
+  padding-bottom: 10px;
+}
+
+.document-card .btn {
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.document-pending .section-title h4 {
+  color: #34394c;
+  font-size: 32px;
+  font-weight: bold;
+  line-height: 38px;
+  padding-bottom: 24px;
+}
+
+.document-pending .nav-tabs {
+  border: none;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.document-pending .nav-tabs .nav-link {
+  border: none;
+  background: white;
+  color: #666;
+  font-weight: 600;
+  padding: 0.75rem 1.5rem;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  font-size: 18px;
+}
+
+.document-pending .nav-tabs .nav-link:hover {
+  color: #b8860b;
+  background: #fff9e6;
+}
+
+.document-pending .nav-tabs .nav-link.active {
+  background: #b8860b;
+  color: white;
+}
+
+.tab-content .pending-item {
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.3s ease;
+}
+
+.tab-content .pending-item:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+.tab-content .pending-item-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.tab-content .pending-icon {
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  object-fit: contain;
+}
+
+.tab-content .pending-text h5 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #34394c;
+  margin: 0 0 0.25rem 0;
+}
+
+.tab-content .pending-text p {
+  font-size: 16px;
+  color: #a1a1a1;
+  margin: 0;
+}
+
+.tab-content .pending-arrow {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #b8860b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tab-content .pending-arrow a {
+  color: #ffffff;
+  font-size: 1rem;
+}
+
+.service-notary .form-container {
+  background: white;
+  border-radius: 12px;
+  padding: 2.5rem;
+  max-width: 100%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.service-notary .section-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+}
+
+.service-notary .form-select {
+  padding: 0.875rem 1rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #2c3e50;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  background-color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.service-notary .form-select:focus {
+  border-color: #b8860b;
+  box-shadow: 0 0 0 0.2rem rgba(184, 134, 11, 0.15);
+}
+
+.service-notary .documents-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1rem;
+  margin-bottom: 2.5rem;
+}
+
+.service-notary .document-option {
+  position: relative;
+}
+
+.service-notary .document-option input[type="radio"] {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.service-notary .document-label {
+  display: block;
+  padding: 1rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  border: 2px solid #dee2e6;
+  border-radius: 8px;
+  background: white;
+  color: #495057;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.service-notary .document-label:hover {
+  border-color: #b8860b;
+  background: #fff9e6;
+  color: #2c3e50;
+}
+
+.service-notary .document-option input[type="radio"]:checked+.document-label {
+  background: #ffd988;
+  border-color: #ffd988;
+  color: #424242;
+}
+
+.service-notary .total-section {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #424242;
+  margin-bottom: 1.5rem;
+}
+
+.service-notary .place-order-btn {
+  width: 100%;
+  max-width: 320px;
+  padding: 1rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  background: #b47e0a;
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.service-notary .place-order-btn:hover {
+  background: #9a7109;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(184, 134, 11, 0.3);
+}
+
 
 /* Responsive CSS Start */
 
-@media (max-width: 1540px) {
+@media (max-width: 1600px) {
+  aside.sidebar {
+    top: 130px;
+  }
 
+  .main-content {
+    padding: 180px 180px 40px 40px;
+  }
+
+  .main-content .section-title h2 {
+    font-size: 42px;
+    line-height: 48px;
+  }
+
+  .document-card p {
+    padding-bottom: 8px;
+  }
+
+  .dashboard-header .logo-sec img,
   .footer-section .logo-sec img,
   .header-section .navbar .navbar-brand img,
   .signup-section .signup-form-wrapper .login-header img {
@@ -558,9 +873,69 @@ title {
     font-size: 28px;
     line-height: 36px;
   }
+
+  .service-notary .document-label,
+  .service-notary .form-select,
+  .tab-content .pending-text h5,
+  .document-card p,
+  aside.sidebar .navbar-nav .nav-link {
+    font-size: 18px;
+    line-height: 24px;
+  }
+
+  .service-notary .section-title {
+    font-size: 20px;
+    line-height: 28px;
+  }
+
+  .document-pending .section-title h4,
+  .document-card h4 {
+    font-size: 24px;
+    line-height: 32px;
+  }
 }
 
-@media (max-width: 1366px) {
+@media (max-width: 1440px) {
+  .document-pending .nav-tabs .nav-link {
+    font-size: 16px;
+  }
+
+  .service-notary .document-label,
+  .service-notary .form-select,
+  .tab-content .pending-text h5,
+  .document-card p {
+    font-size: 16px;
+    line-height: 22px;
+  }
+
+  .document-pending .section-title h4,
+  .document-card h4 {
+    font-size: 20px;
+    line-height: 28px;
+  }
+
+  .main-content .section-title h2 {
+    font-size: 34px;
+    line-height: 42px;
+  }
+
+  .document-card {
+    padding: 20px;
+    width: 100%;
+    height: 210px;
+  }
+
+  .document-upcoming {
+    padding: 20px 0px 30px;
+  }
+
+  .main-content {
+    padding: 180px 40px 40px;
+  }
+
+  .dashboard-header .container-fluid {
+    padding: 20px 40px;
+  }
 
   .header-section .navbar .navbar-brand img,
   .signup-section .signup-form-wrapper .login-header img {
@@ -581,6 +956,11 @@ title {
     line-height: 42px;
   }
 
+  .service-notary .form-container {
+    padding: 1.5rem;
+  }
+
+  .document-card .btn,
   .testimonial-carousel .testimonial-text,
   .how-it-works-section .how-it-works-item p,
   .about-section .about-content p,
@@ -600,6 +980,28 @@ title {
   }
 }
 
+
+@media (max-width: 1280px) {
+  .dashboard-header .logo-sec img {
+    max-width: 180px;
+  }
+
+  .main-content {
+    padding: 140px 40px 40px;
+  }
+
+  aside.sidebar {
+    top: 100px;
+  }
+
+  aside.sidebar {
+    width: 280px;
+  }
+
+  .main-content {
+    margin-left: 280px;
+  }
+}
 
 @media (max-width: 1024px) {
   .header-section .navbar .navbar-brand img {
@@ -628,6 +1030,61 @@ title {
   }
 }
 
+@media (min-width: 1025px) {
+
+  aside.sidebar .close-sidebar,
+  aside.sidebar .logo-sec,
+  .dashboard-header .menu-toogle {
+    display: none;
+  }
+}
+
+@media (max-width: 1024px) {
+  aside.sidebar .close-sidebar {
+    text-align: right;
+    color: #ffffff;
+    font-size: 24px;
+    display: block;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+  }
+
+  aside.sidebar .logo-sec {
+    text-align: center;
+  }
+
+  aside.sidebar .logo-sec img {
+    width: 180px;
+  }
+
+  aside.sidebar {
+    width: 280px;
+    position: fixed;
+    left: 0;
+    top: 0;
+    height: 100vh;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    transform: translateX(-100%);
+    transition: transform 0.4s ease;
+    z-index: 1;
+    padding: 20px;
+  }
+
+  /* When sidebar is visible */
+  aside.sidebar.expand {
+    transform: translateX(0);
+  }
+
+  .service-notary .total-section {
+    font-size: 1.2rem;
+  }
+
+  .main-content {
+    margin-left: 0px;
+  }
+}
+
 @media (max-width: 991px) {
   .testimonials-section {
     padding: 80px 60px;
@@ -649,6 +1106,7 @@ title {
     padding: 8px 12px;
   }
 
+  .document-card,
   .header-section .navbar-nav .nav-item {
     margin-bottom: 16px;
   }
@@ -672,10 +1130,74 @@ title {
     line-height: 20px;
     padding: 8px 12px;
   }
+
 }
 
+@media (max-width: 768px) {
+  .dashboard-header .container-fluid {
+    padding: 20px 20px;
+  }
+
+}
 
 @media (max-width: 576px) {
+  .dashboard-header .profile.dropdown span {
+    display: none;
+  }
+  .main-content {
+    padding: 120px 20px 40px;
+  }
+
+  .service-notary .documents-grid {
+    grid-template-columns: repeat(1, 1fr);
+  }
+
+  .service-notary .total-section,
+  .service-notary .section-title {
+    font-size: 18px;
+    line-height: 24px;
+  }
+
+  .dashboard-header .menu-toogle {
+    margin-left: 0;
+  }
+
+  aside.sidebar .navbar-nav .nav-link,
+  .document-card .btn {
+    font-size: 16px;
+    line-height: 24px;
+  }
+
+  .dashboard-header .menu-toogle,
+  .dashboard-header .profile img {
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+  }
+
+  aside.sidebar .logo-sec img,
+  .dashboard-header .logo-sec img {
+    max-width: 140px;
+  }
+
+  .document-pending .nav-tabs li .nav-link,
+  .document-pending .nav-tabs li {
+    width: 100%;
+  }
+
+  .tab-content .pending-item-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .document-card {
+    height: max-content;
+  }
+
+  .main-content .section-title h2 {
+    font-size: 28px;
+    line-height: 36px;
+  }
 
   .testimonials-section .section-title h2,
   .how-it-works-section .section-title h2,
@@ -770,6 +1292,11 @@ title {
 }
 
 @media (max-width: 400px) {
+
+  aside.sidebar .logo-sec img,
+  .dashboard-header .logo-sec img {
+    max-width: 120px;
+  }
 
   .footer-section .logo-sec img,
   .header-section .navbar .navbar-brand img,

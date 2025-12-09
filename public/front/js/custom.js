@@ -1,5 +1,5 @@
-// const link = document.getElementById('style');
-// link.href = `css/style.css?v=${new Date().getTime()}`;
+const link = document.getElementById('style');
+link.href = `css/style.css?v=${new Date().getTime()}`;
 
 $(document).ready(function () {
     $('.testimonial-carousel').slick({
@@ -17,4 +17,14 @@ $(document).ready(function () {
         pauseOnFocus: true,
         adaptiveHeight: true
     });
+});
+
+// Toggle sidebar open/close
+document.querySelector('.menu-toogle').addEventListener('click', function () {
+    document.querySelector('.sidebar').classList.toggle('expand');
+});
+
+// Close button removes expand
+document.querySelector('.close-sidebar').addEventListener('click', function () {
+    document.querySelector('.sidebar').classList.remove('expand');
 });
