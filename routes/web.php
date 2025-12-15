@@ -36,6 +36,8 @@ Route::group(['prefix' => 'admin','middleware' => ['auth:admin']], function () {
 
     // testimonial
     Route::resource('testimonials', TestimonialController::class);
+    Route::resource('notary-service-types', \App\Http\Controllers\Admin\NotaryServiceTypeController::class);
+    Route::resource('documents', \App\Http\Controllers\Admin\DocumentController::class);
 
 });
 
