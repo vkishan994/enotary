@@ -1,5 +1,5 @@
 const link = document.getElementById('style');
-link.href = `css/style.css?v=${new Date().getTime()}`;
+//link.href = `front/css/style.css?v=${new Date().getTime()}`;
 
 $(document).ready(function () {
     $('.testimonial-carousel').slick({
