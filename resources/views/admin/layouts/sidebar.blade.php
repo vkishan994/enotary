@@ -31,14 +31,14 @@
 
               <li class="menu-item">
                   <a href="{{ route('notary-service-types.index') }}" class="menu-link">
-                      <i class="menu-icon tf-icons bx bx-message-dots"></i>
+                      <i class="menu-icon tf-icons bx bx-badge-check"></i>
                       <div data-i18n="Dashboards">Notary Service Types</div>
                   </a>
               </li>
 
               <li class="menu-item">
                   <a href="{{ route('documents.index') }}" class="menu-link">
-                      <i class="menu-icon tf-icons bx bx-message-dots"></i>
+                      <i class="menu-icon tf-icons bx bx-file"></i>
                       <div data-i18n="Dashboards">Documents</div>
                   </a>
               </li>
