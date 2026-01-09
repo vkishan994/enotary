@@ -8,7 +8,7 @@ use App\Http\Controllers\Admin\TestimonialController;
 
 Auth::routes(['verify' => true]);
 Route::get('/', [App\Http\Controllers\Front\FrontPagesController::class, 'index'])->name('fronthomepage');
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->middleware(['auth', 'verified'])->name('home');
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->middleware(['auth', 'verified']);
 
 
 // admin routes
@@ -17,7 +17,11 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('post-login', [AdminController::class, 'VerifyAdminlogin'])->name('adminLoginpost');
 });
 
-Route::get('/account-dashboard', [MyProfileController::class, 'accountDashboard'])->name('admin.edit.profile');
+Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'verified']], function () {
+    Route::get('/account-dashboard', [MyProfileController::class, 'accountDashboard'])->name('account-dashboard');
+    Route::get('/notarise-documents', [MyProfileController::class, 'notariseDocuments'])->name('notarise-documents');
+});
+
 Route::post('/', [MyProfileController::class, 'updateProfile'])->name('admin.update.profile');
 
 Route::get('logout', function () {

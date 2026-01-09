@@ -11,17 +11,10 @@ use Illuminate\Support\Facades\Validator;
 
 class MyProfileController extends Controller
 {
-      public function editProfile(Request $request)
+    public function editProfile(Request $request)
     {
         $user = Auth::user();
         return view('admin.profile.form', compact('user'));
-    }
-
-
-    public function accountDashboard(Request $request)
-    {
-        $user = Auth::user();
-        return view('front.dashboard', compact('user'));
     }
 
 
@@ -72,5 +65,18 @@ class MyProfileController extends Controller
         $user->save();
 
         return redirect()->back()->with('success', 'Profile updated successfully!');
+    }
+
+    public function accountDashboard(Request $request)
+    {
+        $user = Auth::user();
+        return view('front.dashboard', compact('user'));
+    }
+
+
+    public function notariseDocuments(Request $request)
+    {
+        $user = Auth::user();
+        return view('front.notarise-documents', compact('user'));
     }
 }
