@@ -17,17 +17,34 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('post-login', [AdminController::class, 'VerifyAdminlogin'])->name('adminLoginpost');
 });
 
-Route::group(['prefix' => 'admin', 'middleware' => ['auth', 'verified']], function () {
+Route::group(['prefix' => 'user', 'middleware' => ['auth', 'verified']], function () {
     Route::get('/account-dashboard', [MyProfileController::class, 'accountDashboard'])->name('account-dashboard');
     Route::get('/notarise-documents', [MyProfileController::class, 'notariseDocuments'])->name('notarise-documents');
 });
 
 Route::post('/', [MyProfileController::class, 'updateProfile'])->name('admin.update.profile');
 
+// Route::get('logout', function () {
+//     Auth::guard('admin')->logout();
+//     return redirect()->to('admin/login');
+// })->name('admin.logout');
+
 Route::get('logout', function () {
-    Auth::guard('admin')->logout();
-    return redirect()->to('admin/login');
-})->name('admin.logout');
+
+    // If admin is logged in
+    if (Auth::guard('admin')->check()) {
+        Auth::guard('admin')->logout();
+        return redirect()->to('admin/login');
+    }
+
+    // If normal user is logged in
+    if (Auth::check()) {
+        Auth::logout();
+        return redirect()->to('/');
+    }
+
+    return redirect()->to('/');
+})->name('logout');
 
 Route::group(['prefix' => 'admin','middleware' => ['auth:admin']], function () {
     Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
