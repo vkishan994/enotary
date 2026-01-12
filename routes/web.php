@@ -17,9 +17,10 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('post-login', [AdminController::class, 'VerifyAdminlogin'])->name('adminLoginpost');
 });
 
-Route::group(['prefix' => 'user', 'middleware' => ['auth', 'verified']], function () {
+Route::group(['prefix' => 'user', 'as' => 'user.', 'middleware' => ['auth', 'verified']], function () {
     Route::get('/account-dashboard', [MyProfileController::class, 'accountDashboard'])->name('account-dashboard');
     Route::get('/notarise-documents', [MyProfileController::class, 'notariseDocuments'])->name('notarise-documents');
+    Route::get('/get-documents', [MyProfileController::class, 'getDocuments'])->name('get-documents');
 });
 
 Route::post('/', [MyProfileController::class, 'updateProfile'])->name('admin.update.profile');
@@ -46,7 +47,7 @@ Route::get('logout', function () {
     return redirect()->to('/');
 })->name('logout');
 
-Route::group(['prefix' => 'admin','middleware' => ['auth:admin']], function () {
+Route::group(['prefix' => 'admin', 'middleware' => ['auth:admin']], function () {
     Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
 
     // my proflie
@@ -57,7 +58,6 @@ Route::group(['prefix' => 'admin','middleware' => ['auth:admin']], function () {
     Route::resource('testimonials', TestimonialController::class);
     Route::resource('notary-service-types', \App\Http\Controllers\Admin\NotaryServiceTypeController::class);
     Route::resource('documents', \App\Http\Controllers\Admin\DocumentController::class);
-
 });
 
 

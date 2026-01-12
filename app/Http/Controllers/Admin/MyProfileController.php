@@ -8,6 +8,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use App\Models\NotaryServiceType;
+use App\Models\Document;
 
 class MyProfileController extends Controller
 {
@@ -77,6 +79,17 @@ class MyProfileController extends Controller
     public function notariseDocuments(Request $request)
     {
         $user = Auth::user();
-        return view('front.notarise-documents', compact('user'));
+        $notaryServiceTypes = NotaryServiceType::all();
+        return view('front.notarise-documents', compact('user', 'notaryServiceTypes'));
+    }
+
+    public function getDocuments(Request $request)
+    {
+        $serviceTypeId = $request->service_type_id;
+        $documents = Document::whereHas('notaryServiceTypes', function ($query) use ($serviceTypeId) {
+            $query->where('notary_service_types.id', $serviceTypeId);
+        })->get();
+
+        return response()->json($documents);
     }
 }

@@ -6,11 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Document extends Model
 {
-    protected $fillable = ['name'];
+    protected $fillable = ['name', 'price'];
 
     public function notaryServiceTypes()
     {
         return $this->belongsToMany(NotaryServiceType::class, 'document_notary_service_type');
     }
 }
-

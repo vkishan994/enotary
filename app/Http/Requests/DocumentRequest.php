@@ -15,9 +15,9 @@ class DocumentRequest extends FormRequest
     {
         return [
             'name' => 'required|string',
+            'price' => 'required|numeric|min:0',
             'notary_service_types' => 'array',
             'notary_service_types.*' => 'exists:notary_service_types,id',
         ];
     }
 }
-
