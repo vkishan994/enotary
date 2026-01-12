@@ -23,7 +23,15 @@
                 <div class="total-section">
                     Total: £<span id="totalAmount">0.00</span>
                 </div>
-                <button class="place-order-btn" id="placeOrderBtn">
+
+                <!-- Stripe Card Element -->
+                <div id="payment-element-container" class="mt-4" style="display: none;">
+                    <label class="form-label">Card Details</label>
+                    <div id="card-element" class="form-control" style="height: 40px; padding-top: 10px;"></div>
+                    <div id="card-errors" role="alert" class="text-danger mt-2"></div>
+                </div>
+
+                <button class="place-order-btn mt-3" id="placeOrderBtn">
                     Place Order
                 </button>
             </div>
@@ -35,8 +43,20 @@
 @endsection
 
 @section('js')
+<script src="https://js.stripe.com/v3/"></script>
 <script>
     $(document).ready(function() {
+        const stripe = Stripe("{{ config('services.stripe.key') }}");
+        let elements;
+        let cardElement;
+
+        function initStripe() {
+            elements = stripe.elements();
+            cardElement = elements.create('card');
+            cardElement.mount('#card-element');
+            $('#payment-element-container').show();
+        }
+
         $('#notaryService').on('change', function() {
             const serviceTypeId = $(this).val();
             const $grid = $('#documentsGrid');
@@ -68,20 +88,70 @@
                         // Set initial total
                         const firstPrice = documents[0].price || 0;
                         $totalAmount.text(parseFloat(firstPrice).toFixed(2));
+
+                        // Initialize Stripe if not already done
+                        if (!cardElement) initStripe();
                     } else {
                         $grid.html('<p class="text-danger">No documents found for this service type.</p>');
                     }
-                },
-                error: function() {
-                    $grid.html('<p class="text-danger">Error loading documents. Please try again.</p>');
                 }
             });
         });
 
-        // Handle price update on document selection
         $(document).on('change', 'input[name="document"]', function() {
             const price = $(this).data('price') || 0;
             $('#totalAmount').text(parseFloat(price).toFixed(2));
+        });
+
+        $('#placeOrderBtn').on('click', async function(e) {
+            e.preventDefault();
+            const $btn = $(this);
+            const documentId = $('input[name="document"]:checked').val();
+            const serviceTypeId = $('#notaryService').val();
+
+            if (!documentId || !serviceTypeId) {
+                alert('Please select a service and a document.');
+                return;
+            }
+
+            $btn.prop('disabled', true).text('Processing...');
+
+            try {
+                // 1. Create Checkout / Payment Intent on server
+                const response = await $.ajax({
+                    url: "{{ route('user.checkout') }}",
+                    type: 'POST',
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        document_id: documentId,
+                        service_type_id: serviceTypeId
+                    }
+                });
+
+                if (response.success) {
+                    // 2. Confirm payment with Stripe
+                    const result = await stripe.confirmCardPayment(response.client_secret, {
+                        payment_method: {
+                            card: cardElement,
+                            billing_details: {
+                                name: "{{ auth()->user()->name }}"
+                            }
+                        }
+                    });
+
+                    if (result.error) {
+                        $('#card-errors').text(result.error.message);
+                        $btn.prop('disabled', false).text('Place Order');
+                    } else {
+                        // 3. Redirect to success page
+                        window.location.href = "{{ route('user.payment-success') }}?payment_intent=" + result.paymentIntent.id;
+                    }
+                }
+            } catch (err) {
+                console.error(err);
+                alert(err.responseJSON ? err.responseJSON.message : 'An error occurred.');
+                $btn.prop('disabled', false).text('Place Order');
+            }
         });
     });
 </script>
