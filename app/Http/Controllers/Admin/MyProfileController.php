@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Stripe\Stripe;
+use App\Models\Order;
+use App\Models\Document;
 use Illuminate\Http\Request;
+use App\Services\StripeClass;
 use App\Rules\MatchOldPassword;
+use App\Models\NotaryServiceType;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use App\Models\NotaryServiceType;
-use App\Models\Document;
-use App\Models\Order;
-use App\Services\StripeClass;
 
 class MyProfileController extends Controller
 {
@@ -108,6 +109,8 @@ class MyProfileController extends Controller
             'document_id' => 'required|exists:documents,id',
             'service_type_id' => 'required|exists:notary_service_types,id',
         ]);
+
+        Stripe::setApiKey(getValuesByKey('stripe_secret_key'));
 
         $document = Document::findOrFail($request->document_id);
         $user = Auth::user();

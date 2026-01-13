@@ -49,5 +49,13 @@
                       <div data-i18n="Dashboards">Orders</div>
                   </a>
               </li>
+
+              <li class="menu-item">
+                  <a href="{{ route('admin.settings') }}" class="menu-link">
+                      <i class="menu-icon tf-icons bx bx-cog"></i>
+                      <div data-i18n="Dashboards">Settings</div>
+                  </a>
+              </li>
+
           </ul>
       </aside>

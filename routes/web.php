@@ -63,6 +63,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth:admin']], function () 
     Route::resource('testimonials', TestimonialController::class);
     Route::resource('notary-service-types', \App\Http\Controllers\Admin\NotaryServiceTypeController::class);
     Route::resource('documents', \App\Http\Controllers\Admin\DocumentController::class);
+
+    Route::get('/settings', [App\Http\Controllers\Admin\SettingsController::class, 'index'])->name('admin.settings');
+    Route::post('/settings-store', [App\Http\Controllers\Admin\SettingsController::class, 'store'])->name('admin.settings.store');
 });
 
 

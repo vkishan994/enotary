@@ -46,7 +46,7 @@
 <script src="https://js.stripe.com/v3/"></script>
 <script>
     $(document).ready(function() {
-        const stripe = Stripe("{{ config('services.stripe.key') }}");
+        const stripe = Stripe("{{ getValuesByKey('stripe_public_key') }}");
         let elements;
         let cardElement;
 
