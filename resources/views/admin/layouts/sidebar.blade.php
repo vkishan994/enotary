@@ -44,6 +44,13 @@
               </li>
 
               <li class="menu-item">
+                  <a href="{{ route('upload-documents.index') }}" class="menu-link">
+                      <i class="menu-icon tf-icons bx bx-file"></i>
+                      <div data-i18n="Dashboards">Upload Documents</div>
+                  </a>
+              </li>
+
+              <li class="menu-item">
                   <a href="{{ route('admin.orders.index') }}" class="menu-link">
                       <i class="menu-icon tf-icons bx bx-cart"></i>
                       <div data-i18n="Dashboards">Orders</div>

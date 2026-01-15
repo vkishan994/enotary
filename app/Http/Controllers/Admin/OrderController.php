@@ -16,7 +16,7 @@ class OrderController extends Controller
 
             return Datatables::of($data)
                 ->addIndexColumn()
-                ->addColumn('user_name', fn($row) => $row->user->name ?? 'N/A')
+                ->addColumn('user_name', fn($row) => $row->user->first_name . ' ' . $row->user->last_name ?? 'N/A')
                 ->addColumn('user_email', fn($row) => $row->user->email ?? 'N/A')
                 ->addColumn('document', fn($row) => $row->document->name ?? 'N/A')
                 ->addColumn('service_type', fn($row) => $row->notaryServiceType->name ?? 'N/A')

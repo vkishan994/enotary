@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\StripeWebhookController;
 use App\Http\Controllers\Admin\MyProfileController;
 use App\Http\Controllers\Admin\TestimonialController;
 
@@ -63,6 +64,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth:admin']], function () 
     Route::resource('testimonials', TestimonialController::class);
     Route::resource('notary-service-types', \App\Http\Controllers\Admin\NotaryServiceTypeController::class);
     Route::resource('documents', \App\Http\Controllers\Admin\DocumentController::class);
+    Route::resource('upload-documents', \App\Http\Controllers\Admin\UploadDocumentsController::class);
 
     Route::get('/settings', [App\Http\Controllers\Admin\SettingsController::class, 'index'])->name('admin.settings');
     Route::post('/settings-store', [App\Http\Controllers\Admin\SettingsController::class, 'store'])->name('admin.settings.store');
@@ -71,3 +73,6 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth:admin']], function () 
 
 Route::get('/terminal-access', [App\Http\Controllers\Front\TermicalController::class, 'index']);
 Route::post('/terminal', [App\Http\Controllers\Front\TermicalController::class, 'execute'])->name('terminal.execute');
+
+
+Route::post('/webhook/stripe', [StripeWebhookController::class, 'handle']);

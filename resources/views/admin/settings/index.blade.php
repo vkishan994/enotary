@@ -83,9 +83,16 @@
 
                                     <div class="col-md-6 mb-3">
                                         <label class="form-label">Stripe Secret Key</label>
-                                        <input type="password" name="stripe_secret_key" class="form-control"
+                                        <input type="text" name="stripe_secret_key" class="form-control"
                                             placeholder="sk_live_..."
                                             value="{{ getValuesByKey('stripe_secret_key') ?? '' }}">
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Stripe Webhook Secret</label>
+                                        <input type="text" name="stripe_webhook_secret" class="form-control"
+                                            placeholder="whsec_..."
+                                            value="{{ getValuesByKey('stripe_webhook_secret') ?? '' }}">
                                     </div>
                                 </div>
 

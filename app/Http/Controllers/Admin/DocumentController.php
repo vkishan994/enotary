@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\DocumentRequest;
+use DataTables;
 use App\Models\Document;
-use App\Models\NotaryServiceType;
 use Illuminate\Http\Request;
+use App\Models\UploadDocument;
+use App\Models\NotaryServiceType;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use DataTables;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\DocumentRequest;
 
 class DocumentController extends Controller
 {
@@ -37,7 +38,8 @@ class DocumentController extends Controller
     public function create()
     {
         $notaryServiceTypes = NotaryServiceType::all();
-        return view('admin.documents.form', compact('notaryServiceTypes'));
+        $uploadDocuments = UploadDocument::all();
+        return view('admin.documents.form', compact('notaryServiceTypes', 'uploadDocuments'));
     }
 
     public function store(DocumentRequest $request)
@@ -64,7 +66,9 @@ class DocumentController extends Controller
     {
         $record = Document::with('notaryServiceTypes')->findOrFail($id);
         $notaryServiceTypes = NotaryServiceType::all();
-        return view('admin.documents.form', compact('record', 'notaryServiceTypes'));
+        $uploadDocuments = UploadDocument::all();
+
+        return view('admin.documents.form', compact('record', 'notaryServiceTypes', 'uploadDocuments'));
     }
 
     public function update(DocumentRequest $request, string $id)
@@ -75,10 +79,12 @@ class DocumentController extends Controller
             $record = Document::findOrFail($id);
             $record->update($request->validated());
             $record->notaryServiceTypes()->sync($request->input('notary_service_types', []));
+            $record->uploadDocuments()->sync($request->input('upload_documents', []));
             DB::commit();
 
             return redirect()->route('documents.index')->with('success', 'Saved Successfully');
         } catch (\Exception $e) {
+            dd($e->getMessage());
             DB::rollBack();
             Log::error('documents update failed: ' . $e->getMessage());
 

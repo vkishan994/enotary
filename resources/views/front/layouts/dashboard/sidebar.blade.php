@@ -5,10 +5,10 @@
         <a href="#"><img src="{{ asset('front/img/logo/white-horse.png')}}" alt="" /> </a>
     </div>
     <div class="navbar-nav">
-        <a class="nav-link" href="#">
+        <a class="nav-link" href="{{ route('user.account-dashboard') }}">
             Dashboard
         </a>
-        <a class="nav-link" href="#">
+        <a class="nav-link" href="{{ route('user.notarise-documents') }}">
             New Notarisation
         </a>
         <a class="nav-link" href="#">
