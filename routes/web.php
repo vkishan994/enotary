@@ -16,6 +16,8 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->midd
 Route::group(['prefix' => 'admin'], function () {
     Route::get('login', [AdminController::class, 'Adminlogin'])->name('adminLogin');
     Route::post('post-login', [AdminController::class, 'VerifyAdminlogin'])->name('adminLoginpost');
+    Route::get('/verify-two-factor', [AdminController::class, 'verifyTwoFactorForm'])->name('admin.verify.two.factor');
+    Route::post('/verify-two-factor-post', [AdminController::class, 'verifyTwoFactor'])->name('verifyTwoFactPost');
 });
 
 Route::group(['prefix' => 'user', 'as' => 'user.', 'middleware' => ['auth', 'verified']], function () {
@@ -24,6 +26,8 @@ Route::group(['prefix' => 'user', 'as' => 'user.', 'middleware' => ['auth', 'ver
     Route::get('/get-documents', [MyProfileController::class, 'getDocuments'])->name('get-documents');
     Route::post('/checkout', [MyProfileController::class, 'processCheckout'])->name('checkout');
     Route::get('/payment-success', [MyProfileController::class, 'paymentSuccess'])->name('payment-success');
+    Route::get('/update-profile', [MyProfileController::class, 'updateUserProfileForm'])->name('update-profile.user-form');
+    Route::post('/update-profile', [MyProfileController::class, 'updateUserProfile'])->name('update-profile');
 });
 
 Route::post('/', [MyProfileController::class, 'updateProfile'])->name('admin.update.profile');

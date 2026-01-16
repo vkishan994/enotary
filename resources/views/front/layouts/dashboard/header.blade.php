@@ -55,7 +55,7 @@
                                     <hr class="dropdown-divider">
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" href="#">
+                                    <a class="dropdown-item" href="{{route('user.update-profile.user-form')}}">
                                         <i class="bi bi-person me-2"></i> My Profile
                                     </a>
                                 </li>

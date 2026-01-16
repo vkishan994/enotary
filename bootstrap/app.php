@@ -16,7 +16,7 @@ return Application::configure(basePath: dirname(__DIR__))
     ])
     ->withMiddleware(function (Middleware $middleware): void {
         // $middleware->alias([
-        //
+        //     '2fa' => \PragmaRX\Google2FALaravel\Middleware::class,
         // ]);
 
         $middleware->validateCsrfTokens(except: [

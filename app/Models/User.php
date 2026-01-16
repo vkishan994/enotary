@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -23,6 +24,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'last_name',
         'email',
         'password',
+        'google2fa_secret',
+        'google2fa_status',
     ];
 
     /**
@@ -46,5 +49,30 @@ class User extends Authenticatable implements MustVerifyEmail
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+
+     * Interact with the user's first name.
+
+     *
+
+     * @param  string  $value
+
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+
+     */
+
+    protected function google2faSecret(): Attribute
+
+    {
+
+        return new Attribute(
+
+            get: fn($value) =>  decrypt($value),
+
+            set: fn($value) =>  encrypt($value),
+
+        );
     }
 }

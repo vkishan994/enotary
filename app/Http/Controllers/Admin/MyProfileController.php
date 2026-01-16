@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use Stripe\Stripe;
+use App\Models\Admin;
 use App\Models\Order;
 use App\Models\Document;
 use Illuminate\Http\Request;
@@ -13,6 +14,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use PragmaRX\Google2FA\Google2FA;
 
 class MyProfileController extends Controller
 {
@@ -33,7 +35,8 @@ class MyProfileController extends Controller
     public function updateProfile(Request $request)
     {
         // dd($request->all());
-        $user = Auth::user();
+        // $user = Auth::user();
+        $user = Auth::guard('admin')->user();
 
         // Define the validation rules
         $validator = Validator::make($request->all(), [
@@ -73,11 +76,41 @@ class MyProfileController extends Controller
             $user->password = Hash::make($request->new_password);
         }
 
+        $google2faStatus = $request->boolean('google2fa_status'); // true / false
+
+        if ($google2faStatus) {
+
+            $google2fa = app('pragmarx.google2fa');
+
+            // Generate secret only if not already present
+            if (empty($user->google2fa_secret)) {
+                $user->google2fa_secret = $google2fa->generateSecretKey();
+            }
+
+            $qrImage = $google2fa->getQRCodeInline(
+                config('app.name'),
+                $user->email,
+                $user->google2fa_secret
+            );
+
+            session()->flash('2fa_secret', $user->google2fa_secret);
+            session()->flash('2fa_qr', $qrImage);
+
+            $user->google2fa_status = 1;
+        } else {
+            // Properly disable 2FA
+            $user->google2fa_status = 0;
+            $user->google2fa_secret = null;
+            $user->save();
+        }
+
         // Save the user
         $user->save();
 
         return redirect()->back()->with('success', 'Profile updated successfully!');
     }
+
+
 
     public function accountDashboard(Request $request)
     {
@@ -158,5 +191,59 @@ class MyProfileController extends Controller
         }
 
         return view('front.payment-success');
+    }
+
+    public function updateUserProfileForm(Request $request)
+    {
+        return view('front.user.update-profile');
+    }
+
+    public function updateUserProfile(Request $request)
+    {
+        $user = auth()->user();
+
+        $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'current_password' => 'nullable|required_with:password',
+            'password' => 'nullable|confirmed|min:8',
+        ]);
+
+        $user->update($request->only([
+            'first_name',
+            'last_name',
+        ]));
+
+        // Handle 2FA Toggle
+        if ($request->has('enable_2fa')) {
+
+            if (!$user->google2fa_status) {
+                $google2fa = new Google2FA();
+                $user->google2fa_secret = $google2fa->generateSecretKey();
+                $user->google2fa_status = 1;
+            }
+        } else {
+            // Disable 2FA
+            $user->google2fa_status = 0;
+            $user->google2fa_secret = null;
+        }
+
+
+        if ($request->filled('password')) {
+
+            // Check current password
+            if (!Hash::check($request->current_password, $user->password)) {
+                return back()->withErrors([
+                    'current_password' => 'Current password is incorrect.'
+                ]);
+            }
+
+            // Update password
+            $user->password = Hash::make($request->password);
+        }
+
+        $user->save();
+
+        return back()->with('success', 'Profile updated successfully.');
     }
 }

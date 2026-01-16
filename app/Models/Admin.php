@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 
 class Admin extends Authenticatable
@@ -21,6 +22,8 @@ class Admin extends Authenticatable
         'name',
         'email',
         'password',
+        'google2fa_status',
+        'google2fa_secret',
     ];
 
     /**
@@ -44,5 +47,30 @@ class Admin extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+
+     * Interact with the user's first name.
+
+     *
+
+     * @param  string  $value
+
+     * @return \Illuminate\Database\Eloquent\Casts\Attribute
+
+     */
+
+    protected function google2faSecret(): Attribute
+
+    {
+
+        return new Attribute(
+
+            get: fn($value) =>  decrypt($value),
+
+            set: fn($value) =>  encrypt($value),
+
+        );
     }
 }

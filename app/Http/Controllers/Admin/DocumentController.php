@@ -84,7 +84,7 @@ class DocumentController extends Controller
 
             return redirect()->route('documents.index')->with('success', 'Saved Successfully');
         } catch (\Exception $e) {
-            dd($e->getMessage());
+            // dd($e->getMessage());
             DB::rollBack();
             Log::error('documents update failed: ' . $e->getMessage());
 

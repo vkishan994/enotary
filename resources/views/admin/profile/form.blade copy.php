@@ -51,17 +51,18 @@
                         </div>
 
                         <div class="mb-3">
-                            <label class="form-label d-block">Two-Factor Authentication (2FA)</label>
-
-                            <div class="form-check form-switch">
-                                <input class="form-check-input" type="checkbox" id="google2fa_status"
-                                    name="google2fa_status" value="1"
-                                    {{ old('google2fa_status', $user->google2fa_status) ? 'checked' : '' }}>
-
-                                <label class="form-check-label" for="google2fa_status">
-                                    Enable 2FA for login
-                                </label>
+                            <label class="form-label" for="basic-default-email">2FA Settings</label>
+                            <div class="input-group input-group-merge">
+                                <input type="email" name="email" value="{{ old('email', $user->email) }}"
+                                    id="basic-default-email" class="form-control @error('email') is-invalid @enderror"
+                                    placeholder="Enter Email" aria-label="john.doe"
+                                    aria-describedby="basic-default-email2" />
                             </div>
+                            @error('email')
+                                <div class="invalid-feedback">
+                                    <strong>{{ $message }}</strong>
+                                </div>
+                            @enderror
                         </div>
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
