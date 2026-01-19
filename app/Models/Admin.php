@@ -24,6 +24,8 @@ class Admin extends Authenticatable
         'password',
         'google2fa_status',
         'google2fa_secret',
+        'two_factor_recovery_token',
+        'two_factor_recovery_expires_at'
     ];
 
     /**
@@ -47,30 +49,5 @@ class Admin extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
-    }
-
-    /**
-
-     * Interact with the user's first name.
-
-     *
-
-     * @param  string  $value
-
-     * @return \Illuminate\Database\Eloquent\Casts\Attribute
-
-     */
-
-    protected function google2faSecret(): Attribute
-
-    {
-
-        return new Attribute(
-
-            get: fn($value) =>  decrypt($value),
-
-            set: fn($value) =>  encrypt($value),
-
-        );
     }
 }

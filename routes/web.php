@@ -2,9 +2,11 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Front\UserController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\StripeWebhookController;
 use App\Http\Controllers\Admin\MyProfileController;
+use App\Http\Controllers\Admin\TwoFactorController;
 use App\Http\Controllers\Admin\TestimonialController;
 
 Auth::routes(['verify' => true]);
@@ -18,6 +20,15 @@ Route::group(['prefix' => 'admin'], function () {
     Route::post('post-login', [AdminController::class, 'VerifyAdminlogin'])->name('adminLoginpost');
     Route::get('/verify-two-factor', [AdminController::class, 'verifyTwoFactorForm'])->name('admin.verify.two.factor');
     Route::post('/verify-two-factor-post', [AdminController::class, 'verifyTwoFactor'])->name('verifyTwoFactPost');
+
+    Route::get('/2fa/recover', [TwoFactorController::class, 'showRecoveryForm'])
+        ->name('admin.2fa.recover');
+
+    Route::post('/2fa/recover', [TwoFactorController::class, 'sendRecoveryLink'])
+        ->name('admin.2fa.recover.send');
+
+    Route::get('/2fa/reset/{token}', [TwoFactorController::class, 'resetTwoFactor'])
+        ->name('admin.2fa.reset');
 });
 
 Route::group(['prefix' => 'user', 'as' => 'user.', 'middleware' => ['auth', 'verified']], function () {
@@ -28,9 +39,15 @@ Route::group(['prefix' => 'user', 'as' => 'user.', 'middleware' => ['auth', 'ver
     Route::get('/payment-success', [MyProfileController::class, 'paymentSuccess'])->name('payment-success');
     Route::get('/update-profile', [MyProfileController::class, 'updateUserProfileForm'])->name('update-profile.user-form');
     Route::post('/update-profile', [MyProfileController::class, 'updateUserProfile'])->name('update-profile');
+
+    Route::match(['get', 'post'], '/2fa/generate', [UserController::class, 'generate'])
+        ->name('2fa.generate');
+
+    Route::post('/2fa/verify', [UserController::class, 'verify'])
+        ->name('2fa.verify');
 });
 
-Route::post('/', [MyProfileController::class, 'updateProfile'])->name('admin.update.profile');
+// Route::post('/', [MyProfileController::class, 'updateProfile'])->name('admin.update.profile');
 
 // Route::get('logout', function () {
 //     Auth::guard('admin')->logout();
@@ -60,6 +77,12 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth:admin']], function () 
     // my proflie
     Route::get('/edit-profile', [MyProfileController::class, 'editProfile'])->name('admin.edit.profile');
     Route::post('/update-profile', [MyProfileController::class, 'updateProfile'])->name('admin.update.profile');
+
+    Route::match(['get', 'post'], '/2fa/generate', [AdminController::class, 'generate'])
+        ->name('admin.2fa.generate');
+
+    Route::post('/2fa/verify', [AdminController::class, 'verify'])
+        ->name('admin.2fa.verify');
 
     // orders
     Route::get('/orders', [App\Http\Controllers\Admin\OrderController::class, 'index'])->name('admin.orders.index');

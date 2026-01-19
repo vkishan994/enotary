@@ -51,7 +51,7 @@
 
                             <div class="form-check form-switch">
                                 <input class="form-check-input" type="checkbox" name="enable_2fa" value="1"
-                                    id="enable2fa" {{ auth()->user()->google2fa_status ? 'checked' : '' }}>
+                                    id="google2fa_status" {{ auth()->user()->google2fa_status ? 'checked' : '' }}>
                             </div>
                         </div>
 
@@ -104,9 +104,18 @@
         </div>
     </main>
 
+    @include('partials.two_factor')
+
     <!-- Main content end -->
 @endsection
 
 @section('js')
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        var user2faGenerate = "{{ route('user.2fa.generate') }}";
+        var userVerifyTwoFactor = "{{ route('user.2fa.verify') }}";
+    </script>
+    <script src="{{ asset('common/two_factor.js') }}"></script>
+
     <script></script>
 @endsection

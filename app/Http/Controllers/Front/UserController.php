@@ -1,70 +1,18 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Front;
 
-use App\Models\Admin;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
-use PragmaRX\Google2FA\Google2FA;
-use Illuminate\Support\Facades\Session;
 
-class AdminController extends Controller
+class UserController extends Controller
 {
-    public function Adminlogin(Request $request)
-    {
-        return view('auth.admin.login');
-    }
-
-    public function VerifyAdminlogin(Request $request)
-    {
-        $rules = [
-            'email' => 'required|email|max:255',
-            'password' => 'required',
-        ];
-
-        $messages = [
-            'email.required' => 'Email address is required',
-            'email.email' => 'Valid email is required',
-            'password.required' => 'Password is required',
-        ];
-
-        $validator = Validator::make($request->all(), $rules, $messages);
-
-        if ($validator->fails()) {
-            return redirect()->route('adminLogin')
-                ->withErrors($validator)
-                ->withInput();
-        }
-
-        $credentials = $request->only('email', 'password');
-
-        if (Auth::guard('admin')->attempt($credentials)) {
-
-            $user = Auth::guard('admin')->user();
-
-            // If 2FA is enabled → redirect to OTP verification page
-            if ($user->google2fa_status == 1 && !empty($user->google2fa_secret)) {
-
-                session([
-                    '2fa:admin:id' => $user->id,
-                ]);
-
-                Auth::guard('admin')->logout();
-
-                return redirect()->route('admin.verify.two.factor');
-            }
-            return redirect()->route('dashboard');
-        } else {
-            return redirect()->back()->with('error', 'Invalid Email or Password');
-        }
-    }
-
     public function verifyTwoFactorForm()
     {
-        $userId = session('2fa:admin:id');
-        $user = Admin::find($userId);
+        $userId = session('2fa:user:id');
+        $user = User::find($userId);
 
         if (!$user || !$user->google2fa_secret) {
             return redirect()->route('adminLogin')
@@ -82,7 +30,7 @@ class AdminController extends Controller
                 'code' => 'required|digits:6',
             ]);
 
-            $userId = session('2fa:admin:id');
+            $userId = session('2fa:user:id');
 
             // Session expired
             if (!$userId) {
@@ -92,7 +40,7 @@ class AdminController extends Controller
                     ->withInput();
             }
 
-            $user = Admin::find($userId);
+            $user = User::find($userId);
 
             // User or secret missing
             if (!$user || !$user->google2fa_secret) {
@@ -140,11 +88,10 @@ class AdminController extends Controller
 
     public function generate(Request $request)
     {
-        $user = Auth::guard('admin')->user();
+        $user = Auth::guard('web')->user(); // use web guard for users
 
         // DISABLE 2FA
         if ($request->action === 'disable') {
-
             $user->update([
                 'google2fa_secret' => null,
                 'google2fa_status' => 0,
@@ -161,15 +108,11 @@ class AdminController extends Controller
         // Generate secret
         $secret = $google2fa->generateSecretKey();
 
-        // Store temporarily in session (DO NOT save yet)
+        // Store temporarily in session
         session(['2fa_secret' => $secret]);
 
-        // Generate QR code INLINE (Base64 SVG)
-        $qr = $google2fa->getQRCodeInline(
-            config('app.name'),
-            $user->email,
-            $secret
-        );
+        // Generate QR code inline
+        $qr = $google2fa->getQRCodeInline(config('app.name'), $user->email, $secret);
 
         return response()->json([
             'qr' => $qr,
@@ -183,7 +126,7 @@ class AdminController extends Controller
             'otp' => 'required|digits:6',
         ]);
 
-        $user = Auth::guard('admin')->user();
+        $user = Auth::guard('web')->user(); // use web guard for users
         $google2fa = app('pragmarx.google2fa');
 
         $secret = session('2fa_secret');
@@ -196,10 +139,10 @@ class AdminController extends Controller
         }
 
         if ($google2fa->verifyKey($secret, $request->otp)) {
-
-            $user->google2fa_secret = $secret;
-            $user->google2fa_status = 1;
-            $user->save();
+            $user->update([
+                'google2fa_secret' => $secret,
+                'google2fa_status' => 1,
+            ]);
 
             session()->forget('2fa_secret');
 

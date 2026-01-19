@@ -76,32 +76,48 @@ class MyProfileController extends Controller
             $user->password = Hash::make($request->new_password);
         }
 
-        $google2faStatus = $request->boolean('google2fa_status'); // true / false
+        // $google2faStatus = $request->boolean('google2fa_status'); // true / false
 
-        if ($google2faStatus) {
+        // if ($google2faStatus) {
 
-            $google2fa = app('pragmarx.google2fa');
+        //     $google2fa = app('pragmarx.google2fa');
 
-            // Generate secret only if not already present
-            if (empty($user->google2fa_secret)) {
-                $user->google2fa_secret = $google2fa->generateSecretKey();
-            }
+        //     // Generate secret only if not already present
+        //     if (empty($user->google2fa_secret)) {
+        //         $user->google2fa_secret = $google2fa->generateSecretKey();
+        //     }
 
-            $qrImage = $google2fa->getQRCodeInline(
-                config('app.name'),
-                $user->email,
-                $user->google2fa_secret
-            );
+        //     $qrImage = $google2fa->getQRCodeInline(
+        //         config('app.name'),
+        //         $user->email,
+        //         $user->google2fa_secret
+        //     );
 
-            session()->flash('2fa_secret', $user->google2fa_secret);
-            session()->flash('2fa_qr', $qrImage);
+        //     session()->flash('2fa_secret', $user->google2fa_secret);
+        //     session()->flash('2fa_qr', $qrImage);
 
-            $user->google2fa_status = 1;
-        } else {
-            // Properly disable 2FA
+        //     $user->google2fa_status = 1;
+        // } else {
+        //     // Properly disable 2FA
+        //     $user->google2fa_status = 0;
+        //     $user->google2fa_secret = null;
+        //     $user->save();
+        // }
+
+        /**
+         * =========================
+         * 2FA ENABLE / DISABLE
+         * =========================
+         */
+        $google2faStatus = $request->boolean('google2fa_status');
+
+        if (!$google2faStatus) {
+            //  DISABLE 2FA → REMOVE SECRET COMPLETELY
             $user->google2fa_status = 0;
             $user->google2fa_secret = null;
-            $user->save();
+
+            // Cleanup any pending session data
+            session()->forget(['2fa_secret', '2fa_qr']);
         }
 
         // Save the user
