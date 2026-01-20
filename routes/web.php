@@ -18,6 +18,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->midd
 Route::group(['prefix' => 'admin'], function () {
     Route::get('login', [AdminController::class, 'Adminlogin'])->name('adminLogin');
     Route::post('post-login', [AdminController::class, 'VerifyAdminlogin'])->name('adminLoginpost');
+
     Route::get('/verify-two-factor', [AdminController::class, 'verifyTwoFactorForm'])->name('admin.verify.two.factor');
     Route::post('/verify-two-factor-post', [AdminController::class, 'verifyTwoFactor'])->name('verifyTwoFactPost');
 
@@ -43,8 +44,19 @@ Route::group(['prefix' => 'user', 'as' => 'user.', 'middleware' => ['auth', 'ver
     Route::match(['get', 'post'], '/2fa/generate', [UserController::class, 'generate'])
         ->name('2fa.generate');
 
+    Route::get('/verify-two-factor', [UserController::class, 'verifyTwoFactorForm'])->name('verify.two.factor');
+
     Route::post('/2fa/verify', [UserController::class, 'verify'])
         ->name('2fa.verify');
+
+    Route::get('/2fa/recover', [TwoFactorController::class, 'showRecoveryForm'])
+        ->name('2fa.recover');
+
+    Route::post('/2fa/recover', [TwoFactorController::class, 'sendRecoveryLink'])
+        ->name('2fa.recover.send');
+
+    Route::get('/2fa/reset/{token}', [TwoFactorController::class, 'resetTwoFactor'])
+        ->name('2fa.reset');
 });
 
 // Route::post('/', [MyProfileController::class, 'updateProfile'])->name('admin.update.profile');

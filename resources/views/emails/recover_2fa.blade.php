@@ -42,7 +42,7 @@
 
                             <!-- Button -->
                             <p style="text-align:center; margin:32px 0;">
-                                <a href="{{ route('admin.2fa.reset', ['token' => $token]) }}"
+                                <a href="{{ route($context . '.2fa.reset', ['token' => $token]) }}"
                                    style="background:#b8860b; color:#ffffff;
                                           padding:14px 28px;
                                           text-decoration:none;
@@ -70,7 +70,7 @@
                             </p>
 
                             <p style="word-break:break-all; font-size:12px; color:#555;">
-                                {{ route('admin.2fa.reset', ['token' => $token]) }}
+                                {{ route($context . '.2fa.reset', ['token' => $token]) }}
                             </p>
                         </td>
                     </tr>

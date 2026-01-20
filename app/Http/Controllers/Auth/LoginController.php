@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class LoginController extends Controller
 {
@@ -27,6 +29,7 @@ class LoginController extends Controller
      */
     protected $redirectTo = '/user/account-dashboard';
 
+
     /**
      * Create a new controller instance.
      *
@@ -36,5 +39,18 @@ class LoginController extends Controller
     {
         $this->middleware('guest')->except('logout');
         $this->middleware('auth')->only('logout');
+    }
+
+    protected function authenticated(Request $request, $user)
+    {
+        if ($user->google2fa_status == 1) {
+            Auth::guard('web')->login($user);
+
+            $request->session()->put('2fa:user:id', $user->id);
+
+            return redirect()->route('user.verify.two.factor');
+        }
+
+        return redirect()->intended('/user/account-dashboard');
     }
 }

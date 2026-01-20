@@ -14,10 +14,12 @@ class TwoFactorRecoveryMail extends Mailable
     use Queueable, SerializesModels;
 
     public $token;
+    public string $context;
 
-    public function __construct(string $token)
+    public function __construct(string $token, string $routeName)
     {
         $this->token = $token;
+        $this->context = str_starts_with($routeName, 'admin.') ? 'admin' : 'user';
     }
 
 

@@ -70,7 +70,6 @@ class RegisterController extends Controller
             'last_name' => $data['last_name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'google2fa_secret' => $data['google2fa_secret'],
         ]);
     }
 }

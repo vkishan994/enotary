@@ -26,6 +26,8 @@ class User extends Authenticatable implements MustVerifyEmail
         'password',
         'google2fa_secret',
         'google2fa_status',
+        'two_factor_recovery_token',
+        'two_factor_recovery_expires_at',
     ];
 
     /**

@@ -15,11 +15,11 @@ class UserController extends Controller
         $user = User::find($userId);
 
         if (!$user || !$user->google2fa_secret) {
-            return redirect()->route('adminLogin')
+            return redirect()->route('login')
                 ->withErrors(['msg' => '2FA session expired.']);
         }
 
-        return view('auth.verify-two-factor');
+        return view('auth.user-verify-two-factor');
     }
 
     public function verifyTwoFactor(Request $request)
@@ -109,7 +109,7 @@ class UserController extends Controller
         $secret = $google2fa->generateSecretKey();
 
         // Store temporarily in session
-        session(['2fa_secret' => $secret]);
+        session(['2fa:user:id' => $secret]);
 
         // Generate QR code inline
         $qr = $google2fa->getQRCodeInline(config('app.name'), $user->email, $secret);
@@ -120,38 +120,125 @@ class UserController extends Controller
         ]);
     }
 
+    // public function verify(Request $request)
+    // {
+    //     $request->validate([
+    //         'otp' => 'required|digits:6',
+    //     ]);
+
+    //     $user = Auth::guard('web')->user(); // use web guard for users
+    //     $google2fa = app('pragmarx.google2fa');
+
+    //     $secret = session('2fa_secret');
+
+    //     if (!$secret) {
+    //         return response()->json([
+    //             'success' => false,
+    //             'message' => '2FA session expired. Please try again.',
+    //         ]);
+    //     }
+
+    //     if ($google2fa->verifyKey($secret, $request->otp)) {
+    //         $user->update([
+    //             'google2fa_secret' => $secret,
+    //             'google2fa_status' => 1,
+    //         ]);
+
+    //         session()->forget('2fa_secret');
+
+    //         return response()->json(['success' => true]);
+    //     }
+
+    //     return response()->json([
+    //         'success' => false,
+    //         'message' => 'Invalid OTP',
+    //     ]);
+    // }
+
     public function verify(Request $request)
     {
         $request->validate([
             'otp' => 'required|digits:6',
         ]);
 
-        $user = Auth::guard('web')->user(); // use web guard for users
         $google2fa = app('pragmarx.google2fa');
 
-        $secret = session('2fa_secret');
+        /*
+    |--------------------------------------------------------------------------
+    | AJAX REQUEST → Enable & Verify 2FA (Logged-in user)
+    |--------------------------------------------------------------------------
+    */
+        if ($request->ajax() || $request->wantsJson()) {
 
-        if (!$secret) {
-            return response()->json([
-                'success' => false,
-                'message' => '2FA session expired. Please try again.',
-            ]);
-        }
+            $user = Auth::guard('web')->user();
+            $secret = $request->session()->get('2fa:user:id'); // TEMP secret
 
-        if ($google2fa->verifyKey($secret, $request->otp)) {
+            if (!$user || !$secret) {
+                return response()->json([
+                    'success' => false,
+                    'message' => '2FA session expired. Please try again.',
+                ]);
+            }
+
+            // Verify OTP using SESSION secret
+            if (!$google2fa->verifyKey($secret, $request->otp)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Invalid OTP.',
+                ]);
+            }
+
+            // Save secret in DB (Enable 2FA)
             $user->update([
                 'google2fa_secret' => $secret,
                 'google2fa_status' => 1,
             ]);
 
-            session()->forget('2fa_secret');
+            // Cleanup
+            $request->session()->forget('2fa:user:id');
 
-            return response()->json(['success' => true]);
+            return response()->json([
+                'success' => true,
+                'message' => 'Two-factor authentication enabled successfully.',
+            ]);
         }
 
-        return response()->json([
-            'success' => false,
-            'message' => 'Invalid OTP',
-        ]);
+        /*
+    |--------------------------------------------------------------------------
+    | FORM SUBMIT → Login-time 2FA verification
+    |--------------------------------------------------------------------------
+    */
+
+        // User ID stored earlier during login attempt
+        $userId = $request->session()->get('2fa:user:id');
+
+        if (!$userId) {
+            return redirect()->route('login')
+                ->withErrors(['otp' => '2FA session expired. Please login again.']);
+        }
+
+        $user = User::find($userId);
+
+        if (!$user || !$user->google2fa_secret) {
+            return redirect()->route('login')
+                ->withErrors(['otp' => 'Invalid 2FA session.']);
+        }
+
+        // Verify OTP using DATABASE secret
+        if (!$google2fa->verifyKey($user->google2fa_secret, $request->otp)) {
+            return redirect()->back()
+                ->withErrors(['otp' => 'Invalid OTP'])
+                ->withInput();
+        }
+
+        // OTP verified → Login user
+        Auth::loginUsingId($user->id);
+
+        // Cleanup
+        $request->session()->forget('2fa:user:id');
+        $request->session()->regenerate();
+
+        return redirect()->route('user.account-dashboard')
+            ->with('success', 'Login successful.');
     }
 }

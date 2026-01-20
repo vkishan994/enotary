@@ -199,7 +199,7 @@
             var user2faGenerate = "{{ route('admin.2fa.generate') }}";
             var userVerifyTwoFactor = "{{ route('admin.2fa.verify') }}";
         </script>
-        <script src="{{ asset('common/two_factor.js') }}"></script>
+        <script src="{{ asset('common/two_factor.js') }}?v={{ time() }}"></script>
 
     @endpush
 @endsection

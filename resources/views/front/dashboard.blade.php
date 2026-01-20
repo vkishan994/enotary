@@ -27,6 +27,8 @@
         </div>
     </div>
 
+    @if(isset($CurrentOrder) && !empty($CurrentOrder))
+
     <div class="document-pending">
         <div class="section-title">
             <h4>Pending Documents for Notarisation</h4>
@@ -181,6 +183,7 @@
             </div>
         </div>
     </div>
+    @endif
 </main>
 <!-- Main content end -->
 
