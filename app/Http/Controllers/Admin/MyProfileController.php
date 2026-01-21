@@ -131,8 +131,8 @@ class MyProfileController extends Controller
     public function accountDashboard(Request $request)
     {
         $user = Auth::user();
-        $CurrentOrder = Order::where('user_id',$user->id)->where('payment_status','completed')->first();
-        return view('front.dashboard', compact('user','CurrentOrder'));
+        $orders = Order::where('user_id',$user->id)->where('payment_status','completed')->get();
+        return view('front.dashboard', compact('user','orders'));
     }
 
 

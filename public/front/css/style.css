@@ -824,6 +824,67 @@ aside.sidebar .navbar-nav .nav-link {
   box-shadow: 0 4px 12px rgba(184, 134, 11, 0.3);
 }
 
+/* for upload document page */
+.document-upload .pending-item {
+  background: white;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.3s ease;
+}
+
+.document-upload .pending-item:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+.document-upload .pending-item-content {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+}
+
+.document-upload .pending-item-content {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex: 1;
+}
+
+.document-upload .pending-arrow {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: #b8860b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.document-upload .pending-arrow a {
+       color: #ffffff;
+    font-size: 1rem;
+}
+.dropzone.dz-clickable {
+        border: 1px dashed;
+}
+
+.back-btn {
+ background: #34394c;
+    color: #ffffff;
+    padding: 0.6rem 1.6rem;
+    margin-bottom: 10px;
+}
+.back-btn:hover {
+ background: #34394c;
+    color: #ffffff;
+
+}
+
 
 /* Responsive CSS Start */
 
@@ -1342,3 +1403,4 @@ aside.sidebar .navbar-nav .nav-link {
     max-width: 160px;
   }
 }
+

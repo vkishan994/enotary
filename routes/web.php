@@ -8,6 +8,7 @@ use App\Http\Controllers\StripeWebhookController;
 use App\Http\Controllers\Admin\MyProfileController;
 use App\Http\Controllers\Admin\TwoFactorController;
 use App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\Front\UploadDocumentController;
 
 Auth::routes(['verify' => true]);
 Route::get('/', [App\Http\Controllers\Front\FrontPagesController::class, 'index'])->name('fronthomepage');
@@ -57,6 +58,18 @@ Route::group(['prefix' => 'user', 'as' => 'user.', 'middleware' => ['auth', 'ver
 
     Route::get('/2fa/reset/{token}', [TwoFactorController::class, 'resetTwoFactor'])
         ->name('2fa.reset');
+
+    Route::get('/documents-list/{id}', [UploadDocumentController::class, 'documentList'])
+        ->name('documentList');
+
+    Route::get('/documents-list/{order_id}/{document_id}/{upload_document_id}', [UploadDocumentController::class, 'uploadDocument'])
+        ->name('uploadDocument');
+
+    Route::post('/upload-documents-store/{order_id}/{document_id}/{upload_document_id}', [UploadDocumentController::class, 'storeUploadDocument'])
+        ->name('storeUploadDocument');
+
+    Route::post('/delete-upload-document', [UploadDocumentController::class, 'deleteUploadDocument'])
+        ->name('deleteUploadDocument');
 });
 
 // Route::post('/', [MyProfileController::class, 'updateProfile'])->name('admin.update.profile');
