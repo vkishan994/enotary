@@ -20,9 +20,9 @@ return new class extends Migration
 
             $table->string('file_name')->nullable();
             $table->string('file_path')->nullable();
-            $table->integer('status')->nullable();
+            $table->string('status')->nullable();
             $table->text('note')->nullable();
-            $table->softDeletes();
+          
             $table->timestamps();
         });
     }

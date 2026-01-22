@@ -12,6 +12,7 @@ class UploadDocument extends Model
 
     public function documents()
     {
+        // UploadDocument belongs to many Documents (inverse)
         return $this->belongsToMany(Document::class, 'required_upload_documents', 'upload_documents_id', 'document_id');
     }
 }

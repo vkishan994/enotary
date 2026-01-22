@@ -30,9 +30,9 @@ return new class extends Migration
                 ->constrained()
                 ->cascadeOnDelete();
 
-            $table->integer('status')->nullable();
+            $table->string('status')->nullable();
             $table->text('note')->nullable();
-            $table->softDeletes();
+  
             $table->timestamps();
         });
     }

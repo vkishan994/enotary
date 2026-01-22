@@ -7,7 +7,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class VerifyDocument extends Model
 {
-    use SoftDeletes;
 
     protected $fillable = ['user_id', 'order_id', 'document_id', 'upload_documents_id', 'status', 'note'];
+
+    public function verify_document_items()
+    {
+        return $this->hasMany(VerifyDocumentItems::class, 'verify_document_id');
+    }
 }

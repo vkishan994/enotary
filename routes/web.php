@@ -70,6 +70,9 @@ Route::group(['prefix' => 'user', 'as' => 'user.', 'middleware' => ['auth', 'ver
 
     Route::post('/delete-upload-document', [UploadDocumentController::class, 'deleteUploadDocument'])
         ->name('deleteUploadDocument');
+
+    Route::post('/submit-document-for-verification', [UploadDocumentController::class, 'submitDocumentForVerification'])
+        ->name('submitDocumentForVerification');
 });
 
 // Route::post('/', [MyProfileController::class, 'updateProfile'])->name('admin.update.profile');

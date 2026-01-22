@@ -202,9 +202,9 @@ class MyProfileController extends Controller
 
         if ($paymentIntentId) {
             $order = Order::where('stripe_payment_intent_id', $paymentIntentId)->first();
-            // if ($order) {
-            //     $order->update(['payment_status' => 'completed']);
-            // }
+            if ($order) {
+                $order->update(['payment_status' => 'completed']);
+            }
         }
 
         return view('front.payment-success');

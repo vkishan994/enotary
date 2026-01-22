@@ -15,6 +15,12 @@ class Document extends Model
 
     public function uploadDocuments()
     {
-        return $this->belongsToMany(UploadDocument::class, 'required_upload_documents','upload_documents_id','document_id');
+        // Document has many required UploadDocuments through pivot table
+        return $this->belongsToMany(UploadDocument::class, 'required_upload_documents', 'document_id', 'upload_documents_id');
+    }
+
+    public function verifyDocuments()
+    {
+        return $this->hasMany(VerifyDocument::class, 'document_id');
     }
 }
