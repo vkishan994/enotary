@@ -2,10 +2,13 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use DataTables;
 use App\Models\Order;
 use Illuminate\Http\Request;
-use DataTables;
+use App\Models\VerifyDocument;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
 
 class OrderController extends Controller
 {
@@ -22,14 +25,73 @@ class OrderController extends Controller
                 ->addColumn('service_type', fn($row) => $row->notaryServiceType->name ?? 'N/A')
                 ->addColumn('amount', fn($row) => '£' . number_format($row->amount, 2))
                 ->addColumn('status', function ($row) {
-                    $badgeClass = $row->payment_status === 'completed' ? 'success' : ($row->payment_status === 'pending' ? 'warning' : 'danger');
-                    return '<span class="badge bg-' . $badgeClass . '">' . ucfirst($row->payment_status) . '</span>';
+                    return paymentStatus($row->payment_status);
+                })
+
+                ->addColumn('upload_document_status', function ($row) {
+                    return documentUploadStatus($row->upload_document_status);
+                })
+
+                ->addColumn('action', function ($row) {
+                    if ($row->upload_document_status === 'submitted') {
+                        $edit = '<a href="' . route('admin.orders.detail', $row['id']) . '" class="btn rounded-pill btn-icon btn-outline-primary me-2"><i class="bx bxs-edit"></i></a>';
+                        return $edit;
+                    } else {
+                        return '';
+                    }
                 })
                 ->addColumn('date', fn($row) => $row->created_at->format('d M Y, H:i'))
-                ->rawColumns(['status'])
+                ->rawColumns(['status', 'upload_document_status', 'action'])
                 ->make(true);
         }
 
         return view('admin.orders.index');
+    }
+
+    public function orderDetial($id)
+    {
+        $order = Order::with(['user', 'document', 'notaryServiceType'])->findOrFail($id);
+        $uploadedDocuments = VerifyDocument::with('verify_document_items')->where('order_id', $id)->get();
+        return view('admin.orders.order_detial', compact('order', 'uploadedDocuments'));
+    }
+
+
+    public function changeDocumentStatus($id, Request $request)
+    {
+        try {
+            // dd($request->all());
+            DB::beginTransaction();
+
+            $document = VerifyDocument::findOrFail($id);
+            $document->status = $request->status;
+            $document->note = $request->status === 'rejected' ? $request->rejection_note : null;
+            $document->save();
+
+            DB::commit();
+
+            // If AJAX request, return JSON success
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Record updated successfully.'
+                ]);
+            }
+
+            // For normal form submit, redirect back with success message
+            return redirect()->back()->with('success', 'Document status updated successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            Log::error('Error updating document status: ' . $e->getMessage());
+
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to update document status. Please try again.'
+                ], 500);
+            }
+
+            return redirect()->back()->withErrors('Failed to update document status. Please try again.');
+        }
     }
 }

@@ -58,7 +58,7 @@
                 <div class="alert alert-info d-flex align-items-center">
                     <i class="fa fa-clock me-2"></i>
                     <span>
-                        Your documents have already been submitted for verification and are currently under review
+                        Your documents have submitted for verification and are currently under review
                     </span>
                 </div>
             @else

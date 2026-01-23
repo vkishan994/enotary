@@ -242,6 +242,8 @@ class UploadDocumentController extends Controller
                 $doc->verify_document_items()->update(['status' => 'submitted']);
             }
 
+            Order::where('id', $order_id)->update(['upload_document_status' => 'submitted']);
+
             DB::commit();
 
             return redirect()->back()->with('success', 'Documents submitted for verification successfully.');

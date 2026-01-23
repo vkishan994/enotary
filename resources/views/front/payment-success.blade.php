@@ -5,9 +5,9 @@
 
 <!-- Main content start -->
 <main class="main-content">
-    <div class="section-title text-center mt-5">
+    <div class="section-title text-center mt-5" style="height: 450px;">
         <div class="mb-4">
-            <i class="fas fa-check-circle text-success" style="font-size: 80px;"></i>
+            <i class="fas fa-check-circle text-success" style="font-size: 80px; "></i>
         </div>
         <h2>Order Successful!</h2>
         <p class="lead mt-3">Thank you for your order. Your document notarisation process is being initiated.</p>

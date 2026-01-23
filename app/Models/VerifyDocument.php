@@ -14,4 +14,14 @@ class VerifyDocument extends Model
     {
         return $this->hasMany(VerifyDocumentItems::class, 'verify_document_id');
     }
+
+    public function getdocumentdetail()
+    {
+        return $this->belongsTo(Document::class, 'document_id');
+    }
+
+    public function uploadedDocument()
+    {
+        return $this->belongsTo(UploadDocument::class, 'upload_documents_id', 'id');
+    }
 }
