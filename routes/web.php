@@ -8,6 +8,7 @@ use App\Http\Controllers\StripeWebhookController;
 use App\Http\Controllers\Admin\MyProfileController;
 use App\Http\Controllers\Admin\TwoFactorController;
 use App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\Front\ScheduleMeetingController;
 use App\Http\Controllers\Front\UploadDocumentController;
 
 Auth::routes(['verify' => true]);
@@ -73,6 +74,11 @@ Route::group(['prefix' => 'user', 'as' => 'user.', 'middleware' => ['auth', 'ver
 
     Route::post('/submit-document-for-verification', [UploadDocumentController::class, 'submitDocumentForVerification'])
         ->name('submitDocumentForVerification');
+
+
+    Route::get('/schedule-meeting/{order_id}', [ScheduleMeetingController::class, 'scheduleMeetingForm'])
+        ->name('scheduleMeetingForm');
+    Route::post('/schedule-meeting', [ScheduleMeetingController::class, 'store'])->name('schedule.meeting.store');
 });
 
 // Route::post('/', [MyProfileController::class, 'updateProfile'])->name('admin.update.profile');
@@ -133,3 +139,5 @@ Route::post('/terminal', [App\Http\Controllers\Front\TermicalController::class, 
 
 
 Route::post('/webhook/stripe', [StripeWebhookController::class, 'handle']);
+
+Route::post('/google/callback', [UserController::class, 'googleCallback'])->name('google.callback');

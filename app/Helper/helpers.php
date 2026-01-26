@@ -2,6 +2,8 @@
 
 use Carbon\Carbon;
 use App\Models\Setting;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Http;
 
 /**
  * get settings data
@@ -111,4 +113,53 @@ if (!function_exists('uploadedEachDocumentStatus')) {
 
         return '<span class="badge bg-' . $class . '">' . $label . '</span>';
     }
+}
+
+function exchangeCodeForToken(string $authorizationCode): array
+{
+    $response = Http::withoutVerifying() // 👈 disables SSL verification
+        ->asForm()
+        ->post(
+            'https://oauth2.googleapis.com/token',
+            [
+                'client_id'     => getValuesByKey('google_client_id'),
+                'client_secret' => getValuesByKey('google_client_secret'),
+                'code'          => $authorizationCode,
+                'grant_type'    => 'authorization_code',
+                'redirect_uri'  => 'http://127.0.0.1:8000/google/callback',
+            ]
+        );
+
+    if (! $response->successful()) {
+        throw new \Exception(
+            'Google OAuth token exchange failed: ' . $response->body()
+        );
+    }
+
+    return $response->json();
+}
+
+function getGoogleAccessToken(string $refreshToken): string
+{
+    $http = Http::asForm();
+
+    // Disable SSL verification only in local environment
+    if (App::environment('local')) {
+        $http = $http->withoutVerifying();
+    }
+
+    $response = $http->post('https://oauth2.googleapis.com/token', [
+        'client_id'     => getValuesByKey('google_client_id'),
+        'client_secret' => getValuesByKey('google_client_secret'),
+        'refresh_token' => decrypt($refreshToken),
+        'grant_type'    => 'refresh_token',
+    ]);
+
+    if (! $response->successful()) {
+        throw new \Exception(
+            'Failed to refresh Google access token: ' . $response->body()
+        );
+    }
+
+    return $response->json()['access_token'];
 }

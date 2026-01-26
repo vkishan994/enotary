@@ -41,6 +41,13 @@
                                 Stripe Payment
                             </button>
                         </li>
+
+                        <li class="nav-item">
+                            <button class="nav-link" id="google-tab" data-bs-toggle="tab" data-bs-target="#google"
+                                type="button" role="tab">
+                                Google OAuth
+                            </button>
+                        </li>
                     </ul>
 
                     <!-- Tab Content -->
@@ -97,6 +104,40 @@
                                 </div>
 
                                 <button type="submit" class="btn btn-primary">Save Stripe Settings</button>
+                            </form>
+                        </div>
+
+                        <!-- Google Settings -->
+                        <div class="tab-pane fade" id="google" role="tabpanel">
+
+                            <form action="{{ route('admin.settings.store') }}" method="post">
+                                @csrf
+                                <div class="row">
+                                    <input type="hidden" name="module_name" value="stripe_payment">
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Google Client ID</label>
+                                        <input type="text" name="google_client_id" class="form-control"
+                                            placeholder="Google Client ID"
+                                            value="{{ getValuesByKey('google_client_id') ?? '' }}">
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Google Client Secret</label>
+                                        <input type="text" name="google_client_secret" class="form-control"
+                                            placeholder="Google Client Secret"
+                                            value="{{ getValuesByKey('google_client_secret') ?? '' }}">
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Google Refresh Token</label>
+                                        <input type="text" name="google_refresh_token" class="form-control"
+                                            placeholder="Google Refresh Token"
+                                            value="{{ getValuesByKey('google_refresh_token') ?? '' }}">
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">Save Google Settings</button>
                             </form>
                         </div>
 

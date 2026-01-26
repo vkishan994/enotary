@@ -91,7 +91,8 @@
                                             </div>
                                         </div>
                                         <div class="pending-arrow">
-                                            <a href="{{ route('user.documentList',['id' => encrypt($order->id)])}}"><i class="fas fa-chevron-right"></i></a>
+                                            <a href="{{ route('user.documentList', ['id' => encrypt($order->id)]) }}"><i
+                                                    class="fas fa-chevron-right"></i></a>
                                         </div>
                                     </div>
 
@@ -106,7 +107,8 @@
                                             </div>
                                         </div>
                                         <div class="pending-arrow">
-                                            <a href="#"><i class="fas fa-chevron-right"></i></a>
+                                            <a href="{{ route('user.scheduleMeetingForm',['order_id' => encrypt($order->id)]) }}"><i
+                                                    class="fas fa-chevron-right"></i></a>
                                         </div>
                                     </div>
 
@@ -133,7 +135,7 @@
                         @endif
                     @endforeach
                 </div>
-                
+
             </div>
         @endif
     </main>
