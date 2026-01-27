@@ -58,6 +58,13 @@
               </li>
 
               <li class="menu-item">
+                  <a href="{{ route('admin.schedule.meetings.index') }}" class="menu-link">
+                      <i class="menu-icon tf-icons bx bx-calendar"></i>
+                      <div data-i18n="Dashboards">Schedule Meetings</div>
+                  </a>
+              </li>
+
+              <li class="menu-item">
                   <a href="{{ route('admin.settings') }}" class="menu-link">
                       <i class="menu-icon tf-icons bx bx-cog"></i>
                       <div data-i18n="Dashboards">Settings</div>

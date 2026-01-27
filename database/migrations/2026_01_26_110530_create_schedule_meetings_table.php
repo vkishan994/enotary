@@ -18,6 +18,7 @@ return new class extends Migration
             $table->date('meeting_date')->nullable();
             $table->time('meeting_time')->nullable();
             $table->text('notes')->nullable();
+            $table->text('admin_notes')->nullable();
             $table->string('status')->nullable();
             $table->string('google_event_id')->nullable();
             $table->timestamps();

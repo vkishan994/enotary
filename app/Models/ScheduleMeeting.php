@@ -13,5 +13,12 @@ class ScheduleMeeting extends Model
         'meeting_time',
         'notes',
         'google_event_id',
+        'admin_notes',
+        'status',
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }

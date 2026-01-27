@@ -163,3 +163,34 @@ function getGoogleAccessToken(string $refreshToken): string
 
     return $response->json()['access_token'];
 }
+
+if (!function_exists('meetingStatus')) {
+    function meetingStatus($status)
+    {
+        switch ($status) {
+            case 'approved':
+                $class = 'success';   // Green – confirmed
+                break;
+
+            case 'pending':
+                $class = 'warning';   // Yellow – waiting
+                break;
+
+            case 'rejected':
+                $class = 'danger';    // Red – declined
+                break;
+
+            case 'rescheduled':
+                $class = 'info';      // Blue – changed, not failed
+                break;
+
+            default:
+                $class = 'secondary'; // Grey – fallback
+                break;
+        }
+
+        return '<span class="badge bg-' . $class . '">'
+            . ucwords(str_replace('_', ' ', $status)) .
+            '</span>';
+    }
+}

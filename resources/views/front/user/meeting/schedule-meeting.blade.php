@@ -10,7 +10,7 @@
             <div class="section-title mb-3">
                 <div class="row align-items-center">
                     <div class="col-6">
-                        <h4>Schedule eNotary Meeting</h4>
+                        <h4>Schedule A Meeting</h4>
                     </div>
                 </div>
             </div>
@@ -20,8 +20,45 @@
 
             <!-- Schedule Form -->
             <div class="card">
-                <div class="card-body">
+                <div class="card-body" style="overflow: hidden;height: 500px;overflow-y: auto;">
 
+                    @if (isset($scheduledMeeting))
+                        <div class="mb-4">
+                            <strong>Status:</strong> {!! meetingStatus($scheduledMeeting->status) !!}
+
+                            @if (in_array($scheduledMeeting->status, ['rejected', 'rescheduled']) && $scheduledMeeting->notes)
+                                <div class="alert alert-warning mt-2">
+                                    <strong>Admin Notes:</strong> {{ $scheduledMeeting->notes }}
+                                </div>
+                            @endif
+
+                            @if ($scheduledMeeting->status === 'rescheduled' || $scheduledMeeting->status === 'rejected')
+                                <div class="alert alert-info mt-2">
+                                    Please submit a new meeting request with a different date and time.
+                                </div>
+                            @endif
+                        </div>
+                    @endif
+
+                    @if (isset($scheduledMeeting) && $scheduledMeeting->status == 'pending')
+                        <div class="alert alert-info">
+                            Your meeting request is under review.
+                            You will be notified as soon as it is reviewed and approved.<br><br>
+
+                            <strong>Requested on:</strong>
+                            {{ \Carbon\Carbon::parse($scheduledMeeting->created_at)->format('F j, Y \a\t g:i A') }}
+                        </div>
+                    @elseif(isset($scheduledMeeting) && $scheduledMeeting->status == 'approved')
+                        <div class="alert alert-success">
+                            Your meeting has been approved! Please be ready at the scheduled time.<br><br>
+
+                            <strong>Meeting Date:</strong>
+                            {{ \Carbon\Carbon::parse($scheduledMeeting->meeting_date)->format('F j, Y') }}<br>
+
+                            <strong>Meeting Time:</strong>
+                            {{ \Carbon\Carbon::parse($scheduledMeeting->meeting_time)->format('g:i A') }}
+                        </div>
+                    @else
                     <form method="POST" action="{{ route('user.schedule.meeting.store') }}">
                         @csrf
 
@@ -57,6 +94,7 @@
 
                         </div>
                     </form>
+                    @endif
 
                 </div>
             </div>

@@ -13,7 +13,11 @@ class ScheduleMeetingController extends Controller
 {
     public function scheduleMeetingForm($order_id)
     {
-        return view('front.user.meeting.schedule-meeting', compact('order_id'));
+        $scheduledMeeting = ScheduleMeeting::where('order_id', decrypt($order_id))
+            ->where('user_id', Auth::id())
+            ->first();
+
+        return view('front.user.meeting.schedule-meeting', compact('order_id', 'scheduledMeeting'));
     }
 
     public function store(Request $request)
@@ -30,14 +34,18 @@ class ScheduleMeetingController extends Controller
             ]);
 
             // Store meeting in database
-            $meeting = ScheduleMeeting::create([
-                'user_id'       => Auth::id(),
-                'order_id'      => (decrypt($data['order_id'])),
-                'meeting_date'  => $data['meeting_date'],
-                'meeting_time'  => $data['meeting_time'],
-                'notes'         => $data['notes'] ?? null,
-                'status'        => 'pending',
-            ]);
+            $meeting = ScheduleMeeting::updateOrCreate(
+                [
+                    'user_id'  => Auth::id(),
+                    'order_id' => decrypt($data['order_id']),
+                ],
+                [
+                    'meeting_date' => $data['meeting_date'],
+                    'meeting_time' => $data['meeting_time'],
+                    'notes'        => $data['notes'] ?? null,
+                    'status'       => 'pending', // reset status to pending on update
+                ]
+            );
 
             // Optional: create Google Calendar event
             // $this->createGoogleCalendarEvent($meeting);
@@ -48,7 +56,6 @@ class ScheduleMeetingController extends Controller
                 ->back()
                 ->with('success', 'Meeting Request Send To Admin SuccessFully!');
         } catch (\Throwable $e) {
-            dd($e->getMessage());
 
             DB::rollBack();
 

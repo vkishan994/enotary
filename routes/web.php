@@ -131,6 +131,11 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth:admin']], function () 
 
     Route::get('/settings', [App\Http\Controllers\Admin\SettingsController::class, 'index'])->name('admin.settings');
     Route::post('/settings-store', [App\Http\Controllers\Admin\SettingsController::class, 'store'])->name('admin.settings.store');
+
+    // schedule meeting
+    Route::get('/schedule-meetings', [App\Http\Controllers\Admin\MeetingController::class, 'index'])->name('admin.schedule.meetings.index');
+    Route::get('/schedule-meeting/{id}', [App\Http\Controllers\Admin\MeetingController::class, 'edit'])->name('admin.schedule.meetings.edit');
+    Route::put('/schedule-meeting/{id}', [App\Http\Controllers\Admin\MeetingController::class, 'update'])->name('admin.schedule.meetings.update');
 });
 
 

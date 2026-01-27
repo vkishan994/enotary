@@ -135,6 +135,13 @@
                                             placeholder="Google Refresh Token"
                                             value="{{ getValuesByKey('google_refresh_token') ?? '' }}">
                                     </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">Google Calendar ID</label>
+                                        <input type="text" name="google_calendar_id" class="form-control"
+                                            placeholder="Google Calendar ID"
+                                            value="{{ getValuesByKey('google_calendar_id') ?? '' }}">
+                                    </div>
                                 </div>
 
                                 <button type="submit" class="btn btn-primary">Save Google Settings</button>
