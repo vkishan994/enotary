@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Front;
 
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\ScheduleMeeting;
 use Illuminate\Support\Facades\DB;
@@ -32,6 +33,27 @@ class ScheduleMeetingController extends Controller
                 'notes'        => 'nullable|string',
                 'order_id'     => 'required',
             ]);
+
+            // Parse requested start and end time
+            $start = Carbon::parse($data['meeting_date'] . ' ' . $data['meeting_time']);
+            $durationMinutes = 30; // default duration if not saved somewhere else
+            $end = (clone $start)->addMinutes($durationMinutes);
+
+            // Check for conflicting meetings booked by *other users*
+            $conflict = ScheduleMeeting::where('meeting_date', $data['meeting_date'])
+                ->where('user_id', '!=', Auth::id())
+                ->where(function ($query) use ($start, $end) {
+                    $query->where(function ($q) use ($start, $end) {
+                        $q->whereRaw("TIME(meeting_time) < ?", [$end->format('H:i:s')])
+                            ->whereRaw("ADDTIME(meeting_time, SEC_TO_TIME(30 * 60)) > ?", [$start->format('H:i:s')]);
+                    });
+                })
+                ->exists();
+
+            if ($conflict) {
+                DB::rollBack();
+                return back()->with('error', 'Selected time slot is already booked. Please select another time.');
+            }
 
             // Store meeting in database
             $meeting = ScheduleMeeting::updateOrCreate(

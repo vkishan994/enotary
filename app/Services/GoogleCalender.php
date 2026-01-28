@@ -43,60 +43,42 @@ class GoogleCalender
     /**
      * Create Google Calendar Event using Refresh Token
      */
-    public static function createEvent(
-        string $summary,
-        string $description,
-        string $startDateTime,
-        ?string $endDateTime = null,
-        array $attendees = [],
+    public static function createMeeting(
+        string $refreshToken,
+        array $eventData,
         string $calendarId = 'primary'
-    ): ?Event {
-        try {
-            $client = new Client();
-            $client->setApplicationName(config('app.name'));
-            $client->setScopes([Calendar::CALENDAR]);
-            $client->setAccessType('offline');
+    ): array {
+        // Get fresh access token
+        $accessToken = self::getGoogleAccessToken($refreshToken);
 
-            // 🔐 Load OAuth credentials JSON from DB
-            $googleCredentials = getValuesByKey('google_client_secret');
-            if (!$googleCredentials) {
-                throw new \Exception('Google credentials not found');
-            }
+        $http = Http::withToken($accessToken)
+            ->withHeaders([
+                'Content-Type' => 'application/json',
+            ]);
 
-            $client->setAuthConfig(json_decode($googleCredentials, true));
+        if (App::environment('local')) {
+            $http = $http->withoutVerifying();
+        }
 
-            // 🔑 Load refresh token
-            $refreshToken = getValuesByKey('google_refresh_token');
-            if (!$refreshToken) {
-                throw new \Exception('Google refresh token missing');
-            }
+        $response = $http->post(
+            "https://www.googleapis.com/calendar/v3/calendars/{$calendarId}/events?conferenceDataVersion=1",
+            [
+                'summary'     => $eventData['title'],
+                'description' => $eventData['description'] ?? null,
+                'start'       => [
+                    'dateTime' => $eventData['start'], // ISO 8601
+                    'timeZone' => config('app.timezone') ?? 'UTC',
+                ],
+                'end'         => [
+                    'dateTime' => $eventData['end'], // ISO 8601
+                    'timeZone' => config('app.timezone') ?? 'UTC',
+                ],
+                'attendees'   => collect($eventData['attendees'] ?? [])
+                    ->map(fn($email) => ['email' => $email])
+                    ->values()
+                    ->toArray(),
 
-            // ✅ THIS is the correct way
-            $client->refreshToken($refreshToken);
-
-            $service = new Calendar($client);
-
-            // Default duration: 30 minutes
-            if (!$endDateTime) {
-                $endDateTime = Carbon::parse($startDateTime)
-                    ->addMinutes(30)
-                    ->toIso8601String();
-            }
-
-            $event = new Event([
-                'summary'     => $summary,
-                'description' => $description,
-                'start'       => new EventDateTime([
-                    'dateTime' => $startDateTime,
-                    'timeZone' => config('app.timezone', 'UTC'),
-                ]),
-                'end'         => new EventDateTime([
-                    'dateTime' => $endDateTime,
-                    'timeZone' => config('app.timezone', 'UTC'),
-                ]),
-                'attendees'   => array_map(fn($email) => ['email' => $email], $attendees),
-
-                // 🎥 Google Meet link
+                // Google Meet link
                 'conferenceData' => [
                     'createRequest' => [
                         'requestId' => uniqid(),
@@ -105,22 +87,84 @@ class GoogleCalender
                         ],
                     ],
                 ],
-            ]);
+            ]
+        );
 
-            return $service->events->insert(
-                $calendarId,
-                $event,
-                ['conferenceDataVersion' => 1]
+        if (! $response->successful()) {
+            throw new \Exception(
+                'Failed to create Google Calendar event: ' . $response->body()
             );
-        } catch (\Exception $e) {
-            // dd($e->getMessage());
-            Log::error('Google Calendar Error', [
-                'message' => $e->getMessage(),
-                'summary' => $summary,
-                'start'   => $startDateTime,
+        }
+
+        return $response->json();
+    }
+
+    public static function getCalendarEvents(
+        string $refreshToken,
+        string $calendarId = 'primary',
+        ?string $timeMin = null,
+        ?string $timeMax = null
+    ): array {
+        $accessToken = self::getGoogleAccessToken($refreshToken);
+
+        //  IMPORTANT: URL encode calendar ID
+        $calendarId = urlencode($calendarId);
+
+        $http = Http::withToken($accessToken);
+
+        if (App::environment('local')) {
+            $http = $http->withoutVerifying();
+        }
+
+        $response = $http->get(
+            "https://www.googleapis.com/calendar/v3/calendars/{$calendarId}/events",
+            [
+                'singleEvents' => 'true',
+                'orderBy'      => 'startTime',
+
+                // RFC3339 with Z timezone
+                'timeMin' => $timeMin
+                    ? Carbon::parse($timeMin)->utc()->toRfc3339String()
+                    : now()->subMonth()->utc()->toRfc3339String(),
+
+                'timeMax' => $timeMax
+                    ? Carbon::parse($timeMax)->utc()->toRfc3339String()
+                    : now()->addMonths(3)->utc()->toRfc3339String(),
+
+                'maxResults' => 2500,
+            ]
+        );
+
+        // DEBUG (temporarily)
+        if (! $response->successful()) {
+            logger()->error('Google Calendar API Error', [
+                'status' => $response->status(),
+                'body'   => $response->json(),
             ]);
 
-            return null;
+            return [];
         }
+
+        return collect($response->json('items', []))
+            ->map(function ($event) {
+                return [
+                    'id'            => $event['id'],
+                    'title'         => $event['summary'] ?? 'Meeting',
+                    'start'         => $event['start']['dateTime'] ?? $event['start']['date'],
+                    'end'           => $event['end']['dateTime'] ?? $event['end']['date'],
+                    'description'   => $event['description'] ?? '',
+                    'attendees'     => $event['attendees'] ?? [],
+                    'attendeesCount' => count($event['attendees'] ?? []),
+                    'attendeesWaiting' => collect($event['attendees'] ?? [])
+                        ->filter(fn($a) => ($a['responseStatus'] ?? '') === 'needsAction')
+                        ->count(),
+                    'organizer'     => $event['organizer']['email'] ?? '',
+                    'organizerDisplayName' => $event['organizer']['displayName'] ?? '',
+                    'conference'    => $event['conferenceData']['entryPoints'][0]['uri'] ?? null,
+                    'htmlLink'      => $event['htmlLink'] ?? null,
+                ];
+            })
+            ->values()
+            ->toArray();
     }
 }

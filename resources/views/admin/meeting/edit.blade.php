@@ -1,5 +1,8 @@
 @extends('admin.layouts.common')
 
+@section('css')
+    <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
+@endsection
 @section('content')
     <h4 class="py-3 mb-4">
         <span class="text-muted fw-light">Schedule Meetings /</span> Meeting Details
@@ -8,106 +11,258 @@
     <x-alert type="success" :message="session('success')" />
     <x-alert type="danger" :message="session('error')" />
 
-    <div class="row">
-        <div class="col-md-12">
+    <div class="container">
+        <h4 class="mb-4">Calendar</h4>
 
-            <div class="card shadow-sm border-0 mb-4">
-
-                <!-- Header -->
-                <div class="card-header bg-light d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0 fw-semibold">Meeting Details</h5>
-                    {!! meetingStatus($meeting->status) !!}
+        <div class="row g-4">
+            <!-- Calendar column -->
+            <div class="col-lg-7">
+                <div class="card shadow-sm border-0">
+                    <div class="card-body p-3">
+                        <div id="calendar" style="max-width: 100%;"></div>
+                    </div>
                 </div>
 
-                <div class="card-body">
 
-                    <!-- Meeting Info -->
-                    <div class="row text-center mb-4">
-                        <div class="col-md-4">
-                            <div class="p-3 border rounded bg-light">
-                                <small class="text-muted">Date</small>
-                                <div class="fw-semibold mt-1">
-                                    {{ \Carbon\Carbon::parse($meeting->meeting_date)->format('d M Y') }}
-                                </div>
-                            </div>
-                        </div>
+                {{-- <iframe
+                    src="https://calendar.google.com/calendar/embed?src={{ urlencode(getValuesByKey('google_calendar_id') ?? 'primary@gmail.com') }}&ctz=Asia/Kolkata"
+                    style="border: 0" width="100%" height="600" frameborder="0" scrolling="no">
+                </iframe> --}}
+            </div>
 
-                        <div class="col-md-4">
-                            <div class="p-3 border rounded bg-light">
-                                <small class="text-muted">Time</small>
-                                <div class="fw-semibold mt-1">
-                                    {{ $meeting->meeting_time }}
-                                </div>
-                            </div>
-                        </div>
+            <!-- Meeting Details and Update Form column -->
+            <div class="col-lg-5">
+                <div class="card shadow-sm border-0">
 
-                        <div class="col-md-4">
-                            <div class="p-3 border rounded bg-light">
-                                <small class="text-muted">User</small>
-                                <div class="fw-semibold mt-1">
-                                    {{ $meeting->user->first_name . ' ' . $meeting->user->last_name ?? 'N/A' }}
-                                </div>
-                            </div>
-                        </div>
+                    <!-- Header -->
+                    <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 fw-semibold">Meeting Details</h5>
+                        {!! meetingStatus($meeting->status) !!}
                     </div>
 
-                    <hr class="my-4">
+                    <div class="card-body">
 
-                    <!-- Status Update -->
-                    <h6 class="mb-3 fw-semibold">Update Meeting Status</h6>
+                        <!-- Meeting Info -->
+                        <div class="row text-center mb-4">
+                            <div class="col-4">
+                                <div class="p-3 border rounded bg-light">
+                                    <small class="text-muted">Date</small>
+                                    <div class="fw-semibold mt-1">
+                                        {{ \Carbon\Carbon::parse($meeting->meeting_date)->format('d M Y') }}
+                                    </div>
+                                </div>
+                            </div>
 
-                    <form method="POST" action="{{ route('admin.schedule.meetings.update', $meeting->id) }}">
-                        @csrf
-                        @method('PUT')
+                            <div class="col-4">
+                                <div class="p-3 border rounded bg-light">
+                                    <small class="text-muted">Time</small>
+                                    <div class="fw-semibold mt-1">
+                                        {{ $meeting->meeting_time }}
+                                    </div>
+                                </div>
+                            </div>
 
-                        <div class="row">
-                            <div class="col-md-6">
+                            <div class="col-4">
+                                <div class="p-3 border rounded bg-light">
+                                    <small class="text-muted">User</small>
+                                    <div class="fw-semibold mt-1">
+                                        {{ $meeting->user->first_name . ' ' . $meeting->user->last_name ?? 'N/A' }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-                                <!-- Status -->
-                                <div class="mb-3">
-                                    <label class="form-label">Change Status</label>
-                                    <select name="status" id="statusSelect" class="form-select" required>
-                                        <option value="">Select Status</option>
-                                        <option value="approved" {{ $meeting->status == 'approved' ? 'selected' : '' }}>
-                                            Approve
-                                        </option>
+                        <hr class="my-4">
+
+                        <!-- Status Update -->
+                        <h6 class="mb-3 fw-semibold">Update Meeting Status</h6>
+
+                        <form method="POST" action="{{ route('admin.schedule.meetings.update', $meeting->id) }}">
+                            @csrf
+                            @method('PUT')
+
+                            <div class="mb-3">
+                                <label for="statusSelect" class="form-label">Change Status</label>
+                                <select name="status" id="statusSelect" class="form-select" required>
+                                    <option value="">Select Status</option>
+                                    <option value="approved" {{ $meeting->status == 'approved' ? 'selected' : '' }}>
+                                        Approve
+                                    </option>
+                                    @if ($meeting->status != 'approved')
                                         <option value="rejected" {{ $meeting->status == 'rejected' ? 'selected' : '' }}>
                                             Reject
                                         </option>
-                                        <option value="rescheduled"
-                                            {{ $meeting->status == 'rescheduled' ? 'selected' : '' }}>
-                                            Reschedule
-                                        </option>
-                                    </select>
-                                </div>
-
-                                <!-- Notes (below status, same width) -->
-                                <div class="mb-3 d-none" id="rejectNotes">
-                                    <label class="form-label">Rejection Notes</label>
-                                    <textarea name="admin_notes" class="form-control" rows="3" placeholder="Please provide a reason for rejection..."></textarea>
-                                </div>
-
-                                <div class="mb-3 d-none" id="rescheduleNotes">
-                                    <label class="form-label">Reschedule Notes</label>
-                                    <textarea name="admin_notes" class="form-control" rows="3" placeholder="Please provide a reason for rescheduling..."></textarea>
-                                </div>
-
-                                <button type="submit" class="btn btn-primary">
-                                    Update Status
-                                </button>
-
+                                    @endif
+                                    <option value="rescheduled" {{ $meeting->status == 'rescheduled' ? 'selected' : '' }}>
+                                        Reschedule
+                                    </option>
+                                </select>
                             </div>
-                        </div>
-                    </form>
 
+                            <div class="mb-3 d-none" id="rejectNotes">
+                                <label for="rejectNotesTextarea" class="form-label">Rejection Notes</label>
+                                <textarea name="admin_notes" id="rejectNotesTextarea" class="form-control" rows="3"
+                                    placeholder="Please provide a reason for rejection..."></textarea>
+                            </div>
+
+                            <div class="mb-3 d-none" id="rescheduleNotes">
+                                <label for="rescheduleNotesTextarea" class="form-label">Reschedule Notes</label>
+                                <textarea name="admin_notes" id="rescheduleNotesTextarea" class="form-control" rows="3"
+                                    placeholder="Please provide a reason for rescheduling..."></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-primary">
+                                Update Status
+                            </button>
+                        </form>
+
+                    </div>
                 </div>
             </div>
-
         </div>
     </div>
 
+    <!-- Modal for event details -->
+    <div class="modal fade" id="eventDetailsModal" tabindex="-1" aria-labelledby="eventDetailsLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="eventTitle"></h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p id="eventDateTime"></p>
+
+                    <p>
+                        <a href="#" target="_blank" id="googleMeetLink" class="btn btn-sm btn-outline-primary d-none">
+                            Join with Google Meet
+                        </a>
+                    </p>
+
+                    <p id="attendeesInfo"></p>
+                    <div id="attendeesList" class="mb-2"></div>
+
+                    <p id="eventDescription"></p>
+                    <p><small id="organizerInfo" class="text-muted"></small></p>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" id="openInGoogleCal" target="_blank" class="btn btn-primary">View in Google
+                        Calendar</a>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     @push('scripts')
+        <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+
+
         <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const calendarEl = document.getElementById('calendar');
+                const modal = new bootstrap.Modal(document.getElementById('eventDetailsModal'));
+
+                const calendar = new FullCalendar.Calendar(calendarEl, {
+                    initialView: 'dayGridMonth',
+                    height: 650,
+                    headerToolbar: {
+                        left: 'prev,next today',
+                        center: 'title',
+                        right: 'dayGridMonth,timeGridWeek,timeGridDay'
+                    },
+                    events: "{{ route('admin.calendar.events') }}", // your API route returning events with htmlLink
+                    eventClick: function(info) {
+                        const event = info.event;
+                        const props = event.extendedProps;
+
+                        // --- Modal title ---
+                        document.getElementById('eventTitle').textContent = event.title;
+
+                        // --- Date & time ---
+                        const start = new Date(event.start);
+                        const end = new Date(event.end);
+                        const options = {
+                            weekday: 'long',
+                            year: 'numeric',
+                            month: 'long',
+                            day: 'numeric'
+                        };
+                        const dateStr = start.toLocaleDateString(undefined, options);
+                        const timeStr = start.toLocaleTimeString(undefined, {
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            }) +
+                            ' – ' +
+                            end.toLocaleTimeString(undefined, {
+                                hour: '2-digit',
+                                minute: '2-digit'
+                            });
+                        document.getElementById('eventDateTime').textContent = `${dateStr} · ${timeStr}`;
+
+                        // --- Google Meet link ---
+                        const meetLinkEl = document.getElementById('googleMeetLink');
+                        if (props.conference) {
+                            meetLinkEl.href = props.conference;
+                            meetLinkEl.classList.remove('d-none');
+                        } else {
+                            meetLinkEl.classList.add('d-none');
+                        }
+
+                        // --- Attendees info ---
+                        const attendeesInfoEl = document.getElementById('attendeesInfo');
+                        const attendeesCount = props.attendeesCount || 0;
+                        const attendeesWaiting = props.attendeesWaiting || 0;
+                        if (attendeesCount) {
+                            attendeesInfoEl.textContent =
+                                `${attendeesCount} guest${attendeesCount > 1 ? 's' : ''}, ${attendeesWaiting} awaiting`;
+                        } else {
+                            attendeesInfoEl.textContent = '';
+                        }
+
+                        // --- Attendees list ---
+                        const attendeesListEl = document.getElementById('attendeesList');
+                        attendeesListEl.innerHTML = '';
+                        if (props.attendees && props.attendees.length) {
+                            props.attendees.forEach(function(att) {
+                                let icon = att.self ? '🧑' : '👤';
+                                attendeesListEl.innerHTML += `<div>${icon} ${att.email}</div>`;
+                            });
+                        }
+
+                        // --- Description ---
+                        document.getElementById('eventDescription').textContent = props.description || '';
+
+                        // --- Organizer ---
+                        const organizerInfoEl = document.getElementById('organizerInfo');
+                        if (props.organizerDisplayName || props.organizer) {
+                            organizerInfoEl.textContent =
+                                `Created by: ${props.organizerDisplayName || props.organizer}`;
+                        } else {
+                            organizerInfoEl.textContent = '';
+                        }
+
+                        // --- Open in Google Calendar button ---
+                        const openInGoogleCalBtn = document.getElementById('openInGoogleCal');
+                        if (props.htmlLink) {
+                            openInGoogleCalBtn.href = props.htmlLink; // Link opens in new tab
+                            openInGoogleCalBtn.classList.remove('d-none');
+                        } else {
+                            openInGoogleCalBtn.classList.add('d-none');
+                        }
+
+                        // Show modal
+                        modal.show();
+                    }
+                });
+
+                calendar.render();
+            });
+
+
+
+
             document.addEventListener('DOMContentLoaded', function() {
                 const statusSelect = document.getElementById('statusSelect');
                 const rejectNotes = document.getElementById('rejectNotes');

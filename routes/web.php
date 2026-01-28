@@ -136,6 +136,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth:admin']], function () 
     Route::get('/schedule-meetings', [App\Http\Controllers\Admin\MeetingController::class, 'index'])->name('admin.schedule.meetings.index');
     Route::get('/schedule-meeting/{id}', [App\Http\Controllers\Admin\MeetingController::class, 'edit'])->name('admin.schedule.meetings.edit');
     Route::put('/schedule-meeting/{id}', [App\Http\Controllers\Admin\MeetingController::class, 'update'])->name('admin.schedule.meetings.update');
+    Route::get('/calendar/events', [App\Http\Controllers\Admin\MeetingController::class, 'events'])->name('admin.calendar.events');
 });
 
 

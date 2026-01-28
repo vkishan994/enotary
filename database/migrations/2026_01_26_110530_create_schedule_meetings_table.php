@@ -21,6 +21,9 @@ return new class extends Migration
             $table->text('admin_notes')->nullable();
             $table->string('status')->nullable();
             $table->string('google_event_id')->nullable();
+            $table->string('google_meet_link')->nullable();
+            $table->string('calendar_link')->nullable();
+            $table->string('calender_meeting_status')->nullable();
             $table->timestamps();
         });
     }

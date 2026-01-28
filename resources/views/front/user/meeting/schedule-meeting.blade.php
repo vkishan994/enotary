@@ -1,5 +1,9 @@
 @extends('front.layouts.common')
 
+@section('css')
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+@endsection
+
 @section('content')
     @include('front.layouts.dashboard.sidebar')
 
@@ -59,41 +63,42 @@
                             {{ \Carbon\Carbon::parse($scheduledMeeting->meeting_time)->format('g:i A') }}
                         </div>
                     @else
-                    <form method="POST" action="{{ route('user.schedule.meeting.store') }}">
-                        @csrf
+                        <form method="POST" action="{{ route('user.schedule.meeting.store') }}">
+                            @csrf
 
-                        <div class="row g-3">
+                            <div class="row g-3">
 
-                            <!-- Date -->
-                            <div class="col-md-6">
-                                <label class="form-label">Meeting Date</label>
-                                <input type="date" name="meeting_date" class="form-control"
-                                    min="{{ now()->format('Y-m-d') }}" required>
+                                <!-- Date -->
+                                <div class="col-md-6">
+                                    <label class="form-label">Meeting Date</label>
+                                    <input type="date" name="meeting_date" class="form-control"
+                                        min="{{ now()->format('Y-m-d') }}" required>
+                                </div>
+
+                                <input type="hidden" name="order_id" value="{{ $order_id }}">
+
+                                <!-- Time -->
+                                <div class="col-md-6">
+                                    <label class="form-label">Meeting Time</label>
+                                    <input type="text" id="meeting_time" name="meeting_time" class="form-control"
+                                        placeholder="Select time" required>
+                                </div>
+
+                                <!-- Notes -->
+                                <div class="col-md-12">
+                                    <label class="form-label">Notes (Optional)</label>
+                                    <textarea name="notes" class="form-control" rows="3" placeholder="Any additional information..."></textarea>
+                                </div>
+
+                                <!-- Submit -->
+                                <div class="col-12 text-end mt-3">
+                                    <button type="submit" class="btn btn-primary">
+                                        Schedule Meeting
+                                    </button>
+                                </div>
+
                             </div>
-
-                            <input type="hidden" name="order_id" value="{{ $order_id }}">
-
-                            <!-- Time -->
-                            <div class="col-md-6">
-                                <label class="form-label">Meeting Time</label>
-                                <input type="time" name="meeting_time" class="form-control" required>
-                            </div>
-
-                            <!-- Notes -->
-                            <div class="col-md-12">
-                                <label class="form-label">Notes (Optional)</label>
-                                <textarea name="notes" class="form-control" rows="3" placeholder="Any additional information..."></textarea>
-                            </div>
-
-                            <!-- Submit -->
-                            <div class="col-12 text-end mt-3">
-                                <button type="submit" class="btn btn-primary">
-                                    Schedule Meeting
-                                </button>
-                            </div>
-
-                        </div>
-                    </form>
+                        </form>
                     @endif
 
                 </div>
@@ -102,4 +107,30 @@
         </div>
     </main>
     <!-- Main content end -->
+@endsection
+
+@section('js')
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+    <script>
+        // Initialize Flatpickr for time selection
+        flatpickr("#meeting_time", {
+            enableTime: true,
+            noCalendar: true,
+            dateFormat: "h:i K", // 12-hour format with AM/PM
+            time_24hr: false, // show AM/PM
+            minuteIncrement: 5, // 15-minute steps
+            minTime: "09:00",
+            maxTime: "20:00",
+            defaultDate: "09:00",
+            altInput: true, // nicer input field
+            altFormat: "h:i K", // display in 12-hour format
+            wrap: false,
+            allowInput: false, // prevents typing, only pick from dropdown
+            onReady: function(selectedDates, dateStr, instance) {
+                // add a Bootstrap-like shadow
+                instance.calendarContainer.classList.add('shadow', 'rounded');
+            }
+        });
+    </script>
 @endsection

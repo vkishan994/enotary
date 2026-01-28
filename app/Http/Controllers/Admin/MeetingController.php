@@ -9,6 +9,7 @@ use App\Services\GoogleCalender;
 use App\Mail\MeetingNotification;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Container\Attributes\Log;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
@@ -52,6 +53,17 @@ class MeetingController extends Controller
         return view('admin.meeting.edit', compact('meeting'));
     }
 
+    public function events(Request $request)
+    {
+        $events = GoogleCalender::getCalendarEvents(
+            getValuesByKey('google_refresh_token'),
+            getValuesByKey('google_calendar_id') ?? 'primary',
+            $request->input('timeMin')
+        );
+
+        return response()->json($events);
+    }
+
     public function update(Request $request, $id)
     {
         $request->validate([
@@ -63,57 +75,73 @@ class MeetingController extends Controller
 
         try {
             $meeting = ScheduleMeeting::with('user')->findOrFail($id);
+            $admin   = Auth::user();
 
-            $user = Auth::user();
-
+            // -----------------------------
+            // APPROVED
+            // -----------------------------
             if ($request->status === 'approved') {
 
+                $timezone = config('app.timezone');
                 $start = Carbon::parse(
-                    $request->meeting_date . ' ' . $request->meeting_time
+                    $meeting->meeting_date . ' ' . $meeting->meeting_time
                 )->toIso8601String();
 
                 $end = Carbon::parse(
-                    $request->meeting_date . ' ' . $request->meeting_time
-                )->addMinutes(30)->toIso8601String();
+                    $meeting->meeting_date . ' ' . $meeting->meeting_time
+                )->addMinutes($meeting->duration ?? 30)
+                    ->toIso8601String();
 
                 $calendarId = getValuesByKey('google_calendar_id') ?? 'primary';
 
-                $event = GoogleCalender::createEvent(
-                    "Meeting with {$user->first_name}",
-                    $request->notes ?? 'Scheduled meeting',
-                    $start,
-                    $end,
-                    [$user->email],
+                $event = GoogleCalender::createMeeting(
+                    getValuesByKey('google_refresh_token'),
+                    [
+                        'title'       => 'Meeting with ' . $meeting->user->first_name,
+                        'description' => $meeting->agenda ?? 'Schedule meeting',
+                        'start'       => $start,
+                        'end'         => $end,
+                        'timezone'    => config('app.timezone'),
+                        'attendees'   => array_filter([
+                            $meeting->user->email,
+                            $admin->email,
+                        ]),
+                    ],
                     $calendarId
                 );
 
-                if (!$event) {
-                    return back()->with('error', 'Google Calendar event creation failed.');
+                if (empty($event)) {
+                    return back()->with('error', $event['message'] ?? 'Failed to create Google Calendar event.');
                 }
 
-                dd($event);
-
-                // Save meeting info
-                // $meeting->update([
-                //     'google_event_id' => $event->getId(),
-                //     'google_meet_link' => $event->getHangoutLink(),
-                //     'calendar_link' => $event->getHtmlLink(),
-                // ]);
-
-                return back()->with('success', 'Meeting scheduled successfully!');
+                // Save Google info
+                $meeting->google_event_id  = $event['id'] ?? null;
+                $meeting->google_meet_link = $event['conferenceData']['entryPoints'][0]['uri'] ?? null;
+                $meeting->calendar_link    = $event['htmlLink'] ?? null;
+                $meeting->calender_meeting_status  = 'approved';
+                $meeting->status  = 'approved';
             }
 
-            // Update meeting fields safely
-            $meeting->status = $request->status;
-
+            // -----------------------------
+            // REJECTED
+            // -----------------------------
             if ($request->status === 'rejected') {
+                $meeting->status       = 'rejected';
+                $meeting->admin_notes  = $request->admin_notes;
+            }
+
+            // -----------------------------
+            // RESCHEDULED
+            // -----------------------------
+            if ($request->status === 'rescheduled') {
+                $meeting->status      = 'rescheduled';
                 $meeting->admin_notes = $request->admin_notes;
             }
 
             $meeting->save();
 
-            // Send email to user based on status
-            if ($meeting->user && $meeting->user->email) {
+            // Notify user
+            if ($meeting->user?->email) {
                 Mail::to($meeting->user->email)
                     ->send(new MeetingNotification($meeting));
             }
@@ -122,14 +150,19 @@ class MeetingController extends Controller
 
             return redirect()
                 ->route('admin.schedule.meetings.index')
-                ->with('success', 'Meeting updated and user notified successfully.');
+                ->with('success', 'Meeting updated successfully.');
         } catch (\Exception $e) {
             dd($e->getMessage());
-            DB::rollBack();
 
-            return redirect()
-                ->back()
-                ->with('error', 'Something went wrong. Please try again.');
+            Log::info('Meeting Update Error', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+            DB::rollBack();
+            report($e); //  log instead of dd()
+
+            return back()->with('error', $e->getMessage());
         }
     }
 }
