@@ -85,30 +85,38 @@
                                 <label for="statusSelect" class="form-label">Change Status</label>
                                 <select name="status" id="statusSelect" class="form-select" required>
                                     <option value="">Select Status</option>
-                                    <option value="approved" {{ $meeting->status == 'approved' ? 'selected' : '' }}>
+
+                                    <option value="approved" {{ $meeting->status === 'approved' ? 'selected' : '' }}>
                                         Approve
                                     </option>
-                                    @if ($meeting->status != 'approved')
-                                        <option value="rejected" {{ $meeting->status == 'rejected' ? 'selected' : '' }}>
+
+                                    @if ($meeting->status !== 'approved')
+                                        <option value="rejected" {{ $meeting->status === 'rejected' ? 'selected' : '' }}>
                                             Reject
                                         </option>
                                     @endif
-                                    <option value="rescheduled" {{ $meeting->status == 'rescheduled' ? 'selected' : '' }}>
+
+                                    <option value="rescheduled" {{ $meeting->status === 'rescheduled' ? 'selected' : '' }}>
                                         Reschedule
                                     </option>
                                 </select>
                             </div>
 
-                            <div class="mb-3 d-none" id="rejectNotes">
-                                <label for="rejectNotesTextarea" class="form-label">Rejection Notes</label>
-                                <textarea name="admin_notes" id="rejectNotesTextarea" class="form-control" rows="3"
-                                    placeholder="Please provide a reason for rejection..."></textarea>
-                            </div>
+                            @php
+                                $showNotes =
+                                    in_array($meeting->status, ['rejected', 'rescheduled']) &&
+                                    !empty($meeting->admin_notes);
+                            @endphp
 
-                            <div class="mb-3 d-none" id="rescheduleNotes">
-                                <label for="rescheduleNotesTextarea" class="form-label">Reschedule Notes</label>
-                                <textarea name="admin_notes" id="rescheduleNotesTextarea" class="form-control" rows="3"
-                                    placeholder="Please provide a reason for rescheduling..."></textarea>
+                            <div class="mb-3 {{ $showNotes ? '' : 'd-none' }}" id="adminNotesWrapper">
+                                <label class="form-label" id="adminNotesLabel">
+                                    {{ $meeting->status === 'rejected' ? 'Rejection Notes' : 'Reschedule Notes' }}
+                                </label>
+
+                                <textarea name="admin_notes" id="adminNotesTextarea" class="form-control" rows="3"
+                                    placeholder="{{ $meeting->status === 'rejected'
+                                        ? 'Please provide a reason for rejection...'
+                                        : 'Please provide a reason for rescheduling...' }}">{{ $meeting->admin_notes }}</textarea>
                             </div>
 
                             <button type="submit" class="btn btn-primary">
@@ -261,29 +269,48 @@
             });
 
 
-
-
             document.addEventListener('DOMContentLoaded', function() {
                 const statusSelect = document.getElementById('statusSelect');
-                const rejectNotes = document.getElementById('rejectNotes');
-                const rescheduleNotes = document.getElementById('rescheduleNotes');
+                const wrapper = document.getElementById('adminNotesWrapper');
+                const label = document.getElementById('adminNotesLabel');
+                const textarea = document.getElementById('adminNotesTextarea');
+
+                // Store initial notes (from DB)
+                const existingNotes = textarea.value.trim();
 
                 function toggleNotes() {
                     if (statusSelect.value === 'rejected') {
-                        rejectNotes.classList.remove('d-none');
-                    } else {
-                        rejectNotes.classList.add('d-none');
-                    }
+                        wrapper.classList.remove('d-none');
+                        label.innerText = 'Rejection Notes';
+                        textarea.placeholder = 'Please provide a reason for rejection...';
+                        textarea.required = true;
 
-                    if (statusSelect.value === 'rescheduled') {
-                        rescheduleNotes.classList.remove('d-none');
+                        // Restore old notes if textarea is empty
+                        if (!textarea.value && existingNotes) {
+                            textarea.value = existingNotes;
+                        }
+
+                    } else if (statusSelect.value === 'rescheduled') {
+                        wrapper.classList.remove('d-none');
+                        label.innerText = 'Reschedule Notes';
+                        textarea.placeholder = 'Please provide a reason for rescheduling...';
+                        textarea.required = true;
+
+                        if (!textarea.value && existingNotes) {
+                            textarea.value = existingNotes;
+                        }
+
                     } else {
-                        rescheduleNotes.classList.add('d-none');
+                        wrapper.classList.add('d-none');
+                        textarea.required = false;
+                        // DO NOT clear textarea value
                     }
                 }
 
+                // Init on page load
+                toggleNotes();
+
                 statusSelect.addEventListener('change', toggleNotes);
-                toggleNotes(); // on page load
             });
         </script>
     @endpush

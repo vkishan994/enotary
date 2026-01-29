@@ -9,6 +9,7 @@ use App\Models\VerifyDocument;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use App\Models\VerifyDocumentItems;
 
 class OrderController extends Controller
 {
@@ -66,6 +67,8 @@ class OrderController extends Controller
             $document->status = $request->status;
             $document->note = $request->status === 'rejected' ? $request->rejection_note : null;
             $document->save();
+
+            $document_item = VerifyDocumentItems::where('verify_document_id', $id)->update(['status' => $request->status]);
 
             DB::commit();
 

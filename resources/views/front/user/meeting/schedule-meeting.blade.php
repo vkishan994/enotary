@@ -30,9 +30,9 @@
                         <div class="mb-4">
                             <strong>Status:</strong> {!! meetingStatus($scheduledMeeting->status) !!}
 
-                            @if (in_array($scheduledMeeting->status, ['rejected', 'rescheduled']) && $scheduledMeeting->notes)
+                            @if ($scheduledMeeting->status == 'rejected' || $scheduledMeeting->status == 'rescheduled')
                                 <div class="alert alert-warning mt-2">
-                                    <strong>Admin Notes:</strong> {{ $scheduledMeeting->notes }}
+                                    <strong>Admin Notes:</strong> {{ $scheduledMeeting->admin_notes }}
                                 </div>
                             @endif
 
@@ -45,12 +45,25 @@
                     @endif
 
                     @if (isset($scheduledMeeting) && $scheduledMeeting->status == 'pending')
+                        @php
+                            $meetingDateTime = \Carbon\Carbon::parse(
+                                $scheduledMeeting->meeting_date . ' ' . $scheduledMeeting->meeting_time,
+                            );
+                        @endphp
+
                         <div class="alert alert-info">
                             Your meeting request is under review.
                             You will be notified as soon as it is reviewed and approved.<br><br>
 
                             <strong>Requested on:</strong>
                             {{ \Carbon\Carbon::parse($scheduledMeeting->created_at)->format('F j, Y \a\t g:i A') }}
+                            <br>
+
+                            <strong>Meeting Date:</strong>
+                            {{ $meetingDateTime->format('F j, Y') }}<br>
+
+                            <strong>Meeting Time:</strong>
+                            {{ $meetingDateTime->format('g:i A') }}
                         </div>
                     @elseif(isset($scheduledMeeting) && $scheduledMeeting->status == 'approved')
                         <div class="alert alert-success">
@@ -83,6 +96,12 @@
                                     <input type="text" id="meeting_time" name="meeting_time" class="form-control"
                                         placeholder="Select time" required>
                                 </div>
+
+                                {{-- <div class="col-md-6">
+                                    <label class="form-label">Meeting Time</label>
+                                    <input type="time" id="meeting_time" name="meeting_time" class="form-control"
+                                        placeholder="Select time" required>
+                                </div> --}}
 
                                 <!-- Notes -->
                                 <div class="col-md-12">
@@ -117,18 +136,22 @@
         flatpickr("#meeting_time", {
             enableTime: true,
             noCalendar: true,
-            dateFormat: "h:i K", // 12-hour format with AM/PM
-            time_24hr: false, // show AM/PM
-            minuteIncrement: 5, // 15-minute steps
+
+            // 24-hour format (DB safe for TIME column)
+            dateFormat: "H:i", // stored value → 14:30
+            time_24hr: true, // 24-hour picker
+
+            minuteIncrement: 5,
             minTime: "09:00",
             maxTime: "20:00",
             defaultDate: "09:00",
-            altInput: true, // nicer input field
-            altFormat: "h:i K", // display in 12-hour format
-            wrap: false,
-            allowInput: false, // prevents typing, only pick from dropdown
-            onReady: function(selectedDates, dateStr, instance) {
-                // add a Bootstrap-like shadow
+
+            altInput: true, // user-friendly display
+            altFormat: "H:i", // also 24-hour display
+
+            allowInput: false,
+
+            onReady: function(_, __, instance) {
                 instance.calendarContainer.classList.add('shadow', 'rounded');
             }
         });

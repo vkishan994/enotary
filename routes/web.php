@@ -6,6 +6,7 @@ use App\Http\Controllers\Front\UserController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\StripeWebhookController;
 use App\Http\Controllers\Admin\MyProfileController;
+use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\TwoFactorController;
 use App\Http\Controllers\Admin\TestimonialController;
 use App\Http\Controllers\Front\ScheduleMeetingController;
@@ -137,6 +138,12 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth:admin']], function () 
     Route::get('/schedule-meeting/{id}', [App\Http\Controllers\Admin\MeetingController::class, 'edit'])->name('admin.schedule.meetings.edit');
     Route::put('/schedule-meeting/{id}', [App\Http\Controllers\Admin\MeetingController::class, 'update'])->name('admin.schedule.meetings.update');
     Route::get('/calendar/events', [App\Http\Controllers\Admin\MeetingController::class, 'events'])->name('admin.calendar.events');
+
+    Route::get('/google/auth', [SettingsController::class, 'redirectToGoogle'])
+        ->name('admin.google.auth');
+
+    // Route::get('/google/callback', [SettingsController::class, 'handleGoogleCallback'])
+    //     ->name('admin.google.callback');
 });
 
 
@@ -146,4 +153,4 @@ Route::post('/terminal', [App\Http\Controllers\Front\TermicalController::class, 
 
 Route::post('/webhook/stripe', [StripeWebhookController::class, 'handle']);
 
-Route::post('/google/callback', [UserController::class, 'googleCallback'])->name('google.callback');
+Route::get('/google/callback', [SettingsController::class, 'googleCallback'])->name('google.callback');

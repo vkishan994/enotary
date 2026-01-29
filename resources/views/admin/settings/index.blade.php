@@ -146,6 +146,38 @@
 
                                 <button type="submit" class="btn btn-primary">Save Google Settings</button>
                             </form>
+
+                            <hr class="my-4">
+
+                            <div class="alert alert-warning">
+                                <strong>Important:</strong><br>
+                                1. First, save the <b>Google Client ID</b> and <b>Client Secret</b> above.<br>
+                                2. Make sure this redirect URL is added in the Google Console:
+                                <code>{{ url('/google/callback') }}</code> (or your production domain, e.g.
+                                <code>https://your-domain.com/google/callback</code>)<br>
+                                3. Then click the button below to connect a Google account.
+                            </div>
+
+                            @php
+                                $googleAuthUrl =
+                                    'https://accounts.google.com/o/oauth2/v2/auth' .
+                                    '?client_id=' .
+                                    urlencode(getValuesByKey('google_client_id')) .
+                                    '&redirect_uri=' .
+                                    urlencode(url('/google/callback')) .
+                                    '&response_type=code' .
+                                    '&scope=' .
+                                    urlencode('https://www.googleapis.com/auth/calendar') .
+                                    '&access_type=offline' .
+                                    '&prompt=consent';
+                            @endphp
+
+                            <a href="{{ $googleAuthUrl }}"
+                                class="btn btn-outline-primary btn-lg d-inline-flex align-items-center gap-2"
+                                @if (!getValuesByKey('google_client_id') || !getValuesByKey('google_client_secret')) onclick="event.preventDefault(); alert('Please save Google Client ID and Secret first.');" @endif>
+                                <i class="fab fa-google"></i>
+                                Start Google Verification
+                            </a>
                         </div>
 
                     </div>

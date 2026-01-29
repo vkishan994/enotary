@@ -53,7 +53,14 @@ class UploadDocumentController extends Controller
             ->where('status', 'submitted')
             ->exists();
 
-        return view('front.user.order.upload_document.documents_list', compact('uploadDocuments', 'order_id', 'allUploaded', 'alreadySubmitted'));
+        $rejectedDocuments = VerifyDocument::whereIn('upload_documents_id', $upload_document_ids)
+            ->where('user_id', Auth::id())
+            ->where('order_id', $order_id)
+            ->where('status', 'rejected')
+            ->with('verify_document_items')
+            ->get();
+
+        return view('front.user.order.upload_document.documents_list', compact('uploadDocuments', 'order_id', 'allUploaded', 'alreadySubmitted','rejectedDocuments'));
     }
 
     public function uploadDocument($order_id, $document_id, $upload_document_id)

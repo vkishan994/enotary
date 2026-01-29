@@ -66,6 +66,7 @@ class MeetingController extends Controller
 
     public function update(Request $request, $id)
     {
+   
         $request->validate([
             'status' => 'required|in:approved,rejected,rescheduled',
             'notes'  => 'nullable|string',
@@ -125,7 +126,7 @@ class MeetingController extends Controller
             // -----------------------------
             // REJECTED
             // -----------------------------
-            if ($request->status === 'rejected') {
+            if ($request->status == 'rejected') {
                 $meeting->status       = 'rejected';
                 $meeting->admin_notes  = $request->admin_notes;
             }
@@ -133,12 +134,13 @@ class MeetingController extends Controller
             // -----------------------------
             // RESCHEDULED
             // -----------------------------
-            if ($request->status === 'rescheduled') {
+            if ($request->status == 'rescheduled') {
                 $meeting->status      = 'rescheduled';
                 $meeting->admin_notes = $request->admin_notes;
             }
 
             $meeting->save();
+
 
             // Notify user
             if ($meeting->user?->email) {

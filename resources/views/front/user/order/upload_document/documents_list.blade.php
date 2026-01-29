@@ -54,13 +54,56 @@
                         </button>
                     </form>
                 </div>
-            @elseif(isset($alreadySubmitted) && $alreadySubmitted === true)
+            @elseif(isset($alreadySubmitted) &&
+                    $alreadySubmitted === true &&
+                    (!isset($rejectedDocuments) || $rejectedDocuments->isEmpty()))
                 <div class="alert alert-info d-flex align-items-center">
                     <i class="fa fa-clock me-2"></i>
                     <span>
                         Your documents have submitted for verification and are currently under review
                     </span>
                 </div>
+            @elseif(isset($rejectedDocuments) && $rejectedDocuments->isNotEmpty())
+                <div class="alert alert-danger">
+                    <h5 class="mb-2">
+                        <i class="fa fa-exclamation-circle me-2"></i>
+                        Some of your documents were rejected
+                    </h5>
+
+                    <p class="mb-2">
+                        Please carefully review the admin comments below.
+                        Upload the corrected or missing documents as requested,
+                        and then submit them again for verification.
+                    </p>
+
+                    <p class="mb-3 fw-semibold">
+                        ⚠️ Do not submit again until all requested changes are completed.
+                    </p>
+
+                    <ul class="list-group mb-3">
+                        @foreach ($rejectedDocuments as $rejectedDocument)
+                            <li class="list-group-item">
+                                <strong>{{ $rejectedDocument->uploadedDocument->name }}</strong>
+
+                                <ul class="mt-2">
+                                    <li>
+                                        {{ $rejectedDocument->note ?? 'Please follow the admin instructions for this document.' }}
+                                    </li>
+                                </ul>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+
+                <form action="{{ route('user.submitDocumentForVerification') }}" method="POST" class="ms-3">
+                    @csrf
+                    <input type="hidden" name="order_id" value="{{ encrypt($order_id) }}">
+
+                    <button type="submit" class="btn btn-success">
+                        <i class="fa fa-check-circle me-1"></i>
+                        Submit for Verification
+                    </button>
+                </form>
             @else
                 <div class="alert alert-warning d-flex align-items-center">
                     <i class="fa fa-exclamation-triangle me-2"></i>
