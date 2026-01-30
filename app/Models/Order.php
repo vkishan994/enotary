@@ -30,4 +30,9 @@ class Order extends Model
     {
         return $this->belongsTo(NotaryServiceType::class);
     }
+
+    public function verifyDocuments()
+    {
+        return $this->hasMany(VerifyDocument::class);
+    }
 }

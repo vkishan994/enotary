@@ -122,6 +122,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth:admin']], function () 
     // orders
     Route::get('/orders', [App\Http\Controllers\Admin\OrderController::class, 'index'])->name('admin.orders.index');
     Route::get('/orders-detail/{id}', [App\Http\Controllers\Admin\OrderController::class, 'orderDetial'])->name('admin.orders.detail');
+    Route::get('/orders-show/{id}', [App\Http\Controllers\Admin\OrderController::class, 'orderShow'])->name('admin.orders.show');
     Route::post('/change-doc-status/{id}', [App\Http\Controllers\Admin\OrderController::class, 'changeDocumentStatus'])->name('admin.change.doc.status');
 
     // testimonial

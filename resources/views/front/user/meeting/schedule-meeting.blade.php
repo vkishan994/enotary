@@ -16,6 +16,10 @@
                     <div class="col-6">
                         <h4>Schedule A Meeting</h4>
                     </div>
+
+                    <div class="col-6 text-end">
+                        <a href="{{ route('user.account-dashboard') }}" class="btn back-btn">Back <a>
+                    </div>
                 </div>
             </div>
 

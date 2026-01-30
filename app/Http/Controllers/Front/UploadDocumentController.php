@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\VerifyDocumentItems;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Google\AccessToken\Verify;
 use Illuminate\Support\Facades\Auth;
 
 class UploadDocumentController extends Controller
@@ -60,7 +61,7 @@ class UploadDocumentController extends Controller
             ->with('verify_document_items')
             ->get();
 
-        return view('front.user.order.upload_document.documents_list', compact('uploadDocuments', 'order_id', 'allUploaded', 'alreadySubmitted','rejectedDocuments'));
+        return view('front.user.order.upload_document.documents_list', compact('uploadDocuments', 'order_id','order', 'allUploaded', 'alreadySubmitted','rejectedDocuments'));
     }
 
     public function uploadDocument($order_id, $document_id, $upload_document_id)

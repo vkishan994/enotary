@@ -36,8 +36,10 @@ class OrderController extends Controller
                 ->addColumn('action', function ($row) {
                     if ($row->upload_document_status === 'submitted') {
                         $edit = '<a href="' . route('admin.orders.detail', $row['id']) . '" class="btn rounded-pill btn-icon btn-outline-primary me-2"><i class="bx bxs-edit"></i></a>';
-                        return $edit;
-                    } else {
+                        $edit .= '<a href="' . route('admin.orders.show', $row['id']) . '" class="btn rounded-pill btn-icon btn-outline-primary me-2"><i class="bx bxs-show"></i></a>';
+                        return $edit ;
+                    }
+                   else {
                         return '';
                     }
                 })
@@ -56,6 +58,13 @@ class OrderController extends Controller
         return view('admin.orders.order_detial', compact('order', 'uploadedDocuments'));
     }
 
+    public function orderShow($id)
+    {
+        $order = Order::with(['user', 'document', 'notaryServiceType'])->findOrFail($id);
+        $uploadedDocuments = VerifyDocument::with('verify_document_items')->where('order_id', $id)->get();
+        return view('admin.orders.order_show', compact('order', 'uploadedDocuments'));
+    }
+
 
     public function changeDocumentStatus($id, Request $request)
     {
@@ -69,6 +78,22 @@ class OrderController extends Controller
             $document->save();
 
             $document_item = VerifyDocumentItems::where('verify_document_id', $id)->update(['status' => $request->status]);
+
+            $order = Order::findOrFail($document->order_id);
+
+            // Total documents required for this order
+            $totalDocuments = $order->verifyDocuments()->count();
+
+            // Total verified documents
+            $verifiedDocuments = $order->verifyDocuments()
+                ->where('status', 'verified')
+                ->count();
+
+            // If all documents are verified
+            if ($totalDocuments > 0 && $totalDocuments === $verifiedDocuments) {
+                $order->upload_document_status = 'verified';
+                $order->save();
+            }
 
             DB::commit();
 

@@ -434,7 +434,12 @@ title {
   max-width: 480px;
   margin: 0 auto;
 }
-
+.signup-section .signup-image-wrapper .img-fluid {
+    height: 100vh;
+    width: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
 .signup-section .signup-form-wrapper .login-header {
   text-align: center;
   margin-bottom: 40px;
@@ -534,7 +539,10 @@ title {
   z-index: 1;
   background: #ffffff;
 }
-
+.footer-section .logo-sec img,
+.dashboard-header .logo-sec {
+    width: 180px;
+}
 .dashboard-header .container-fluid {
   padding: 20px 180px 20px 100px;
 }
@@ -559,7 +567,7 @@ aside.sidebar {
   width: 340px;
   background: #34394c;
   height: 100vh;
-  top: 156px;
+  top: 113px;
 }
 
 aside.sidebar .navbar-nav .nav-link {
@@ -582,7 +590,7 @@ aside.sidebar .navbar-nav .nav-link {
   position: relative;
   background: #eaeaea;
   margin-left: 340px;
-  padding: 200px 180px 40px 40px;
+  padding: 160px 40px 40px 40px;
 }
 
 .main-content .section-title h2 {

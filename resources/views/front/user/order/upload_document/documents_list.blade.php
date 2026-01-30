@@ -104,6 +104,13 @@
                         Submit for Verification
                     </button>
                 </form>
+            @elseif($order->upload_document_status === 'verified')
+                <div class="alert alert-success d-flex align-items-center">
+                    <i class="fa fa-check-circle me-2"></i>
+                    <span>
+                        All your documents have been verified successfully.
+                    </span>
+                </div>
             @else
                 <div class="alert alert-warning d-flex align-items-center">
                     <i class="fa fa-exclamation-triangle me-2"></i>

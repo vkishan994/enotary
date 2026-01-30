@@ -98,7 +98,7 @@
     <!-- Main content start -->
     <main class="main-content">
 
-        <div class="document-upload document-pending" style="overflow: hidden;height: 500px;overflow-y: auto; @if(isset($userUploadedDocuments) && $userUploadedDocuments->status == 'submitted') height: 500px; @else height: unset; @endif">
+        <div class="document-upload document-pending" style="overflow: hidden;height: 500px !important;overflow-y: auto; @if(isset($userUploadedDocuments) && $userUploadedDocuments->status == 'submitted') height: 500px; @else height: unset; @endif">
             <div class="section-title">
                 <div class="row">
                     <div class="col-6">
@@ -113,7 +113,7 @@
 
             <!-- Dropzone -->
 
-            @if (isset($userUploadedDocuments) && $userUploadedDocuments->status !== 'submitted' || !isset($userUploadedDocuments))
+            @if (isset($userUploadedDocuments) && $userUploadedDocuments->status !== 'submitted' && $userUploadedDocuments->status !== 'verified' || !isset($userUploadedDocuments))
                 <div class="upload-document-section mt-4">
                     <form
                         action="{{ route('user.storeUploadDocument', ['order_id' => $order_id, 'document_id' => $document_id, 'upload_document_id' => encrypt($uploadDocument->id)]) }}"
@@ -164,7 +164,7 @@
                                         <i class="fas fa-download"></i>
                                     </a>
 
-                                    @if ($item->status !== 'submitted')
+                                    @if ($item->status !== 'submitted' && $item->status !== 'verified')
                                         <button type="button" class="btn-delete delete-uploaded-file action-btn"
                                             data-file-id="{{ encrypt($item->id) }}" title="Delete">
                                             <i class="fas fa-trash"></i>
