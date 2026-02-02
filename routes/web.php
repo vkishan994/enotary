@@ -2,15 +2,16 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\VeriffController;
 use App\Http\Controllers\Front\UserController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\StripeWebhookController;
-use App\Http\Controllers\Admin\MyProfileController;
 use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\Admin\MyProfileController;
 use App\Http\Controllers\Admin\TwoFactorController;
 use App\Http\Controllers\Admin\TestimonialController;
-use App\Http\Controllers\Front\ScheduleMeetingController;
 use App\Http\Controllers\Front\UploadDocumentController;
+use App\Http\Controllers\Front\ScheduleMeetingController;
 
 Auth::routes(['verify' => true]);
 Route::get('/', [App\Http\Controllers\Front\FrontPagesController::class, 'index'])->name('fronthomepage');
@@ -80,6 +81,13 @@ Route::group(['prefix' => 'user', 'as' => 'user.', 'middleware' => ['auth', 'ver
     Route::get('/schedule-meeting/{order_id}', [ScheduleMeetingController::class, 'scheduleMeetingForm'])
         ->name('scheduleMeetingForm');
     Route::post('/schedule-meeting', [ScheduleMeetingController::class, 'store'])->name('schedule.meeting.store');
+
+
+    Route::get('/verification/{order_id}', [VeriffController::class, 'verificationPage'])
+        ->name('verification.page');
+
+    Route::post('/start-verification/{order_id}', [VeriffController::class, 'startVerification'])
+        ->name('veriff.start');
 });
 
 // Route::post('/', [MyProfileController::class, 'updateProfile'])->name('admin.update.profile');
@@ -155,3 +163,6 @@ Route::post('/terminal', [App\Http\Controllers\Front\TermicalController::class, 
 Route::post('/webhook/stripe', [StripeWebhookController::class, 'handle']);
 
 Route::get('/google/callback', [SettingsController::class, 'googleCallback'])->name('google.callback');
+
+Route::any('/veriff/callback', [VeriffController::class, 'callback'])
+    ->name('veriff.callback');

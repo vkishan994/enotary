@@ -48,6 +48,13 @@
                                 Google OAuth
                             </button>
                         </li>
+
+                        <li class="nav-item">
+                            <button class="nav-link" id="veriff-tab" data-bs-toggle="tab" data-bs-target="#veriff"
+                                type="button" role="tab">
+                                Veriff Settings
+                            </button>
+                        </li>
                     </ul>
 
                     <!-- Tab Content -->
@@ -178,6 +185,40 @@
                                 <i class="fab fa-google"></i>
                                 Start Google Verification
                             </a>
+                        </div>
+
+                        <!-- Veriff Settings -->
+                        <div class="tab-pane fade" id="veriff" role="tabpanel">
+
+                            <form action="{{ route('admin.settings.store') }}" method="post">
+                                @csrf
+                                <div class="row">
+                                    <input type="hidden" name="module_name" value="veriff">
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">API Key</label>
+                                        <input type="text" name="veriff_api_key" class="form-control"
+                                            placeholder="pk_live_..."
+                                            value="{{ getValuesByKey('veriff_api_key') ?? '' }}">
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">API Secret Key</label>
+                                        <input type="text" name="veriff_secret_key" class="form-control"
+                                            placeholder="sk_live_..."
+                                            value="{{ getValuesByKey('veriff_secret_key') ?? '' }}">
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">API Base URL</label>
+                                        <input type="text" name="veriff_base_url" class="form-control"
+                                            placeholder="https://api.veriff.com"
+                                            value="{{ getValuesByKey('veriff_base_url') ?? '' }}">
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">Save Veriff Settings</button>
+                            </form>
                         </div>
 
                     </div>
