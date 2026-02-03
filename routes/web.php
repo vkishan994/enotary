@@ -6,6 +6,7 @@ use App\Http\Controllers\VeriffController;
 use App\Http\Controllers\Front\UserController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\StripeWebhookController;
+use App\Http\Controllers\VeriffWebhookController;
 use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\MyProfileController;
 use App\Http\Controllers\Admin\TwoFactorController;
@@ -88,6 +89,8 @@ Route::group(['prefix' => 'user', 'as' => 'user.', 'middleware' => ['auth', 'ver
 
     Route::post('/start-verification/{order_id}', [VeriffController::class, 'startVerification'])
         ->name('veriff.start');
+
+
 });
 
 // Route::post('/', [MyProfileController::class, 'updateProfile'])->name('admin.update.profile');
@@ -164,5 +167,8 @@ Route::post('/webhook/stripe', [StripeWebhookController::class, 'handle']);
 
 Route::get('/google/callback', [SettingsController::class, 'googleCallback'])->name('google.callback');
 
-Route::any('/veriff/callback', [VeriffController::class, 'callback'])
-    ->name('veriff.callback');
+ Route::any('/veriff/callback/{order_id}', [VeriffController::class, 'callback'])
+        ->name('veriff.callback');
+
+Route::post('/veriff/webhook', [VeriffWebhookController::class, 'handle'])
+    ->name('veriff.webhook');

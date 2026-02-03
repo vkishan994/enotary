@@ -16,6 +16,7 @@ class VeriffData extends Model
         'veriff_reason',
         'veriff_verified_at',
         'payload',
+        'order_id'
     ];
 
     protected $casts = [

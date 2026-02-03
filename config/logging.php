@@ -133,6 +133,12 @@ return [
             'level' => 'info',
         ],
 
+        'veriff' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/veriff.log'),
+            'level' => 'info',
+        ],
+
     ],
 
 ];

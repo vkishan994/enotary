@@ -14,6 +14,10 @@ return new class extends Migration
         Schema::create('veriff_data', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('order_id')
+                ->nullable()
+                ->constrained()
+                ->cascadeOnDelete();
 
             $table->string('session_id')->unique();
             $table->uuid('end_user_id')->nullable();

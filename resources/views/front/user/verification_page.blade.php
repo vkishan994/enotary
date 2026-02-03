@@ -8,7 +8,7 @@
         <div class="document-pending">
             <div class="section-title">
                 <h4>Identity Verification</h4>
-                <p class="text-muted mt-1">
+                <p class="text-muted mt-1 mb-2">
                     To continue with notarization, please verify your identity.
                     This process takes 2–3 minutes.
                 </p>
