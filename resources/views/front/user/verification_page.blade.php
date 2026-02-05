@@ -6,12 +6,21 @@
     <!-- Main content start -->
     <main class="main-content">
         <div class="document-pending">
+
             <div class="section-title">
-                <h4>Identity Verification</h4>
+                <div class="row">
+                    <div class="col-6">
+                        <h4>Identity Verification</h4>
+                    </div>
+                    <div class="col-6 text-end">
+                        <a href="{{ route('user.account-dashboard') }}" class="btn back-btn">Back <a>
+                    </div>
+                </div>
                 <p class="text-muted mt-1 mb-2">
                     To continue with notarization, please verify your identity.
                     This process takes 2–3 minutes.
                 </p>
+
             </div>
 
             <x-alert type="success" :message="session('success')" />
@@ -46,17 +55,29 @@
                                     <span class="badge bg-success">
                                         <i class="fa fa-check-circle me-1"></i> Verified
                                     </span>
-                                @elseif ($status === 'started')
+                                @elseif (in_array($status, ['started', 'submitted']))
                                     <span class="badge bg-warning text-dark">
                                         <i class="fa fa-clock me-1"></i> Verification in progress
                                     </span>
-                                @elseif ($status === 'rejected')
+                                @elseif ($status === 'resubmission_requested')
+                                    <span class="badge bg-info text-dark">
+                                        <i class="fa fa-redo me-1"></i> Action required
+                                    </span>
+                                @elseif (in_array($status, ['declined']))
                                     <span class="badge bg-danger">
                                         <i class="fa fa-times-circle me-1"></i> Verification failed
                                     </span>
+                                @elseif (in_array($status, ['expired', 'abandoned']))
+                                    <span class="badge bg-secondary">
+                                        <i class="fa fa-ban me-1"></i> Verification expired
+                                    </span>
+                                @elseif ($status === 'created')
+                                    <span class="badge bg-light text-dark">
+                                        <i class="fa fa-info-circle me-1"></i> Not started
+                                    </span>
                                 @else
                                     <span class="badge bg-secondary">
-                                        <i class="fa fa-info-circle me-1"></i> Not verified
+                                        <i class="fa fa-question-circle me-1"></i> Not started
                                     </span>
                                 @endif
                             </div>
@@ -85,11 +106,18 @@
 
                     {{-- Info box --}}
                     <div class="alert alert-info mt-4">
-                        <strong>What you’ll need:</strong>
+                        <strong>What you’ll need to complete verification:</strong>
                         <ul class="mb-0 mt-2">
-                            <li>A valid government-issued ID</li>
-                            <li>A device with a camera</li>
-                            <li>Stable internet connection</li>
+                            <li>A valid government-issued ID (passport, driving licence, or national ID)</li>
+                            <li>
+                                A device with a working camera
+                                <br>
+                                <small class="text-muted">
+                                    (Mobile phone recommended. If you’re on a desktop without a camera, please open the link
+                                    on your phone.)
+                                </small>
+                            </li>
+                            <li>A stable internet connection</li>
                         </ul>
                     </div>
 

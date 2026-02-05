@@ -156,6 +156,11 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth:admin']], function () 
 
     // Route::get('/google/callback', [SettingsController::class, 'handleGoogleCallback'])
     //     ->name('admin.google.callback');
+
+    // for veriff data verification
+    Route::get('/ekyc-verification', [App\Http\Controllers\Admin\VeriffDataController::class, 'index'])->name('admin.veriffdata.index');
+    Route::get('/ekyc-verification/{id}', [App\Http\Controllers\Admin\VeriffDataController::class, 'show'])->name('admin.veriffdata.show');
+
 });
 
 

@@ -1,6 +1,6 @@
 @extends('admin.layouts.common')
 
-@section('content')
+@section('css')
     <style>
         .document-group {
             background: #fff;
@@ -76,9 +76,18 @@
             }
         }
     </style>
-    <h4 class="py-3 mb-4">
-        <span class="text-muted fw-light">Orders /</span> Order Details
-    </h4>
+@endsection
+
+@section('content')
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <h4 class="page-title mb-0">
+            <span class="text-muted fw-light">Orders /</span> Order Details
+        </h4>
+
+        <a href="{{ route('admin.orders.index') }}" class="btn btn-sm btn-outline-secondary">
+            <i class="bx bx-left-arrow-alt"></i> Back
+        </a>
+    </div>
 
     <x-alert type="success" :message="session('success')" />
     <x-alert type="danger" :message="session('error')" />
@@ -185,8 +194,6 @@
                                             </div>
                                         @endif
 
-
-
                                         <!-- Save Button -->
                                         <button type="submit" class="btn btn-success btn-sm px-3">
                                             Save
@@ -194,8 +201,6 @@
 
                                     </div>
                                 </form>
-
-
 
                             </div>
 

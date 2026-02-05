@@ -8,12 +8,14 @@ use Illuminate\Http\Request;
 use App\Services\ImageUpload;
 use App\Models\UploadDocument;
 use App\Models\VerifyDocument;
+use Google\AccessToken\Verify;
 use Illuminate\Support\Facades\DB;
 use App\Models\VerifyDocumentItems;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use Google\AccessToken\Verify;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\DocumentVerificationRequestMail;
 
 class UploadDocumentController extends Controller
 {
@@ -61,7 +63,7 @@ class UploadDocumentController extends Controller
             ->with('verify_document_items')
             ->get();
 
-        return view('front.user.order.upload_document.documents_list', compact('uploadDocuments', 'order_id','order', 'allUploaded', 'alreadySubmitted','rejectedDocuments'));
+        return view('front.user.order.upload_document.documents_list', compact('uploadDocuments', 'order_id', 'order', 'allUploaded', 'alreadySubmitted', 'rejectedDocuments'));
     }
 
     public function uploadDocument($order_id, $document_id, $upload_document_id)
@@ -251,6 +253,16 @@ class UploadDocumentController extends Controller
             }
 
             Order::where('id', $order_id)->update(['upload_document_status' => 'submitted']);
+
+            $adminEmails = getValuesByKey('admin_email') ?? 'admin@gmail.com';
+
+            Mail::to($adminEmails)->send(
+                new DocumentVerificationRequestMail(
+                    Auth::user(),
+                    $order,
+                    $uploadedDocs
+                )
+            );
 
             DB::commit();
 

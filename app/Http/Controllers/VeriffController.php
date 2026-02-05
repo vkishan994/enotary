@@ -46,10 +46,14 @@ class VeriffController extends Controller
             //  Create verification session
             $endUserId = (string) Str::uuid();
 
+            $callbackBaseUrl = !empty(env('NGROKURL'))
+                ? rtrim(env('NGROKURL'), '/')
+                : rtrim(config('app.url'), '/');
+
+            $callbackUrl = $callbackBaseUrl . '/veriff/callback/' . $order_id;
+
             $response = $veriffService->createSession([
-                'callback'   => app()->environment('local')
-                    ? env('NGROKURL') . '/veriff/callback/' . $order_id
-                    : rtrim(config('app.url'), '/') . '/veriff/callback/' . $order_id,
+                'callback'   =>  $callbackUrl,
                 'vendorData' => (string) $orderid,         // original order ID
                 'endUserId'  => $endUserId,
                 'first_name' => $user->first_name,

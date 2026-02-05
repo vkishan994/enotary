@@ -7,9 +7,11 @@ use App\Models\Order;
 use Illuminate\Http\Request;
 use App\Models\VerifyDocument;
 use Illuminate\Support\Facades\DB;
+use App\Models\VerifyDocumentItems;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use App\Models\VerifyDocumentItems;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\DocumentVerificationMail;
 
 class OrderController extends Controller
 {
@@ -37,9 +39,8 @@ class OrderController extends Controller
                     if ($row->upload_document_status === 'submitted') {
                         $edit = '<a href="' . route('admin.orders.detail', $row['id']) . '" class="btn rounded-pill btn-icon btn-outline-primary me-2"><i class="bx bxs-edit"></i></a>';
                         $edit .= '<a href="' . route('admin.orders.show', $row['id']) . '" class="btn rounded-pill btn-icon btn-outline-primary me-2"><i class="bx bxs-show"></i></a>';
-                        return $edit ;
-                    }
-                   else {
+                        return $edit;
+                    } else {
                         return '';
                     }
                 })
@@ -94,6 +95,15 @@ class OrderController extends Controller
                 $order->upload_document_status = 'verified';
                 $order->save();
             }
+
+            Mail::to($order->user->email)->send(
+                new DocumentVerificationMail(
+                    $order->user,
+                    $document,
+                    $request->status,
+                    $request->rejection_note ?? null
+                )
+            );
 
             DB::commit();
 
