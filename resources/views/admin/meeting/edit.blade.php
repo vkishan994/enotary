@@ -96,6 +96,12 @@
                                         </option>
                                     @endif
 
+                                    @if ($meeting->status == 'approved')
+                                        <option value="verified" {{ $meeting->status === 'verified' ? 'selected' : '' }}>
+                                            Verified
+                                        </option>
+                                    @endif
+
                                     <option value="rescheduled" {{ $meeting->status === 'rescheduled' ? 'selected' : '' }}>
                                         Reschedule
                                     </option>

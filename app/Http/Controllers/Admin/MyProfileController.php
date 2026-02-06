@@ -2,19 +2,21 @@
 
 namespace App\Http\Controllers\Admin;
 
+use Carbon\Carbon;
 use Stripe\Stripe;
 use App\Models\Admin;
 use App\Models\Order;
 use App\Models\Document;
 use Illuminate\Http\Request;
 use App\Services\StripeClass;
+use App\Models\ScheduleMeeting;
 use App\Rules\MatchOldPassword;
 use App\Models\NotaryServiceType;
+use PragmaRX\Google2FA\Google2FA;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
-use PragmaRX\Google2FA\Google2FA;
 
 class MyProfileController extends Controller
 {
@@ -131,8 +133,18 @@ class MyProfileController extends Controller
     public function accountDashboard(Request $request)
     {
         $user = Auth::user();
-        $orders = Order::where('user_id',$user->id)->where('payment_status','completed')->get();
-        return view('front.dashboard', compact('user','orders'));
+        $orders = Order::where('user_id', $user->id)->where('payment_status', 'completed')->get();
+        $upcomingMeetings = ScheduleMeeting::where('user_id', $user->id)
+            ->whereRaw(
+                "STR_TO_DATE(CONCAT(meeting_date, ' ', meeting_time), '%Y-%m-%d %H:%i:%s') > ?",
+                [Carbon::now()]
+            )
+            ->orderByRaw("STR_TO_DATE(CONCAT(meeting_date, ' ', meeting_time), '%Y-%m-%d %H:%i:%s') ASC")
+            ->where('status', 'approved')
+            ->where('calender_meeting_status', 'approved')
+            ->get();
+        
+        return view('front.dashboard', compact('user', 'orders', 'upcomingMeetings'));
     }
 
 

@@ -35,4 +35,9 @@ class Order extends Model
     {
         return $this->hasMany(VerifyDocument::class);
     }
+
+    public function getNotaryServiceType()
+    {
+        return $this->belongsTo(NotaryServiceType::class, 'notary_service_type_id', 'id');
+    }
 }

@@ -14,7 +14,7 @@
             <table class="datatables-ajax table table-bordered" id="ordersTable">
                 <thead>
                     <tr>
-                        <th>#</th>
+                        <th>Order Id</th>
                         <th>User Name</th>
                         <th>Email</th>
                         <th>Document</th>
@@ -38,10 +38,8 @@
                     serverSide: true,
                     ajax: "{{ route('admin.orders.index') }}",
                     columns: [{
-                            data: 'DT_RowIndex',
-                            name: 'DT_RowIndex',
-                            orderable: false,
-                            searchable: false
+                            data: 'id',
+                            name: 'id',
                         },
                         {
                             data: 'user_name',

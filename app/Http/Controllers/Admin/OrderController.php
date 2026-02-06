@@ -21,7 +21,9 @@ class OrderController extends Controller
             $data = Order::with(['user', 'document', 'notaryServiceType'])->latest()->get();
 
             return Datatables::of($data)
-                ->addIndexColumn()
+                ->addColumn('id',  fn($row) => $row->id)
+
+                // ->addIndexColumn()
                 ->addColumn('user_name', fn($row) => $row->user->first_name . ' ' . $row->user->last_name ?? 'N/A')
                 ->addColumn('user_email', fn($row) => $row->user->email ?? 'N/A')
                 ->addColumn('document', fn($row) => $row->document->name ?? 'N/A')
@@ -40,6 +42,9 @@ class OrderController extends Controller
                         $edit = '<a href="' . route('admin.orders.detail', $row['id']) . '" class="btn rounded-pill btn-icon btn-outline-primary me-2"><i class="bx bxs-edit"></i></a>';
                         $edit .= '<a href="' . route('admin.orders.show', $row['id']) . '" class="btn rounded-pill btn-icon btn-outline-primary me-2"><i class="bx bxs-show"></i></a>';
                         return $edit;
+                    } elseif ($row->upload_document_status === 'verified') {
+                        $show = '<a href="' . route('admin.orders.show', $row['id']) . '" class="btn rounded-pill btn-icon btn-outline-primary me-2"><i class="bx bxs-show"></i></a>';
+                        return $show;
                     } else {
                         return '';
                     }

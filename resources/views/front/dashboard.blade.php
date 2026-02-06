@@ -1,4 +1,79 @@
 @extends('front.layouts.common')
+@section('css')
+    <style>
+        .upcoming-appointment {
+            padding: 14px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            background-color: #f9fafb;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .appointment-details {
+            flex: 1;
+        }
+
+        .appointment-time {
+            font-size: 14px;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+
+        .appointment-time span {
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .meeting-url {
+            font-size: 13px;
+            color: #374151;
+            word-break: break-all;
+        }
+
+        .meeting-url span {
+            font-weight: 600;
+            margin-right: 4px;
+        }
+
+        .meeting-url a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        .meeting-url a:hover {
+            text-decoration: underline;
+        }
+
+        .meeting-link-btn {
+            font-size: 13px;
+            font-weight: 600;
+            color: #ffffff;
+            background-color: #2563eb;
+            padding: 8px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            white-space: nowrap;
+        }
+
+        .meeting-link-btn:hover {
+            background-color: #1e40af;
+        }
+
+        .service-type {
+            font-size: 13px;
+            color: #374151;
+            margin-bottom: 6px;
+        }
+
+        .service-type span {
+            font-weight: 600;
+            margin-right: 4px;
+        }
+    </style>
 @section('content')
 
     @include('front.layouts.dashboard.sidebar')
@@ -11,11 +86,75 @@
         <div class="document-upcoming">
             <div class="row">
                 <div class="col-lg-6">
-                    <div class="document-card">
-                        <h4>No upcoming appointments</h4>
-                        <p>There are currently no sessions booked. </p>
-                        <p>Please schedule a new one if needed.</p>
-                    </div>
+                    @if ($upcomingMeetings->count() > 0)
+                        <div class="document-card">
+                            <h4>Upcoming Appointments</h4>
+                            @foreach ($upcomingMeetings as $meeting)
+                                @php
+                                    $meetingDateTime = Carbon\Carbon::createFromFormat(
+                                        'Y-m-d H:i:s',
+                                        $meeting->meeting_date . ' ' . $meeting->meeting_time,
+                                        config('app.timezone'),
+                                    );
+
+                                    $linkStartTime = $meetingDateTime->copy()->subHours(3);
+                                    $linkEndTime = $meetingDateTime->copy()->addMinutes(30);
+
+                                    $canJoinMeeting = now(config('app.timezone'))->between(
+                                        $linkStartTime,
+                                        $linkEndTime,
+                                    );
+                                @endphp
+
+
+                                <div class="upcoming-appointment">
+                                    <div class="appointment-details">
+                                        <div class="appointment-time">
+                                            <strong>
+                                                {{ $meetingDateTime->format('F j, Y') }}
+                                            </strong>
+                                            <span>
+                                                at {{ $meetingDateTime->format('g:i A') }}
+                                            </span>
+                                        </div>
+
+                                        <div class="service-type">
+                                            <span>ENotary Service:</span>
+                                            <strong>{{ $meeting->order->document->name ?? 'N/A' }}</strong>
+                                        </div>
+
+                                        @if ($canJoinMeeting)
+                                            <div class="meeting-url">
+                                                <span>Meeting Link:</span>
+                                                <a href="{{ $meeting->google_meet_link }}" target="_blank">
+                                                    {{ $meeting->google_meet_link }}
+                                                </a>
+                                            </div>
+
+                                            <div class="meeting-note text-warning mt-1">
+                                                <small>
+                                                    ⚠️ Please join the meeting at the scheduled time.
+                                                    If you do not join, the meeting will be cancelled.
+                                                </small>
+                                            </div>
+                                        @endif
+                                    </div>
+
+                                    @if ($canJoinMeeting)
+                                        <a href="{{ $meeting->google_meet_link }}" target="_blank" class="meeting-link-btn">
+                                            Join Google Meet
+                                        </a>
+                                    @endif
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="document-card">
+                            <h4>No upcoming appointments</h4>
+                            <p>There are currently no sessions booked. </p>
+                            <p>Please schedule a new one if needed.</p>
+                        </div>
+                    @endif
                 </div>
                 <div class="col-lg-6">
                     <div class="document-card">

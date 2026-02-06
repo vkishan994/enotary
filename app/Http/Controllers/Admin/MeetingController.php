@@ -37,8 +37,13 @@ class MeetingController extends Controller
                     return meetingStatus($row->status);
                 })
                 ->addColumn('action', function ($row) {
-                    $edit = '<a href="' . route('admin.schedule.meetings.edit', $row->id) . '" class="btn rounded-pill btn-icon btn-outline-primary me-2"><i class="bx bxs-edit"></i></a>';
-                    return $edit;
+                    if ($row->status == 'verified') {
+                        $edit = '<a href="' . route('admin.meeting.show', $row->id) . '" class="btn rounded-pill btn-icon btn-outline-primary me-2"><i class="bx bxs-show"></i></a>';
+                        return $edit;
+                    } else {
+                        $edit = '<a href="' . route('admin.schedule.meetings.edit', $row->id) . '" class="btn rounded-pill btn-icon btn-outline-primary me-2"><i class="bx bxs-edit"></i></a>';
+                        return $edit;
+                    }
                 })
                 ->rawColumns(['action', 'user_name', 'user_email', 'status'])
                 ->make(true);
@@ -64,11 +69,17 @@ class MeetingController extends Controller
         return response()->json($events);
     }
 
+    public function show($id)
+    {
+        $meeting = ScheduleMeeting::with('user')->findOrFail($id);
+        return view('admin.meeting.show', compact('meeting'));
+    }
+
     public function update(Request $request, $id)
     {
-   
+
         $request->validate([
-            'status' => 'required|in:approved,rejected,rescheduled',
+            'status' => 'required|in:approved,rejected,rescheduled,verified',
             'notes'  => 'nullable|string',
         ]);
 
@@ -121,6 +132,7 @@ class MeetingController extends Controller
                 $meeting->calendar_link    = $event['htmlLink'] ?? null;
                 $meeting->calender_meeting_status  = 'approved';
                 $meeting->status  = 'approved';
+                $meeting->admin_notes  = null;
             }
 
             // -----------------------------
@@ -137,6 +149,14 @@ class MeetingController extends Controller
             if ($request->status == 'rescheduled') {
                 $meeting->status      = 'rescheduled';
                 $meeting->admin_notes = $request->admin_notes;
+            }
+
+            // -----------------------------
+            // VERIFIED
+            // -----------------------------
+            if ($request->status == 'verified') {
+                $meeting->status      = 'verified';
+                $meeting->admin_notes = null;
             }
 
             $meeting->save();
