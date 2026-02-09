@@ -11,10 +11,12 @@
             justify-content: space-between;
             align-items: flex-start;
             gap: 12px;
+            flex-wrap: wrap;
         }
 
         .appointment-details {
             flex: 1;
+            min-width: 0;
         }
 
         .appointment-time {
@@ -31,7 +33,8 @@
         .meeting-url {
             font-size: 13px;
             color: #374151;
-            word-break: break-all;
+            overflow-wrap: anywhere;
+            word-break: break-word;
         }
 
         .meeting-url span {
@@ -42,6 +45,8 @@
         .meeting-url a {
             color: #2563eb;
             text-decoration: none;
+            max-width: 100%;
+            display: inline-block;
         }
 
         .meeting-url a:hover {
@@ -123,27 +128,24 @@
                                             <strong>{{ $meeting->order->document->name ?? 'N/A' }}</strong>
                                         </div>
 
-                                        @if ($canJoinMeeting)
-                                            <div class="meeting-url">
-                                                <span>Meeting Link:</span>
-                                                <a href="{{ $meeting->google_meet_link }}" target="_blank">
-                                                    {{ $meeting->google_meet_link }}
-                                                </a>
-                                            </div>
 
-                                            <div class="meeting-note text-warning mt-1">
-                                                <small>
-                                                    ⚠️ Please join the meeting at the scheduled time.
-                                                    If you do not join, the meeting will be cancelled.
-                                                </small>
-                                            </div>
-                                        @endif
                                     </div>
 
                                     @if ($canJoinMeeting)
-                                        <a href="{{ $meeting->google_meet_link }}" target="_blank" class="meeting-link-btn">
-                                            Join Google Meet
-                                        </a>
+                                        <div class="d-flex flex-column align-items-end" style="min-width:140px;">
+                                            <a class="meeting-link-btn" href="{{ $meeting->google_meet_link }}" target="_blank">Join Meeting</a>
+                                            <div class="meeting-note text-warning mt-2 text-end">
+                                                <small>
+                                                    ⚠️ Please join the meeting at the scheduled time. If you do not join, the meeting will be cancelled.
+                                                </small>
+                                            </div>
+                                        </div>
+                                    @else
+                                        <div class="meeting-note text-muted mt-2">
+                                            <small>
+                                                ⏳ The Google Meet link will be displayed here shortly before the scheduled meeting time.
+                                            </small>
+                                        </div>
                                     @endif
                                 </div>
                             @endforeach

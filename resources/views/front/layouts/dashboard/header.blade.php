@@ -39,7 +39,22 @@
                     </div>
                 </div>
                 <div class="col-6">
+                    <a href="#" data-bs-toggle="dropdown">
+                        🔔
+                        <span class="badge bg-danger">1</span>
+                    </a>
+
+                    <div class="dropdown-menu dropdown-menu-end">
+                        <a href="" class="dropdown-item">
+                            <strong>aaa</strong><br>
+                            <small>message</small><br>
+                            <small class="text-muted">
+                            </small>
+                        </a>
+                        <span class="dropdown-item text-muted">No notifications</span>
+                    </div>
                     <div class="d-flex justify-content-end">
+
                         <div class="profile dropdown">
                             <a href="#" class="d-flex align-items-center text-decoration-none"
                                 data-bs-toggle="dropdown" aria-expanded="false">
@@ -48,6 +63,8 @@
                                 <img src="{{ asset('front/img/home/down-icon.png') }}" alt="Profile"
                                     class="rounded-circle mx-2">
                             </a>
+
+
                             <ul class="dropdown-menu dropdown-menu-end shadow">
                                 <li>
                                     <div class="dropdown-header">

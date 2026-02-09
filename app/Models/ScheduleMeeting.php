@@ -15,6 +15,7 @@ class ScheduleMeeting extends Model
         'google_event_id',
         'admin_notes',
         'status',
+        'reminder_sent_at'
     ];
 
     public function user()

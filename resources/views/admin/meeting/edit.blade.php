@@ -4,9 +4,16 @@
     <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet">
 @endsection
 @section('content')
-    <h4 class="py-3 mb-4">
-        <span class="text-muted fw-light">Schedule Meetings /</span> Meeting Details
-    </h4>
+
+    <div class="d-flex align-items-center justify-content-between mb-4">
+        <h4 class="page-title mb-0">
+            <span class="text-muted fw-light">Schedule Meetings /</span> Meeting Details
+        </h4>
+
+        <a href="{{ route('admin.schedule.meetings.index') }}" class="btn btn-sm btn-outline-secondary">
+            <i class="bx bx-left-arrow-alt"></i> Back
+        </a>
+    </div>
 
     <x-alert type="success" :message="session('success')" />
     <x-alert type="danger" :message="session('error')" />

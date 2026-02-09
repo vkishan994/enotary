@@ -70,6 +70,13 @@
             max-width: 420px;
         }
 
+        .btn-success {
+            color: #fff;
+            background-color: #696cff;
+            border-color: #696cff;
+            box-shadow: 0 0.125rem 0.25rem 0 rgba(113, 221, 55, 0.4);
+        }
+
         @media (max-width: 768px) {
             .rejection-note {
                 width: 100%;
