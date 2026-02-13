@@ -143,8 +143,16 @@ class MyProfileController extends Controller
             ->where('status', 'approved')
             ->where('calender_meeting_status', 'approved')
             ->get();
-        
-        return view('front.dashboard', compact('user', 'orders', 'upcomingMeetings'));
+
+        $notifications = auth()->user()
+            ->unreadNotifications()
+            ->latest()
+            ->take(10)
+            ->get();
+
+        $unreadCount = auth()->user()->unreadNotifications()->count();
+
+        return view('front.dashboard', compact('user', 'orders', 'upcomingMeetings', 'notifications', 'unreadCount'));
     }
 
 

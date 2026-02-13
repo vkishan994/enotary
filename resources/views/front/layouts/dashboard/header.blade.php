@@ -39,21 +39,68 @@
                     </div>
                 </div>
                 <div class="col-6">
-                    <a href="#" data-bs-toggle="dropdown">
-                        🔔
-                        <span class="badge bg-danger">1</span>
-                    </a>
+                    <div class="d-flex justify-content-end align-items-center gap-3">
 
-                    <div class="dropdown-menu dropdown-menu-end">
-                        <a href="" class="dropdown-item">
-                            <strong>aaa</strong><br>
-                            <small>message</small><br>
-                            <small class="text-muted">
-                            </small>
-                        </a>
-                        <span class="dropdown-item text-muted">No notifications</span>
-                    </div>
-                    <div class="d-flex justify-content-end">
+                        <!-- Notification Bell FIRST -->
+                        <div class="dropdown notification-dropdown">
+                            <a href="#" class="notification-icon" data-bs-toggle="dropdown">
+                                <i class="fa fa-bell"></i>
+
+                                @if ($unreadCount > 0)
+                                    <span class="notification-badge">
+                                        {{ $unreadCount }}
+                                    </span>
+                                @endif
+                            </a>
+
+                            <div class="dropdown-menu dropdown-menu-end notification-menu">
+                                <div class="notification-header d-flex justify-content-between align-items-center">
+                                    <span>Notifications</span>
+
+                                    @if ($unreadCount > 0)
+                                        <form method="POST" action="{{ route('user.notifications.markAllRead') }}">
+                                            @csrf
+                                            <button class="btn btn-primary btn-sm">
+                                                Mark all as read
+                                            </button>
+                                        </form>
+                                    @endif
+                                </div>
+
+                                @forelse($notifications as $notification)
+                                    <div class="notification-item d-flex justify-content-between align-items-start">
+                                        <div class="flex-grow-1">
+                                            <strong>{{ $notification->data['title'] }}</strong>
+                                            <p>{{ $notification->data['message'] }}</p>
+                                        </div>
+                                        <div class="flex-shrink-0">
+                                            <form method="POST"
+                                                action="{{ route('user.notifications.markRead', $notification->id) }}"
+                                                style="display: inline;">
+                                                @csrf
+                                                <button type="submit"
+                                                    class="border-0 bg-transparent p-0"
+                                                    title="Mark as read"
+                                                    style="cursor: pointer;">
+                                                    <i class="fa fa-times fs-5"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                @empty
+                                    <div class="notification-empty">
+                                        No new notifications
+                                    </div>
+                                @endforelse
+
+                                @if ($unreadCount > 0)
+                                    <div class="notification-footer">
+                                        <a href="{{ route('user.notifications.index') }}" class="btn btn-primary">View
+                                            All</a>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
 
                         <div class="profile dropdown">
                             <a href="#" class="d-flex align-items-center text-decoration-none"

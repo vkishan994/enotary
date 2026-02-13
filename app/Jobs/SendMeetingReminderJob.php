@@ -34,11 +34,21 @@ class SendMeetingReminderJob implements ShouldQueue
         try {
             // Common notification payload
             $notificationData = [
-                'type'    => 'meeting_reminder',
-                'title'   => 'Upcoming Meeting',
-                'message' => 'You have a meeting scheduled within the next 2 hours.',
-                'icon'    => 'calendar',
-                'extra'   => [
+                'type'  => 'meeting_reminder',
+                'title' => 'Today’s Scheduled Meeting',
+
+                'message' => 'You have a meeting scheduled today with '
+                    . $this->meeting->user->first_name . ' '
+                    . $this->meeting->user->last_name
+                    . ' at '
+                    . \Carbon\Carbon::parse($this->meeting->meeting_time)->format('h:i A')
+                    . ' on '
+                    . \Carbon\Carbon::parse($this->meeting->meeting_date)->format('d M Y')
+                    . '.',
+
+                'icon' => 'calendar',
+
+                'extra' => [
                     'meeting_id'   => $this->meeting->id,
                     'meeting_date' => $this->meeting->meeting_date,
                     'meeting_time' => $this->meeting->meeting_time,

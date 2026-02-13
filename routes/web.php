@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\MyProfileController;
 use App\Http\Controllers\Admin\TwoFactorController;
 use App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\Front\NotificationController;
 use App\Http\Controllers\Front\UploadDocumentController;
 use App\Http\Controllers\Front\ScheduleMeetingController;
 
@@ -90,7 +91,14 @@ Route::group(['prefix' => 'user', 'as' => 'user.', 'middleware' => ['auth', 'ver
     Route::post('/start-verification/{order_id}', [VeriffController::class, 'startVerification'])
         ->name('veriff.start');
 
+    Route::get('/notifications', [NotificationController::class, 'index'])
+        ->name('notifications.index');
 
+    Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllRead'])
+        ->name('notifications.markAllRead');
+
+    Route::post('/notifications/{id}/read', [NotificationController::class, 'markRead'])
+        ->name('notifications.markRead');
 });
 
 // Route::post('/', [MyProfileController::class, 'updateProfile'])->name('admin.update.profile');
@@ -162,6 +170,15 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth:admin']], function () 
     Route::get('/ekyc-verification', [App\Http\Controllers\Admin\VeriffDataController::class, 'index'])->name('admin.veriffdata.index');
     Route::get('/ekyc-verification/{id}', [App\Http\Controllers\Admin\VeriffDataController::class, 'show'])->name('admin.veriffdata.show');
 
+    // admin notifications
+    Route::get('/notifications', [App\Http\Controllers\Admin\NotificationController::class, 'index'])
+        ->name('admin.notifications.index');
+
+    Route::post('/notifications/mark-all-read', [App\Http\Controllers\Admin\NotificationController::class, 'markAllRead'])
+        ->name('notifications.markAllRead');
+
+    Route::post('/notifications/{id}/read', [App\Http\Controllers\Admin\NotificationController::class, 'markRead'])
+        ->name('notifications.markRead');
 });
 
 
@@ -173,8 +190,8 @@ Route::post('/webhook/stripe', [StripeWebhookController::class, 'handle']);
 
 Route::get('/google/callback', [SettingsController::class, 'googleCallback'])->name('google.callback');
 
- Route::any('/veriff/callback/{order_id}', [VeriffController::class, 'callback'])
-        ->name('veriff.callback');
+Route::any('/veriff/callback/{order_id}', [VeriffController::class, 'callback'])
+    ->name('veriff.callback');
 
 Route::post('/veriff/webhook', [VeriffWebhookController::class, 'handle'])
     ->name('veriff.webhook');

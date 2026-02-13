@@ -39,6 +39,24 @@
     <link rel="stylesheet" href="{{ asset('admin/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css') }}">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.0.8/css/dataTables.bootstrap5.min.css">
 
+    <style>
+        .nav-item.dropdown-notifications {
+            position: relative;
+        }
+
+        .notification-count {
+            position: absolute !important;
+            top: 2px;
+            right: -2px;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.2rem !important;
+            min-width: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+    </style>
+
     @yield('css')
 
     <!-- Helpers -->
@@ -80,6 +98,113 @@
                         <!-- /Search -->
 
                         <ul class="navbar-nav flex-row align-items-center ms-auto">
+
+                            <li class="nav-item dropdown-notifications navbar-dropdown dropdown me-3 me-xl-2">
+                                <a class="nav-link dropdown-toggle hide-arrow position-relative"
+                                    href="javascript:void(0);" data-bs-toggle="dropdown" data-bs-auto-close="outside"
+                                    aria-expanded="false">
+
+                                    <i class="icon-base bx bx-bell icon-md"></i>
+
+                                    @if ($unreadCount > 0)
+                                        <span class="badge bg-danger rounded-pill notification-count">
+                                            {{ $unreadCount }}
+                                        </span>
+                                    @endif
+                                </a>
+
+                                <ul class="dropdown-menu dropdown-menu-end p-0">
+
+                                    {{-- Header --}}
+                                    <li class="dropdown-menu-header border-bottom">
+                                        <div class="dropdown-header d-flex align-items-center py-3">
+                                            <h6 class="mb-0 me-auto">Notification</h6>
+
+                                            @if ($unreadCount > 0)
+                                                <div class="d-flex align-items-center h6 mb-0">
+                                                    <span class="badge bg-label-primary me-2">
+                                                        {{ $unreadCount }} New
+                                                    </span>
+
+                                                    <form method="POST"
+                                                        action="{{ route('notifications.markAllRead') }}"
+                                                        class="ms-1">
+                                                        @csrf
+                                                        <button type="submit"
+                                                            class="dropdown-notifications-all p-2 border-0 bg-transparent"
+                                                            data-bs-toggle="tooltip" title="Mark all as read">
+                                                            <i class="icon-base bx bx-envelope-open text-heading"></i>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            @endif
+                                        </div>
+                                    </li>
+
+                                    {{-- Notification List --}}
+                                    <li class="dropdown-notifications-list scrollable-container">
+
+                                        <ul class="list-group list-group-flush">
+
+                                            @forelse ($notifications as $notification)
+                                                <li
+                                                    class="list-group-item list-group-item-action dropdown-notifications-item">
+                                                    <div class="d-flex">
+                                                        <div class="flex-grow-1">
+                                                            <h6 class="small mb-0">
+                                                                {{ $notification->data['title'] ?? 'Notification' }}
+                                                            </h6>
+
+                                                            <small class="mb-1 d-block text-body">
+                                                                {{ $notification->data['message'] ?? '' }}
+                                                            </small>
+
+                                                            <small class="text-body-secondary">
+                                                                {{ $notification->created_at->diffForHumans() }}
+                                                            </small>
+                                                        </div>
+
+                                                        <div class="flex-shrink-0 dropdown-notifications-actions">
+                                                            <form method="POST"
+                                                                action="{{ route('notifications.markRead', $notification->id) }}">
+                                                                @csrf
+                                                                <button type="submit"
+                                                                    class="border-0 bg-transparent p-0"
+                                                                    title="Mark as read">
+                                                                    <i class="bx bx-x fs-5"></i>
+                                                                </button>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </li>
+                                            @empty
+                                                {{-- No notifications message --}}
+                                                <li class="list-group-item text-center py-4">
+                                                    <i class="bx bx-bell-off fs-4 text-muted mb-1"></i>
+                                                    <p class="mb-0 text-muted small">
+                                                        No notifications found
+                                                    </p>
+                                                </li>
+                                            @endforelse
+
+                                        </ul>
+                                    </li>
+
+                                    {{-- View All (ONLY if notifications exist) --}}
+                                    @if ($notifications->count() > 0)
+                                        <li class="border-top">
+                                            <div class="d-grid p-3">
+                                                <a class="btn btn-primary btn-sm d-flex justify-content-center"
+                                                    href="{{ route('admin.notifications.index') }}">
+                                                    View all notifications
+                                                </a>
+                                            </div>
+                                        </li>
+                                    @endif
+
+                                </ul>
+
+                            </li>
 
                             <!-- User -->
                             <li class="nav-item navbar-dropdown dropdown-user dropdown">

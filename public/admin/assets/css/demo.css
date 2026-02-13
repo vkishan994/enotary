@@ -122,3 +122,10 @@
   text-align: center;
   margin-top: 1rem;
 }
+
+.dropdown-notifications-archive {
+    cursor: pointer;
+    color: #696cff !important;
+}
+
+
