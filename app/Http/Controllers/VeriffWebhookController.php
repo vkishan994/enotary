@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use Carbon\Carbon;
+use App\Models\Order;
 use App\Models\VeriffData;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class VeriffWebhookController extends Controller
@@ -61,16 +63,49 @@ class VeriffWebhookController extends Controller
         /**
          * DECISION WEBHOOK (approved / declined)
          */
+        // if (isset($payload['decision'])) {
+        //     VeriffData::where('session_id', $sessionId)->update([
+        //         'veriff_decision' => $payload['decision'],
+        //         'veriff_reason' => $payload['reason'] ?? null,
+        //         'veriff_verified_at' => isset($payload['verification']['decisionTime'])
+        //             ? Carbon::parse($payload['verification']['decisionTime'])
+        //             : now(),
+        //         'status' => 'finished',
+        //         'payload' => $payload,
+        //     ]);
+        // }
+
+
         if (isset($payload['decision'])) {
-            VeriffData::where('session_id', $sessionId)->update([
-                'veriff_decision' => $payload['decision'],
-                'veriff_reason' => $payload['reason'] ?? null,
-                'veriff_verified_at' => isset($payload['verification']['decisionTime'])
-                    ? Carbon::parse($payload['verification']['decisionTime'])
-                    : now(),
-                'status' => 'finished',
-                'payload' => $payload,
-            ]);
+
+            DB::transaction(function () use ($payload, $sessionId) {
+
+                $veriff = VeriffData::where('session_id', $sessionId)->first();
+
+                if (!$veriff) {
+                    return;
+                }
+
+                // Determine decision status
+                $decision = strtolower($payload['decision']);
+
+                // Update Veriff table
+                $veriff->update([
+                    'veriff_decision'    => $payload['decision'],
+                    'veriff_reason'      => $payload['reason'] ?? null,
+                    'veriff_verified_at' => isset($payload['verification']['decisionTime'])
+                        ? Carbon::parse($payload['verification']['decisionTime'])
+                        : now(),
+                    'status'             => 'finished',
+                    'payload'            => $payload,
+                ]);
+
+
+                Order::where('id', $veriff->order_id)
+                    ->update([
+                        'kyc_status' => $payload['decision'], // change if needed
+                    ]);
+            });
         }
 
         return response()->json(['status' => 'ok'], 200);

@@ -26,6 +26,16 @@ class Order extends Model
         return $this->belongsTo(Document::class);
     }
 
+    public function veriffData()
+    {
+        return $this->hasOne(VeriffData::class, 'order_id', 'id');
+    }
+
+    public function scheduleMeeting()
+    {
+        return $this->hasOne(ScheduleMeeting::class, 'order_id', 'id');
+    }
+
     public function notaryServiceType()
     {
         return $this->belongsTo(NotaryServiceType::class);
@@ -39,5 +49,26 @@ class Order extends Model
     public function getNotaryServiceType()
     {
         return $this->belongsTo(NotaryServiceType::class, 'notary_service_type_id', 'id');
+    }
+
+    public function getAllDocsVerifiedAttribute()
+    {
+        $requiredUploadDocs = $this->document
+            ? $this->document->uploadDocuments
+            : collect();
+
+        $verifyDocs = $this->verifyDocuments;
+
+        return
+            $requiredUploadDocs->count() > 0 &&
+            $verifyDocs->count() === $requiredUploadDocs->count() &&
+            $verifyDocs->every(function ($doc) {
+
+                return $doc->status === 'verified'
+                    && $doc->verify_document_items->isNotEmpty()
+                    && $doc->verify_document_items->every(
+                        fn($item) => $item->status === 'verified'
+                    );
+            });
     }
 }

@@ -48,10 +48,10 @@
 
                                 {{-- Status --}}
                                 @php
-                                    $status = auth()->user()->veriff_status ?? 'not_started';
+                                    $status = $VeriffData->status ?? 'not_started';
                                 @endphp
 
-                                @if ($status === 'approved')
+                                @if ($status == 'approved')
                                     <span class="badge bg-success">
                                         <i class="fa fa-check-circle me-1"></i> Verified
                                     </span>
@@ -86,9 +86,10 @@
                         {{-- Action --}}
                         <div class="mt-4 text-end">
                             @if ($status === 'approved')
-                                <a href="{{ route('notary.dashboard') }}" class="btn btn-success">
-                                    Continue to Notary
-                                </a>
+                                <div class="alert alert-success mb-0">
+                                    <i class="fa fa-check-circle me-1"></i>
+                                    You have successfully verified your identity.
+                                </div>
                             @elseif ($status === 'started')
                                 <button class="btn btn-secondary" disabled>
                                     Verification in progress
@@ -105,6 +106,7 @@
                     </div>
 
                     {{-- Info box --}}
+                    @if ($status != 'approved')
                     <div class="alert alert-info mt-4">
                         <strong>What you’ll need to complete verification:</strong>
                         <ul class="mb-0 mt-2">
@@ -120,6 +122,7 @@
                             <li>A stable internet connection</li>
                         </ul>
                     </div>
+                    @endif
 
                 </div>
             </div>

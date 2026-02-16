@@ -32,7 +32,8 @@ class VeriffController extends Controller
     public function verificationPage(Request $request, $order_id)
     {
         $user = auth()->user();
-        return view('front.user.verification_page', compact('user', 'order_id'));
+        $VeriffData = VeriffData::where('order_id', decrypt($order_id))->first();
+        return view('front.user.verification_page', compact('user', 'order_id', 'VeriffData'));
     }
 
     public function startVerification(Request $request, $order_id)

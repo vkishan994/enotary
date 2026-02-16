@@ -127,6 +127,7 @@
                         </div>
                     </form>
                 </div>
+                <div id="dropzone-error" style="margin-top:5px; color:red; display:none;">dropzone error mesasge</div>
             @endif
 
             @if (isset($userUploadedDocuments) && !empty($userUploadedDocuments))
@@ -198,7 +199,8 @@
             const myDropzone = new Dropzone("#documentDropzone", {
                 url: document.getElementById("documentDropzone").action,
                 paramName: "file",
-                maxFilesize: 10,
+                maxFilesize: 5,
+                maxFiles: 2,
                 addRemoveLinks: true,
                 uploadMultiple: false,
                 acceptedFiles: ".pdf,.jpg,.jpeg,.png,.doc,.docx",
@@ -210,6 +212,13 @@
                 },
 
                 init: function() {
+
+                    this.on("maxfilesexceeded", function(file) {
+                        var errorDiv = document.getElementById('dropzone-error');
+                        errorDiv.style.display = 'block';
+                        errorDiv.innerText = "You can upload only 2 files (Front and Back).";
+                        this.removeFile(file);
+                    });
 
                     // Upload success
 
@@ -247,6 +256,7 @@
 
                     // Remove file
                     this.on("removedfile", function(file) {
+                        
 
                         // If file was not uploaded to server yet
                         if (!file.serverId) return;

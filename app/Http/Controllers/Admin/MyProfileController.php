@@ -2,21 +2,22 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Carbon\Carbon;
-use Stripe\Stripe;
-use App\Models\Admin;
-use App\Models\Order;
-use App\Models\Document;
-use Illuminate\Http\Request;
-use App\Services\StripeClass;
-use App\Models\ScheduleMeeting;
-use App\Rules\MatchOldPassword;
-use App\Models\NotaryServiceType;
-use PragmaRX\Google2FA\Google2FA;
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
+use App\Models\Document;
+use App\Models\NotaryServiceType;
+use App\Models\Order;
+use App\Models\ScheduleMeeting;
+use App\Models\VerifyDocument;
+use App\Rules\MatchOldPassword;
+use App\Services\StripeClass;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use PragmaRX\Google2FA\Google2FA;
+use Stripe\Stripe;
 
 class MyProfileController extends Controller
 {
@@ -151,6 +152,7 @@ class MyProfileController extends Controller
             ->get();
 
         $unreadCount = auth()->user()->unreadNotifications()->count();
+
 
         return view('front.dashboard', compact('user', 'orders', 'upcomingMeetings', 'notifications', 'unreadCount'));
     }

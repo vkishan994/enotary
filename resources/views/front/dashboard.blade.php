@@ -133,17 +133,20 @@
 
                                     @if ($canJoinMeeting)
                                         <div class="d-flex flex-column align-items-end" style="min-width:140px;">
-                                            <a class="meeting-link-btn" href="{{ $meeting->google_meet_link }}" target="_blank">Join Meeting</a>
+                                            <a class="meeting-link-btn" href="{{ $meeting->google_meet_link }}"
+                                                target="_blank">Join Meeting</a>
                                             <div class="meeting-note text-warning mt-2 text-end">
                                                 <small>
-                                                    ⚠️ Please join the meeting at the scheduled time. If you do not join, the meeting will be cancelled.
+                                                    ⚠️ Please join the meeting at the scheduled time. If you do not join,
+                                                    the meeting will be cancelled.
                                                 </small>
                                             </div>
                                         </div>
                                     @else
                                         <div class="meeting-note text-muted mt-2">
                                             <small>
-                                                ⏳ The Google Meet link will be displayed here shortly before the scheduled meeting time.
+                                                ⏳ The Google Meet link will be displayed here shortly before the scheduled
+                                                meeting time.
                                             </small>
                                         </div>
                                     @endif
@@ -223,22 +226,26 @@
                                         </div>
                                     </div>
 
-                                    <div class="pending-item">
-                                        <div class="pending-item-content">
-                                            <div class="pending-icon">
-                                                <img src="{{ asset('front/img/home/icon5.png') }}" alt="" />
+                                    @if (isset($order->veriffData) && !empty($order->veriffData) && $order->veriffData->status == 'approved')
+                                        <div class="pending-item">
+                                            <div class="pending-item-content">
+                                                <div class="pending-icon">
+                                                    <img src="{{ asset('front/img/home/icon5.png') }}" alt="" />
+                                                </div>
+                                                <div class="pending-text">
+                                                    <h5>Upload your document</h5>
+                                                    <p>Upload your document to begin the notarisation process.</p>
+                                                </div>
                                             </div>
-                                            <div class="pending-text">
-                                                <h5>Upload your document</h5>
-                                                <p>Upload your document to begin the notarisation process.</p>
+                                            <div class="pending-arrow">
+                                                <a href="{{ route('user.documentList', ['id' => encrypt($order->id)]) }}"><i
+                                                        class="fas fa-chevron-right"></i></a>
                                             </div>
                                         </div>
-                                        <div class="pending-arrow">
-                                            <a href="{{ route('user.documentList', ['id' => encrypt($order->id)]) }}"><i
-                                                    class="fas fa-chevron-right"></i></a>
-                                        </div>
-                                    </div>
+                                    @endif
 
+
+                                    @if($order->all_docs_verified)
                                     <div class="pending-item">
                                         <div class="pending-item-content">
                                             <div class="pending-icon">
@@ -255,21 +262,25 @@
                                                     class="fas fa-chevron-right"></i></a>
                                         </div>
                                     </div>
+                                    @endif
 
-                                    <div class="pending-item">
-                                        <div class="pending-item-content">
-                                            <div class="pending-icon">
-                                                <img src="{{ asset('front/img/home/icon7.png') }}" alt="" />
+                                    @if (isset($order->scheduleMeeting) && !empty($order->scheduleMeeting) && $order->scheduleMeeting->status == 'verified')
+                                        <div class="pending-item">
+                                            <div class="pending-item-content">
+                                                <div class="pending-icon">
+                                                    <img src="{{ asset('front/img/home/icon7.png') }}" alt="" />
+                                                </div>
+                                                <div class="pending-text">
+                                                    <h5>Download your notarised documents</h5>
+                                                    <p>Download your officially notarised documents here.</p>
+                                                </div>
                                             </div>
-                                            <div class="pending-text">
-                                                <h5>Download your notarised documents</h5>
-                                                <p>Download your officially notarised documents here.</p>
+                                            <div class="pending-arrow">
+                                                <a href="#"><i class="fas fa-chevron-right"></i></a>
                                             </div>
                                         </div>
-                                        <div class="pending-arrow">
-                                            <a href="#"><i class="fas fa-chevron-right"></i></a>
-                                        </div>
-                                    </div>
+                                    @endif
+
                                 </div>
                                 <!-- END EXISTING HTML -->
 

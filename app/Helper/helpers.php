@@ -4,6 +4,7 @@ use Carbon\Carbon;
 use App\Models\Setting;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * get settings data
@@ -192,5 +193,18 @@ if (!function_exists('meetingStatus')) {
         return '<span class="badge bg-' . $class . '">'
             . ucwords(str_replace('_', ' ', $status)) .
             '</span>';
+    }
+}
+
+if (!function_exists('generateHash')) {
+    function generateHash($filePath)
+    {
+        if (!Storage::disk('public')->exists($filePath)) {
+            return null;
+        }
+
+        $fileContent = Storage::get($filePath);
+
+        return hash('sha256', $fileContent);
     }
 }

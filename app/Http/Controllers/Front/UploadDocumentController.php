@@ -119,12 +119,17 @@ class UploadDocumentController extends Controller
                 ]
             );
 
+
+            //  Generate SHA-256 Hash
+            $documentHash = generateHash($filePath);
+
             // Create new verify document item record
             $verifyDocumentItem = VerifyDocumentItems::create([
                 'verify_document_id' => $verifyDocument->id,
                 'file_name'          => $fileName,
                 'file_path'          => $filePath,
                 'status'             => 'pending',
+                'document_hash'      => $documentHash
             ]);
 
             DB::commit();
@@ -147,6 +152,7 @@ class UploadDocumentController extends Controller
             ], 500);
         }
     }
+
     public function deleteUploadDocument(Request $request)
     {
         $request->validate([
