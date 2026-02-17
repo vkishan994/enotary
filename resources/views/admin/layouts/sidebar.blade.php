@@ -66,7 +66,7 @@
 
               <li class="menu-item">
                   <a href="{{ route('admin.veriffdata.index') }}" class="menu-link">
-                     <i class="menu-icon tf-icons bx bx-id-card"></i>
+                      <i class="menu-icon tf-icons bx bx-id-card"></i>
                       <div data-i18n="Dashboards">EKYC Verification Data</div>
                   </a>
               </li>
@@ -75,6 +75,13 @@
                   <a href="{{ route('admin.settings') }}" class="menu-link">
                       <i class="menu-icon tf-icons bx bx-cog"></i>
                       <div data-i18n="Dashboards">Settings</div>
+                  </a>
+              </li>
+
+              <li class="menu-item">
+                  <a href="{{ route('customers.list') }}" class="menu-link">
+                      <i class="menu-icon tf-icons bx bx-group"></i>
+                      <div data-i18n="Dashboards">Customers</div>
                   </a>
               </li>
 

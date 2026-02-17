@@ -38,6 +38,7 @@ Route::group(['prefix' => 'admin'], function () {
         ->name('admin.2fa.reset');
 });
 
+// USER ROUTES
 Route::group(['prefix' => 'user', 'as' => 'user.', 'middleware' => ['auth', 'verified']], function () {
     Route::get('/account-dashboard', [MyProfileController::class, 'accountDashboard'])->name('account-dashboard');
     Route::get('/notarise-documents', [MyProfileController::class, 'notariseDocuments'])->name('notarise-documents');
@@ -125,6 +126,7 @@ Route::get('logout', function () {
     return redirect()->to('/');
 })->name('logout');
 
+// ADMIN ROUTES
 Route::group(['prefix' => 'admin', 'middleware' => ['auth:admin']], function () {
     Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
 
@@ -179,6 +181,10 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth:admin']], function () 
 
     Route::post('/notifications/{id}/read', [App\Http\Controllers\Admin\NotificationController::class, 'markRead'])
         ->name('notifications.markRead');
+
+
+    Route::get('/customers/{user_id?}', [App\Http\Controllers\Admin\CustomerOrderController::class, 'index'])
+        ->name('customers.list');
 });
 
 

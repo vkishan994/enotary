@@ -208,3 +208,32 @@ if (!function_exists('generateHash')) {
         return hash('sha256', $fileContent);
     }
 }
+
+if (!function_exists('orderStepsCompleted')) {
+    function orderStepsCompleted($order)
+    {
+        $completed = 0;
+
+        // Step 1: Veriff Approved
+        if ($order->veriffData && $order->veriffData->status === 'approved') {
+            $completed++;
+        }
+
+        // Step 2: Documents Verified
+        if ($order->all_docs_verified) {
+            $completed++;
+        }
+
+        // Step 3: Meeting Verified
+        if ($order->scheduleMeeting && $order->scheduleMeeting->status === 'verified') {
+            $completed++;
+        }
+
+        // Step 4: E-notary Generated
+        if ($order->generateEnotaryDoc && $order->generateEnotaryDoc->status === 'generated') {
+            $completed++;
+        }
+
+        return $completed; // returns 0 - 4
+    }
+}
