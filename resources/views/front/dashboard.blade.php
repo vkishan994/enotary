@@ -85,7 +85,7 @@
 
     <!-- Main content start -->
     <main class="main-content">
-        <div class="section-title">
+        <div class="section-title" @if ($orders->count() == 0) style="height: 150px;" @endif>
             <h2>Hello {{ $user->first_name }}</h2>
         </div>
         <div class="document-upcoming">
@@ -197,7 +197,6 @@
                     @endforeach
                 </ul>
 
-
                 <div class="tab-content" id="notarisationTabContent">
                     @php $first = true; @endphp
 
@@ -295,6 +294,5 @@
         @endif
     </main>
     <!-- Main content end -->
-
 
 @endsection

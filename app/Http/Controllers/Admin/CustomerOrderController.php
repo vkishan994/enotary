@@ -8,22 +8,37 @@ use Illuminate\Http\Request;
 
 class CustomerOrderController extends Controller
 {
-    public function index(Request $request, $user_id = null)
+    public function index(Request $request, $user_id = null, $order_id = null)
     {
         $users = User::withCount('orders')
             ->orderBy('orders_count', 'desc')
             ->get();
 
-        // If no user selected → pick first user
         if (!$user_id && $users->count() > 0) {
             $selectedUser = $users->first();
         } else {
-            $selectedUser = User::with('orders')->findOrFail($user_id);
+            $selectedUser = User::findOrFail($user_id);
         }
 
-        return view('admin.customer.index', [
-            'users' => $users,
-            'selectedUser' => $selectedUser
-        ]);
+        $orders = $selectedUser->orders()
+            ->latest()
+            ->paginate(5);
+
+        if ($order_id) {
+            $selectedOrder = $selectedUser->orders()
+                ->where('id', $order_id)
+                ->first();
+        } else {
+            $selectedOrder = $selectedUser->orders()
+                ->latest()
+                ->first();
+        }
+
+        return view('admin.customer.index', compact(
+            'users',
+            'selectedUser',
+            'orders',
+            'selectedOrder'
+        ));
     }
 }

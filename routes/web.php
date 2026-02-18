@@ -183,7 +183,7 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth:admin']], function () 
         ->name('notifications.markRead');
 
 
-    Route::get('/customers/{user_id?}', [App\Http\Controllers\Admin\CustomerOrderController::class, 'index'])
+    Route::get('/customers/{user_id?}/{order_id?}', [App\Http\Controllers\Admin\CustomerOrderController::class, 'index'])
         ->name('customers.list');
 });
 

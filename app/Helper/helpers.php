@@ -209,8 +209,8 @@ if (!function_exists('generateHash')) {
     }
 }
 
-if (!function_exists('orderStepsCompleted')) {
-    function orderStepsCompleted($order)
+if (!function_exists('orderStepsCompletedCount')) {
+    function orderStepsCompletedCount($order)
     {
         $completed = 0;
 
@@ -235,5 +235,101 @@ if (!function_exists('orderStepsCompleted')) {
         }
 
         return $completed; // returns 0 - 4
+    }
+}
+
+if (!function_exists('orderStepStatus')) {
+    function orderStepStatus($order)
+    {
+        $steps = [
+            'veriff' => $order->veriffData
+                && $order->veriffData->status === 'approved',
+
+            'documents' => $order->all_docs_verified,
+
+            'meeting' => $order->scheduleMeeting
+                && $order->scheduleMeeting->status === 'verified',
+
+            'enotary' => $order->generateEnotaryDoc
+                && $order->generateEnotaryDoc->status === 'generated',
+        ];
+
+        $result = [];
+        $previousCompleted = true;
+
+        foreach ($steps as $key => $isCompleted) {
+
+            if ($isCompleted) {
+                $result[$key] = 'complete';
+            } elseif ($previousCompleted) {
+                $result[$key] = 'pending';
+            } else {
+                $result[$key] = 'locked';
+            }
+
+            $previousCompleted = $isCompleted;
+        }
+
+        return $result;
+    }
+}
+
+if (!function_exists('veriffStatus')) {
+    function veriffStatus($status)
+    {
+
+        if (empty($status)) {
+            return '<span class="badge bg-secondary">Not Started</span>';
+        }
+        switch ($status) {
+            case 'created':
+                $class = 'secondary';
+                break;
+
+            case 'started':
+                $class = 'info';
+                break;
+
+            case 'submitted':
+                $class = 'primary';
+                break;
+
+            case 'approved':
+                $class = 'success';
+                break;
+
+            case 'declined':
+                $class = 'danger';
+                break;
+
+            case 'resubmission_requested':
+                $class = 'warning';
+                break;
+
+            case 'expired':
+                $class = 'dark';
+                break;
+
+            case 'abandoned':
+                $class = 'dark';
+                break;
+
+            case 'review':
+                $class = 'warning';
+                break;
+
+            case 'user_cancelled':
+                $class = 'dark';
+                break;
+
+            default:
+                $class = 'secondary';
+                break;
+        }
+
+        // Make status label more readable
+        $label = ucwords(str_replace('_', ' ', $status));
+
+        return '<span class="badge bg-' . $class . '">' . $label . '</span>';
     }
 }
