@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class VerifyDocumentItems extends Model
 {
-    protected $fillable = ['verify_document_id', 'file_name', 'file_path', 'status', 'note','document_hash'];
+    protected $fillable = ['admin_id', 'verify_document_id', 'file_name', 'file_path', 'status', 'note', 'document_hash'];
 
     public function verify_document()
     {

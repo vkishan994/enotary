@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
-use DataTables;
-use App\Models\Order;
-use Illuminate\Http\Request;
-use App\Models\VerifyDocument;
-use Illuminate\Support\Facades\DB;
-use App\Models\VerifyDocumentItems;
-use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Mail;
 use App\Mail\DocumentVerificationMail;
+use App\Models\Order;
+use App\Models\VerifyDocument;
+use App\Models\VerifyDocumentItems;
+use DataTables;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
@@ -78,12 +79,15 @@ class OrderController extends Controller
             // dd($request->all());
             DB::beginTransaction();
 
+            $admin = Auth::guard('admin')->user();
+
             $document = VerifyDocument::findOrFail($id);
             $document->status = $request->status;
             $document->note = $request->status === 'rejected' ? $request->rejection_note : null;
+            $document->admin_id = $admin->id;
             $document->save();
 
-            $document_item = VerifyDocumentItems::where('verify_document_id', $id)->update(['status' => $request->status]);
+            $document_item = VerifyDocumentItems::where('verify_document_id', $id)->update(['status' => $request->status, 'admin_id' => $admin->id]);
 
             $order = Order::findOrFail($document->order_id);
 

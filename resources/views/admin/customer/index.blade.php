@@ -39,11 +39,16 @@
                         <!-- Sidebar -->
                         <div class="p-2">
                             <div class="search-box">
-                                <i class="fas fa-search"></i>
-                                <input type="text" placeholder="Search clients...">
+                                {{-- <i class="fas fa-search"></i>
+                                <input type="text" placeholder="Search clients..."> --}}
+                                <form method="GET" action="{{ route('customers.list', request()->route('id')) }}">
+                                    <i class="fas fa-search"></i>
+                                    <input type="text" name="search" id="searchInput" value="{{ request('search') }}"
+                                        placeholder="Search clients..." class="form-control">
+                                </form>
                             </div>
 
-                            <div class="customers-list">
+                            <div class="customers-list" id="customersList">
                                 @foreach ($users as $user)
                                     <a href="{{ route('customers.list', $user->id) }}">
                                         <div class="client-item {{ $selectedUser->id == $user->id ? 'active' : '' }}">
@@ -219,10 +224,7 @@
                                             <div class="detail-value">{!! veriffStatus(isset($selectedOrder->veriffData) ? $selectedOrder->veriffData->status : null) !!}</div>
                                         </div>
 
-                                        {{-- <div class="detail-item">
-                                            <div class="detail-label">Provider:</div>
-                                            <div class="detail-value">Onfido</div>
-                                        </div> --}}
+
                                         @if (isset($selectedOrder->veriffData) && $selectedOrder->veriffData->status == 'approved')
                                             <div class="detail-item">
                                                 <div class="detail-value">{{ $selectedOrder->veriffData->session_id }}
@@ -241,16 +243,46 @@
                                     <div class="detail-card">
                                         <h6>Uploaded Document</h6>
                                         <div class="detail-item">
-                                            <div class="detail-value">Power of Attorney</div>
+                                            <div class="detail-value">
+                                                {{ isset($selectedOrder->document->name) ? $selectedOrder->document->name : 'N/A' }}
+                                            </div>
                                         </div>
-                                        <div class="detail-item">
+                                        {{-- <div class="detail-item">
                                             <div class="detail-value">poa_aisha.pdf</div>
-                                        </div>
+                                        </div> --}}
                                         <div class="detail-item">
                                             <div class="detail-label">Reviewed by:</div>
-                                            <div class="detail-value">M. Edwards</div>
+                                            <div class="detail-value">
+                                                @php
+                                                    $reviewedDoc =
+                                                        $selectedOrder->verifyDocuments->firstWhere(
+                                                            'status',
+                                                            'approved',
+                                                        ) ??
+                                                        ($selectedOrder->verifyDocuments->firstWhere(
+                                                            'status',
+                                                            'rejected',
+                                                        ) ??
+                                                            $selectedOrder->verifyDocuments->firstWhere(
+                                                                'status',
+                                                                'verified',
+                                                            ));
+                                                @endphp
+
+                                                {{ optional($reviewedDoc?->admin)->name ?? 'Not Reviewed' }}
+                                            </div>
                                         </div>
-                                        <span class="approval-badge">Approved</span>
+                                        <div class="detail-item">
+                                            <div class="detail-label">Status:</div>
+                                            {!! documentUploadStatus($selectedOrder->upload_document_status) !!}
+                                        </div>
+
+                                        <div class="detail-item">
+                                            <a href="{{ route('verifyDocument', ['order_id' => $selectedOrder->id]) }}"
+                                                class="btn btn-sm btn-primary">
+                                                View
+                                            </a>
+                                        </div>
                                     </div>
 
                                     <div class="detail-card">
@@ -302,4 +334,46 @@
         @endif
     </div>
     @include('partials.customer_page_modal')
+    @push('scripts')
+        <script>
+            const customerBaseUrl = "{{ url('admin/customers') }}";
+            document.getElementById('searchInput').addEventListener('keyup', function() {
+
+                let searchValue = this.value;
+
+                fetch("{{ route('customers.search') }}?search=" + searchValue)
+                    .then(response => response.json())
+                    .then(data => {
+
+                        let customersList = document.getElementById('customersList');
+                        customersList.innerHTML = '';
+
+                        if (data.length === 0) {
+                            customersList.innerHTML = '<p class="p-2">No users found</p>';
+                            return;
+                        }
+
+                        data.forEach(user => {
+
+                            customersList.innerHTML += `
+                    <a href="${customerBaseUrl}/${user.id}">
+                        <div class="client-item">
+                            <div class="client-name">
+                                ${user.first_name} ${user.last_name}
+                            </div>
+                            <div class="status-badge">
+                                <span class="status-text">
+                                    ${user.orders_count} Orders
+                                </span>
+                            </div>
+                        </div>
+                    </a>
+                `;
+                        });
+
+                    });
+
+            });
+        </script>
+    @endpush
 @endsection

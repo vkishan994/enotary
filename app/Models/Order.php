@@ -21,6 +21,11 @@ class Order extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function admin()
+    {
+        return $this->belongsTo(Admin::class);
+    }
+
     public function document()
     {
         return $this->belongsTo(Document::class);
@@ -70,5 +75,11 @@ class Order extends Model
                         fn($item) => $item->status === 'verified'
                     );
             });
+    }
+
+    public function reviewedDocument()
+    {
+        return $this->hasOne(VerifyDocument::class)
+            ->whereIn('status', ['approved', 'rejected', 'verified']);
     }
 }

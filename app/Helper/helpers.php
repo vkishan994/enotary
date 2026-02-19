@@ -168,6 +168,10 @@ function getGoogleAccessToken(string $refreshToken): string
 if (!function_exists('meetingStatus')) {
     function meetingStatus($status)
     {
+        if (empty($status)) {
+            return '<span class="badge bg-secondary">Not Scheduled</span>';
+        }
+
         switch ($status) {
             case 'approved':
                 $class = 'success';   // Green – confirmed

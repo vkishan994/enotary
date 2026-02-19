@@ -182,9 +182,14 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth:admin']], function () 
     Route::post('/notifications/{id}/read', [App\Http\Controllers\Admin\NotificationController::class, 'markRead'])
         ->name('notifications.markRead');
 
+    Route::get('/customers-search', [App\Http\Controllers\Admin\CustomerOrderController::class, 'search'])
+        ->name('customers.search');
 
     Route::get('/customers/{user_id?}/{order_id?}', [App\Http\Controllers\Admin\CustomerOrderController::class, 'index'])
         ->name('customers.list');
+
+    Route::get('/uploaded-document/{order_id}', [App\Http\Controllers\Admin\CustomerOrderController::class, 'uploadedDocument'])
+        ->name('verifyDocument');
 });
 
 
