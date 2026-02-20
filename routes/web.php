@@ -190,6 +190,9 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth:admin']], function () 
 
     Route::get('/uploaded-document/{order_id}', [App\Http\Controllers\Admin\CustomerOrderController::class, 'uploadedDocument'])
         ->name('verifyDocument');
+
+    Route::get('/meeting-request/{id}', [App\Http\Controllers\Admin\CustomerOrderController::class, 'scheduleMeeting'])
+        ->name('scheduleMeeting');
 });
 
 

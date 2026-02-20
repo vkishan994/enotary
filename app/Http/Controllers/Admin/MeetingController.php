@@ -171,7 +171,8 @@ class MeetingController extends Controller
             DB::commit();
 
             return redirect()
-                ->route('admin.schedule.meetings.index')
+                ->back()
+                // ->route('admin.schedule.meetings.index')
                 ->with('success', 'Meeting updated successfully.');
         } catch (\Exception $e) {
             dd($e->getMessage());

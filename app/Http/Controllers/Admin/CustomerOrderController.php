@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\ScheduleMeeting;
 use App\Models\User;
 use App\Models\VerifyDocument;
 use Illuminate\Http\Request;
@@ -80,5 +81,11 @@ class CustomerOrderController extends Controller
         $order = Order::with(['user', 'document', 'notaryServiceType'])->findOrFail($order_id);
         $uploadedDocuments = VerifyDocument::with('verify_document_items')->where('order_id', $order_id)->get();
         return view('admin.customer.uploaded-doc', compact('order', 'uploadedDocuments'));
+    }
+
+    public function scheduleMeeting($id)
+    {
+        $meeting = ScheduleMeeting::findOrFail($id);
+        return view('admin.customer.schedule-meeting', compact('meeting'));
     }
 }

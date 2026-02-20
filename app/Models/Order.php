@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Order extends Model
 {
@@ -81,5 +82,43 @@ class Order extends Model
     {
         return $this->hasOne(VerifyDocument::class)
             ->whereIn('status', ['approved', 'rejected', 'verified']);
+    }
+
+    public function hasUserUploadedAllDocuments(int $userId): bool
+    {
+        // Required upload documents for this order
+        // Fetch required upload documents
+        $uploadDocuments = $this->document
+            ? $this->document->uploadDocuments // This returns UploadDocument collection
+            : collect();
+
+        $upload_document_ids = $uploadDocuments->pluck('id');
+
+        $uploadedDocs = VerifyDocument::whereIn('upload_documents_id', $upload_document_ids)
+            ->where('user_id', $userId)
+            ->where('order_id', $this->id)
+            ->withCount('verify_document_items')
+            ->where(function ($query) {
+                $query->whereNull('status')
+                    ->orWhereIn('status', [
+                        'approved',
+                        'rejected',
+                        'verified',
+                        'submitted'
+                    ]);
+            })
+            ->get();
+
+        /**
+         * All required documents uploaded IF:
+         * 1. Count matches
+         * 2. Each has at least one uploaded item
+         */
+        $allUploaded =
+            $uploadedDocs->count() === $upload_document_ids->count() &&
+            $uploadedDocs->every(fn($doc) => $doc->verify_document_items_count > 0);
+
+
+        return $allUploaded;
     }
 }

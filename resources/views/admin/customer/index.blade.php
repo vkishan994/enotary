@@ -277,23 +277,49 @@
                                             {!! documentUploadStatus($selectedOrder->upload_document_status) !!}
                                         </div>
 
-                                        <div class="detail-item">
+                                        @if ($selectedOrder->hasUserUploadedAllDocuments($selectedOrder->user_id))
+                                            <div class="detail-item">
+                                                <a href="{{ route('verifyDocument', ['order_id' => $selectedOrder->id]) }}"
+                                                    class="btn btn-sm btn-primary">
+                                                    View
+                                                </a>
+                                            </div>
+                                        @endif
+
+
+                                        {{-- <div class="detail-item">
                                             <a href="{{ route('verifyDocument', ['order_id' => $selectedOrder->id]) }}"
                                                 class="btn btn-sm btn-primary">
                                                 View
                                             </a>
-                                        </div>
+                                        </div> --}}
                                     </div>
 
                                     <div class="detail-card">
                                         <h6>Meeting Details</h6>
                                         <div class="detail-item">
                                             <div class="detail-label">Status:</div>
-                                            <div class="detail-value">Not Scheduled</div>
+                                            <div class="detail-value">
+                                                @if (isset($selectedOrder->scheduleMeeting))
+                                                    {!! meetingStatus($selectedOrder->scheduleMeeting->status) !!}
+                                                @else
+                                                    {!! meetingStatus('') !!}
+                                                @endif
+                                            </div>
                                         </div>
-                                        <div class="detail-item">
-                                            <div class="detail-value">Awaiting Document Approval.</div>
-                                        </div>
+                                        @if (!$selectedOrder->all_docs_verified)
+                                            <div class="detail-item">
+                                                <div class="detail-value">Awaiting Document Approval.</div>
+                                            </div>
+                                        @endif
+                                        @if (isset($selectedOrder->scheduleMeeting))
+                                            <div class="detail-item">
+                                                <a href="{{ route('scheduleMeeting', ['id' => $selectedOrder->scheduleMeeting->id]) }}"
+                                                    class="btn btn-sm btn-primary">
+                                                    View
+                                                </a>
+                                            </div>
+                                        @endif
                                     </div>
 
                                     <div class="detail-card">

@@ -177,6 +177,10 @@ if (!function_exists('meetingStatus')) {
                 $class = 'success';   // Green – confirmed
                 break;
 
+            case 'verified':
+                $class = 'success';   // Green – confirmed
+                break;
+
             case 'pending':
                 $class = 'warning';   // Yellow – waiting
                 break;
