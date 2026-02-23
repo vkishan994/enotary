@@ -55,6 +55,14 @@
                                 Veriff Settings
                             </button>
                         </li>
+
+                        <li class="nav-item">
+                            <button class="nav-link" id="docusign-tab" data-bs-toggle="tab" data-bs-target="#docusign"
+                                type="button" role="tab">
+                                DocuSign Settings
+                            </button>
+                        </li>
+
                     </ul>
 
                     <!-- Tab Content -->
@@ -218,6 +226,43 @@
                                 </div>
 
                                 <button type="submit" class="btn btn-primary">Save Veriff Settings</button>
+                            </form>
+                        </div>
+
+                        <!-- DocuSign Settings -->
+                        <div class="tab-pane fade" id="docusign" role="tabpanel">
+
+                            <form action="{{ route('admin.settings.store') }}" method="post">
+                                @csrf
+                                <div class="row">
+                                    <input type="hidden" name="module_name" value="docusign">
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">API Key</label>
+                                        <input type="text" name="docusign_api_key" class="form-control"
+                                            value="{{ getValuesByKey('docusign_api_key') ?? '' }}">
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">API Secret Key</label>
+                                        <input type="text" name="docusign_secret_key" class="form-control"
+                                            value="{{ getValuesByKey('docusign_secret_key') ?? '' }}">
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">API Base URL</label>
+                                        <input type="text" name="docusign_base_url" class="form-control"
+                                            value="{{ getValuesByKey('docusign_base_url') ?? '' }}">
+                                    </div>
+
+                                    <div class="col-md-6 mb-3">
+                                        <label class="form-label">API Account ID</label>
+                                        <input type="text" name="docusign_account_id" class="form-control"
+                                            value="{{ getValuesByKey('docusign_account_id') ?? '' }}">
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn btn-primary">Save DocuSign Settings</button>
                             </form>
                         </div>
 

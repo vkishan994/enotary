@@ -88,8 +88,8 @@
         }
 
         /* .document-upload {
-            height: unset !important;
-        } */
+                            height: unset !important;
+                        } */
     </style>
 @endsection
 @section('content')
@@ -98,7 +98,8 @@
     <!-- Main content start -->
     <main class="main-content">
 
-        <div class="document-upload document-pending" style="overflow: hidden;height: 500px !important;overflow-y: auto; @if(isset($userUploadedDocuments) && $userUploadedDocuments->status == 'submitted') height: 500px; @else height: unset; @endif">
+        <div class="document-upload document-pending"
+            style="overflow: hidden;height: 500px !important;overflow-y: auto; @if (isset($userUploadedDocuments) && $userUploadedDocuments->status == 'submitted') height: 500px; @else height: unset; @endif">
             <div class="section-title">
                 <div class="row">
                     <div class="col-6">
@@ -113,7 +114,11 @@
 
             <!-- Dropzone -->
 
-            @if (isset($userUploadedDocuments) && $userUploadedDocuments->status !== 'submitted' && $userUploadedDocuments->status !== 'verified' || !isset($userUploadedDocuments))
+            @if (
+                (isset($userUploadedDocuments) &&
+                    $userUploadedDocuments->status !== 'submitted' &&
+                    $userUploadedDocuments->status !== 'verified') ||
+                    !isset($userUploadedDocuments))
                 <div class="upload-document-section mt-4">
                     <form
                         action="{{ route('user.storeUploadDocument', ['order_id' => $order_id, 'document_id' => $document_id, 'upload_document_id' => encrypt($uploadDocument->id)]) }}"
@@ -194,16 +199,22 @@
     <script>
         Dropzone.autoDiscover = false;
 
+        let existingFileCount =
+            {{ isset($userUploadedDocuments) && isset($userUploadedDocuments->verify_document_items) ? count($userUploadedDocuments->verify_document_items) : 0 }};
+
         document.addEventListener("DOMContentLoaded", function() {
+
+            const maxAllowedFiles = 2;
 
             const myDropzone = new Dropzone("#documentDropzone", {
                 url: document.getElementById("documentDropzone").action,
                 paramName: "file",
                 maxFilesize: 5,
-                maxFiles: 2,
-                addRemoveLinks: true,
                 uploadMultiple: false,
                 acceptedFiles: ".pdf,.jpg,.jpeg,.png,.doc,.docx",
+                addRemoveLinks: true, // ✅ SHOW REMOVE LINK
+
+                maxFiles: maxAllowedFiles - existingFileCount,
 
                 headers: {
                     'X-CSRF-TOKEN': document
@@ -213,59 +224,75 @@
 
                 init: function() {
 
-                    this.on("maxfilesexceeded", function(file) {
-                        var errorDiv = document.getElementById('dropzone-error');
-                        errorDiv.style.display = 'block';
-                        errorDiv.innerText = "You can upload only 2 files (Front and Back).";
-                        this.removeFile(file);
+                    const dz = this;
+
+                    // If already 2 files uploaded
+                    if (existingFileCount >= maxAllowedFiles) {
+                        dz.options.maxFiles = 0;
+
+                        document.getElementById('dropzone-error').style.display = 'block';
+                        document.getElementById('dropzone-error').innerText =
+                            "Only 2 files are allowed. Delete one to upload a new file.";
+                    }
+
+                    // Prevent exceeding limit
+                    dz.on("maxfilesexceeded", function(file) {
+                        dz.removeFile(file);
+
+                        document.getElementById('dropzone-error').style.display = 'block';
+                        document.getElementById('dropzone-error').innerText =
+                            "Only 2 files are allowed. Delete one to upload a new file.";
                     });
 
-                    // Upload success
+                    // On upload success
+                    dz.on("success", function(file, response) {
 
-                    // Upload success
-                    this.on("success", function(file, response) {
-                        file.serverId = response.file_id;
+                        existingFileCount++;
+                        dz.options.maxFiles = maxAllowedFiles - existingFileCount;
 
-                        // Check if file is an image
+                        if (existingFileCount >= maxAllowedFiles) {
+                            document.getElementById('dropzone-error').style.display = 'block';
+                            document.getElementById('dropzone-error').innerText =
+                                "Only 2 files are allowed. Delete one to upload a new file.";
+                        }
+
+                        file.serverId = response.file_id; // store for delete
+
                         const isImage = /\.(jpg|jpeg|png)$/i.test(response.file_name);
 
-                        // Build HTML
                         const fileHTML = `
-                        <div class="pending-item uploaded-file-item" id="uploaded-file-${response.file_id}">
-                            <div class="pending-item-content d-flex align-items-center gap-3">
-                                ${isImage ? `<img src="${response.download_url}" alt="${response.file_name}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">` : `<i class="fas fa-file-alt fa-2x"></i>`}
-                                <div class="pending-text">
-                                    <h5>${response.file_name}</h5>
-                                    <p>Uploaded successfully</p>
-                                </div>
-                            </div>
-                            <div class="pending-actions d-flex gap-2">
-                                <a href="${response.download_url}" target="_blank" class="action-btn" title="Open in new tab">
-                                    <i class="fas fa-external-link-alt"></i>
-                                </a>
-                                <a href="${response.download_url}" download class="action-btn" title="Download">
-                                    <i class="fas fa-download"></i>
-                                </a>
-                            </div>
+                <div class="pending-item uploaded-file-item d-flex justify-content-between align-items-center"
+                    id="uploaded-file-${response.file_id}">
+                    <div class="pending-item-content d-flex align-items-center gap-3">
+                        ${isImage
+                            ? `<img src="${response.download_url}" style="width:50px;height:50px;object-fit:cover;border-radius:4px;">`
+                            : `<i class="fas fa-file-alt fa-2x"></i>`}
+                        <div class="pending-text">
+                            <h5>${response.file_name}</h5>
+                            <p>Uploaded successfully</p>
                         </div>
-                        `;
+                    </div>
+                </div>
+            `;
 
-                        document.getElementById("uploaded-files-list").insertAdjacentHTML(
-                            "beforeend", fileHTML);
+                        document.getElementById("uploaded-files-list")
+                            .insertAdjacentHTML("beforeend", fileHTML);
                     });
 
-                    // Remove file
-                    this.on("removedfile", function(file) {
-                        
+                    // ✅ HANDLE REMOVE FROM DROPZONE
+                    dz.on("removedfile", function(file) {
 
-                        // If file was not uploaded to server yet
-                        if (!file.serverId) return;
+                        // If file was not uploaded yet, just reduce counter
+                        if (!file.serverId) {
+                            return;
+                        }
 
                         fetch("{{ route('user.deleteUploadDocument') }}", {
                                 method: "POST",
                                 headers: {
                                     "Content-Type": "application/json",
                                     "X-CSRF-TOKEN": "{{ csrf_token() }}",
+                                    "Accept": "application/json"
                                 },
                                 body: JSON.stringify({
                                     file_id: file.serverId
@@ -274,16 +301,23 @@
                             .then(res => res.json())
                             .then(response => {
                                 if (response.success) {
-                                    // Remove rendered uploaded file card (design item)
-                                    document
-                                        .getElementById(`uploaded-file-${file.serverId}`)
-                                        ?.remove();
+
+                                    existingFileCount--;
+                                    dz.options.maxFiles = maxAllowedFiles -
+                                        existingFileCount;
+
+                                    document.getElementById(
+                                        `uploaded-file-${file.serverId}`)?.remove();
+
+                                    document.getElementById('dropzone-error').style
+                                        .display = 'none';
                                 }
                             })
-                            .catch(() => {
-                                console.error("File delete failed");
+                            .catch(error => {
+                                console.error("File delete failed:", error);
                             });
                     });
+
                 }
             });
 
@@ -327,9 +361,15 @@
                                 })
                                 .then(response => {
                                     if (response.success) {
-                                        fileCard.remove();
-                                        Swal.fire('Deleted!', 'Your file has been deleted.',
-                                            'success');
+                                        Swal.fire({
+                                            title: 'Deleted!',
+                                            text: 'Your file has been deleted.',
+                                            icon: 'success',
+                                            confirmButtonText: 'OK'
+                                        }).then(() => {
+                                            location
+                                                .reload(); //  reload page after clicking OK
+                                        });
                                     } else {
                                         Swal.fire('Error!', response.message ||
                                             'File could not be deleted.', 'error');

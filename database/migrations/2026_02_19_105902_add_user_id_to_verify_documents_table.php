@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('verify_documents', function (Blueprint $table) {
-            $table->unsignedBigInteger('admin_id')->after('id');
+            $table->unsignedBigInteger('admin_id')->after('id')->nullable();
         });
     }
 

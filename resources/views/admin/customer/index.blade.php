@@ -247,31 +247,30 @@
                                                 {{ isset($selectedOrder->document->name) ? $selectedOrder->document->name : 'N/A' }}
                                             </div>
                                         </div>
-                                        {{-- <div class="detail-item">
-                                            <div class="detail-value">poa_aisha.pdf</div>
-                                        </div> --}}
-                                        <div class="detail-item">
-                                            <div class="detail-label">Reviewed by:</div>
-                                            <div class="detail-value">
-                                                @php
-                                                    $reviewedDoc =
-                                                        $selectedOrder->verifyDocuments->firstWhere(
-                                                            'status',
-                                                            'approved',
-                                                        ) ??
-                                                        ($selectedOrder->verifyDocuments->firstWhere(
-                                                            'status',
-                                                            'rejected',
-                                                        ) ??
+                                        @if ($selectedOrder->hasUserUploadedAllDocuments($selectedOrder->user_id))
+                                            <div class="detail-item">
+                                                <div class="detail-label">Reviewed by:</div>
+                                                <div class="detail-value">
+                                                    @php
+                                                        $reviewedDoc =
                                                             $selectedOrder->verifyDocuments->firstWhere(
                                                                 'status',
-                                                                'verified',
-                                                            ));
-                                                @endphp
+                                                                'approved',
+                                                            ) ??
+                                                            ($selectedOrder->verifyDocuments->firstWhere(
+                                                                'status',
+                                                                'rejected',
+                                                            ) ??
+                                                                $selectedOrder->verifyDocuments->firstWhere(
+                                                                    'status',
+                                                                    'verified',
+                                                                ));
+                                                    @endphp
 
-                                                {{ optional($reviewedDoc?->admin)->name ?? 'Not Reviewed' }}
+                                                    {{ optional($reviewedDoc?->admin)->name ?? 'Not Reviewed' }}
+                                                </div>
                                             </div>
-                                        </div>
+                                        @endif
                                         <div class="detail-item">
                                             <div class="detail-label">Status:</div>
                                             {!! documentUploadStatus($selectedOrder->upload_document_status) !!}
@@ -350,11 +349,36 @@
                 </div>
             </div>
         @else
-            <div class="col-12">
-                <div class="alert alert-info text-center" role="alert">
-                    <i class="bx bx-info-circle me-2"></i>
-                    <strong>No clients found</strong>
-                    <p class="mb-0 mt-2">There are currently no registered clients in the system.</p>
+            <div class="col-12 d-flex justify-content-center align-items-center" style="min-height: 60vh;">
+                <div class="card border-0 shadow-lg text-center p-5 position-relative overflow-hidden"
+                    style="max-width: 520px; border-radius: 20px;">
+
+                    <!-- Soft Background Accent -->
+                    <div class="position-absolute top-0 start-50 translate-middle-x"
+                        style="width: 200px; height: 200px; background: linear-gradient(135deg, #eef2ff, #f8fafc);
+                    border-radius: 50%; z-index: 0; filter: blur(40px); opacity: 0.7;">
+                    </div>
+
+                    <div class="position-relative" style="z-index: 1;">
+
+                        <!-- Icon Section -->
+                        <div class="mb-4">
+                            <div class="d-inline-flex align-items-center justify-content-center rounded-circle shadow-sm"
+                                style="width: 90px; height: 90px; background: linear-gradient(135deg, #6366f1, #4f46e5);">
+                                <i class="bx bx-user-x text-white" style="font-size: 40px;"></i>
+                            </div>
+                        </div>
+
+                        <!-- Heading -->
+                        <h4 class="fw-bold mb-2">No Customers Found</h4>
+
+                        <!-- Description -->
+                        <p class="text-muted mb-4" style="font-size: 15px;">
+                            There are currently no registered customers in the system.
+                            Once users sign up, they will appear here.
+                        </p>
+
+                    </div>
                 </div>
             </div>
         @endif
