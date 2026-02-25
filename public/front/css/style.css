@@ -1000,6 +1000,32 @@ aside.sidebar .navbar-nav .nav-link {
     font-size: 14px;
 }
 
+/* Download button */
+.btn-download,
+.action-btn {
+    background-color: #b7862b;
+    color: #fff;
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    text-decoration: none;
+}
+
+.btn-download i {
+    font-size: 16px;
+}
+
+   /* Hover effect */
+.btn-download:hover,
+.action-btn:hover {
+    background-color: #a3731f;
+    color: #fff;
+}
+
 /* Mobile-friendly */
 @media (max-width: 576px) {
     .pagination .page-link {

@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\MyProfileController;
 use App\Http\Controllers\Admin\TwoFactorController;
 use App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\BillingController;
 use App\Http\Controllers\Front\NotificationController;
 use App\Http\Controllers\Front\UploadDocumentController;
 use App\Http\Controllers\Front\ScheduleMeetingController;
@@ -100,6 +101,13 @@ Route::group(['prefix' => 'user', 'as' => 'user.', 'middleware' => ['auth', 'ver
 
     Route::post('/notifications/{id}/read', [NotificationController::class, 'markRead'])
         ->name('notifications.markRead');
+
+
+    Route::get('/billing-details', [BillingController::class, 'billingDetails'])
+        ->name('billing.details');
+
+    Route::get('/invoice/download/{order}', [BillingController::class, 'downloadInvoice'])
+        ->name('invoice.download');
 });
 
 // Route::post('/', [MyProfileController::class, 'updateProfile'])->name('admin.update.profile');

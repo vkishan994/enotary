@@ -1,8 +1,8 @@
 <!-- asidebar start -->
 <aside class="sidebar">
-        <a href="#" class="close-sidebar"><i class="fa fa-close"></i>  </a>
+    <a href="#" class="close-sidebar"><i class="fa fa-close"></i> </a>
     <div class="logo-sec mb-4">
-        <a href="#"><img src="{{ asset('front/img/logo/white-horse.png')}}" alt="" /> </a>
+        <a href="#"><img src="{{ asset('front/img/logo/white-horse.png') }}" alt="" /> </a>
     </div>
     <div class="navbar-nav">
         <a class="nav-link" href="{{ route('user.account-dashboard') }}">
@@ -14,7 +14,7 @@
         <a class="nav-link" href="#">
             My Notarisations
         </a>
-        <a class="nav-link" href="#">
+        <a class="nav-link" href="{{ route('user.billing.details') }}">
             Billing
         </a>
         <a class="nav-link" href="#">

@@ -3,12 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Admin;
 use App\Models\Document;
 use App\Models\NotaryServiceType;
 use App\Models\Order;
 use App\Models\ScheduleMeeting;
-use App\Models\VerifyDocument;
 use App\Rules\MatchOldPassword;
 use App\Services\StripeClass;
 use Carbon\Carbon;
@@ -18,6 +16,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use PragmaRX\Google2FA\Google2FA;
 use Stripe\Stripe;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Storage;
 
 class MyProfileController extends Controller
 {
@@ -225,7 +225,32 @@ class MyProfileController extends Controller
         if ($paymentIntentId) {
             $order = Order::where('stripe_payment_intent_id', $paymentIntentId)->first();
             if ($order) {
-                $order->update(['payment_status' => 'completed']);
+
+                //  Update order basic info
+                $order->payment_status = 'completed';
+                $order->invoice_number = 'INV-' . date('Y') . '-' . str_pad($order->id, 5, '0', STR_PAD_LEFT);
+
+                //  Define file name & path
+                $fileName = $order->invoice_number . '.pdf';
+                $filePath = 'invoices/' . $fileName;
+
+                // Generate PDF
+                // eager-load service type for PDF view
+                $order->load('notaryServiceType');
+
+                $pdf = Pdf::loadView('front.user.billing.invoice_pdf', [
+                    'order' => $order,
+                    'user' => $order->user
+                ]);
+
+                // Store file in storage/app/public/invoices
+                Storage::disk('public')->put($filePath, $pdf->output());
+
+                //  Save file details in DB
+                $order->invoice_file_name = $fileName;      // Only file name
+                $order->invoice_file_path = $filePath;      // Full relative path
+
+                $order->save();
             }
         }
 

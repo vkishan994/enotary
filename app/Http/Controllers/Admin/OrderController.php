@@ -13,6 +13,9 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 
 class OrderController extends Controller
 {
@@ -20,6 +23,35 @@ class OrderController extends Controller
     {
         if ($request->ajax()) {
             $data = Order::with(['user', 'document', 'notaryServiceType'])->latest()->get();
+
+            foreach ($data as $order_detial) {
+
+                $order = Order::with('user', 'notaryServiceType')->findOrFail($order_detial->id);
+
+                $order->invoice_number = 'INV-' . date('Y') . '-' . str_pad($order->id, 5, '0', STR_PAD_LEFT);
+
+                //  Define file name & path
+                $fileName = $order->invoice_number . '.pdf';
+                $filePath = 'invoices/' . $fileName;
+
+                // Generate PDF
+                // eager-load service type for PDF view
+                $order->load('notaryServiceType');
+
+                $pdf = Pdf::loadView('front.user.billing.invoice_pdf', [
+                    'order' => $order,
+                    'user' => $order->user
+                ]);
+
+                // Store file in storage/app/public/invoices
+                Storage::disk('public')->put($filePath, $pdf->output());
+
+                //  Save file details in DB
+                $order->invoice_file_name = $fileName;      // Only file name
+                $order->invoice_file_path = $filePath;      // Full relative path
+
+                $order->save();
+            }
 
             return Datatables::of($data)
                 ->addColumn('id',  fn($row) => $row->id)

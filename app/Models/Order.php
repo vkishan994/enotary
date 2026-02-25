@@ -14,7 +14,9 @@ class Order extends Model
         'amount',
         'currency',
         'payment_status',
-        'stripe_payment_intent_id'
+        'stripe_payment_intent_id',
+        'invoice_number',
+        'invoice_generated_at',
     ];
 
     public function user()
@@ -120,5 +122,10 @@ class Order extends Model
 
 
         return $allUploaded;
+    }
+
+    public static function generateInvoiceNumber()
+    {
+        return 'INV-' . date('Y') . '-' . str_pad(self::count() + 1, 5, '0', STR_PAD_LEFT);
     }
 }
