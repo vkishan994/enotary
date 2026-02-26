@@ -128,4 +128,12 @@
     color: #696cff !important;
 }
 
+.error-alert {
+    color: red
+}
+
+.invalid-feedback {
+    display: block !important;
+}
+
 

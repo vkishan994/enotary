@@ -1,4 +1,15 @@
 @extends('admin.layouts.common')
+@section('css')
+    <style>
+        .error-alert {
+            color: red
+        }
+
+        .invalid-feedback {
+            display: block !important;
+        }
+    </style>
+@endsection
 @section('content')
     <h4 class="py-3 mb-4"><span class="text-muted fw-light">Testimonial/</span>
         @if (isset($testimonial))
@@ -73,7 +84,7 @@
                         </div>
 
 
-                        <div class="mb-3">
+                        <div class="mb-3 mt-3">
                             <label class="form-label" for="content">Content</label>
                             <textarea name="content" id="content" class="form-control">{{ old('testimonial', isset($testimonial) ? $testimonial->content : '') }} </textarea>
                             @error('content')
