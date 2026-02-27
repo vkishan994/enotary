@@ -1,4 +1,5 @@
 @extends('admin.layouts.common')
+@section('title', 'Testimonials - List')
 @section('content')
     <div class="row">
         <div class="col-md-6">
@@ -11,9 +12,6 @@
         </div>
     </div>
 
-    <div id="flash-messages">
-     
-    </div>
 
     <!-- Ajax Sourced Server-side -->
     <div class="card">

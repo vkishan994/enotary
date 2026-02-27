@@ -1,4 +1,5 @@
 @extends('admin.layouts.common')
+@section('title', 'Veriff Data - Details')
 @section('css')
     <style>
         .info-box {

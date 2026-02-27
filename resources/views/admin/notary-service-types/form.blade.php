@@ -1,4 +1,11 @@
 @extends('admin.layouts.common')
+@section('title')
+    @if(isset($record))
+        Notary Service Type - Edit
+    @else
+        Notary Service Type - Create
+    @endif
+@endsection
 @section('content')
     <h4 class="py-3 mb-4"><span class="text-muted fw-light">Notary Service Type/</span> {{ $title ?? (isset($record) ? 'Edit' : 'Create') }}</h4>
 

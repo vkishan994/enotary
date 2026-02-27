@@ -1,4 +1,5 @@
 @extends('admin.layouts.common')
+@section('title', 'Notifications')
 
 @section('content')
     <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-2">

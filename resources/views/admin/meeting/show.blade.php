@@ -1,4 +1,5 @@
 @extends('admin.layouts.common')
+@section('title', 'Meeting - Details')
 @section('css')
     <style>
         /* ===== Global ===== */

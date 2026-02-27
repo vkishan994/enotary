@@ -64,7 +64,7 @@ class UploadDocumentsController extends Controller
 
             return redirect()
                 ->route('upload-documents.index')
-                ->with('success', 'Saved successfully');
+                ->with('success', $this->successMessage(UploadDocument::class, 'added'));
         } catch (\Exception $e) {
             // dd($e->getMessage());
             DB::rollBack();
@@ -118,7 +118,7 @@ class UploadDocumentsController extends Controller
 
             return redirect()
                 ->route('upload-documents.index')
-                ->with('success', 'Updated successfully');
+                ->with('success', $this->successMessage(UploadDocument::class, 'updated'));
         } catch (\Exception $e) {
             DB::rollBack();
 

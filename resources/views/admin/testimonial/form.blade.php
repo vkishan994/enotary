@@ -1,4 +1,11 @@
 @extends('admin.layouts.common')
+@section('title')
+    @if(isset($testimonial))
+        Testimonial - Edit
+    @else
+        Testimonial - Create
+    @endif
+@endsection
 @section('css')
     <style>
         .error-alert {
@@ -26,7 +33,7 @@
                     <h5 class="mb-0">Testimonial </h5>
                 </div>
                 <div class="card-body">
-                    <form
+                    <form id="testimonialForm" novalidate
                         action="{{ isset($testimonial) ? route('testimonials.update', $testimonial->id) : route('testimonials.store') }}"
                         method="post">
                         @csrf
@@ -36,7 +43,7 @@
 
                         <div class="row">
                             <div class="col-md-4">
-                                <label class="form-label" for="name">Name</label>
+                                <label class="form-label" for="name">Name <span class="text-danger">*</span></label>
                                 <input type="text" name="name" class="form-control"
                                     value="{{ old('name', isset($testimonial) ? $testimonial->name : '') }}" id="name"
                                     placeholder="Enter Name" />
@@ -67,7 +74,7 @@
                             </div>
 
                             <div class="col-md-4">
-                                <label for="status" class="form-label">Status</label>
+                                <label for="status" class="form-label">Status <span class="text-danger">*</span></label>
                                 <select class="form-select" name="status" id="status"
                                     aria-label="Default select example">
                                     <option value="" @if (old('status', isset($testimonial) ? $testimonial->status : '') == '') selected @endif>Select Status
@@ -85,7 +92,7 @@
 
 
                         <div class="mb-3 mt-3">
-                            <label class="form-label" for="content">Content</label>
+                            <label class="form-label" for="content">Content <span class="text-danger">*</span></label>
                             <textarea name="content" id="content" class="form-control">{{ old('testimonial', isset($testimonial) ? $testimonial->content : '') }} </textarea>
                             @error('content')
                                 <div class="invalid-feedback">
@@ -101,6 +108,39 @@
         </div>
     </div>
     @push('scripts')
-        <script></script>
+        <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+        <script>
+            $(function() {
+                $('#testimonialForm').validate({
+                    rules: {
+                        name: { required: true },
+                        status: { required: true },
+                        content: { required: true }
+                    },
+                    messages: {
+                        name: 'Please enter name',
+                        status: 'Please select status',
+                        content: 'Please enter content'
+                    },
+                    errorElement: 'div',
+                    errorClass: 'invalid-feedback',
+                    errorPlacement: function(error, element) {
+                        if (element.hasClass('form-select')) {
+                            error.addClass('error-alert');
+                            element.closest('.col-md-4, .mb-3').append(error);
+                        } else {
+                            element.after(error);
+                        }
+                    },
+                    highlight: function(element) {
+                        $(element).addClass('is-invalid');
+                    },
+                    unhighlight: function(element) {
+                        $(element).removeClass('is-invalid');
+                        $(element).next('.invalid-feedback, .error-alert').remove();
+                    }
+                });
+            });
+        </script>
     @endpush
 @endsection

@@ -1,4 +1,5 @@
 @extends('admin.layouts.common')
+@section('title', 'Orders - List')
 @section('content')
     <div class="row">
         <div class="col-md-6">

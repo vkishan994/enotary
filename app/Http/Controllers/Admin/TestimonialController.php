@@ -70,7 +70,8 @@ class TestimonialController extends Controller
             DB::commit();
 
             if (!$request->ajax()) {
-                return redirect()->route('testimonials.index')->with('success', 'Saved Successfully');
+                return redirect()->route('testimonials.index')
+                    ->with('success', $this->successMessage(Testimonial::class, 'added'));
             }
         } catch (\Exception $e) {
             DB::rollback();
@@ -114,7 +115,8 @@ class TestimonialController extends Controller
             DB::commit();
 
             if (!$request->ajax()) {
-                return redirect()->route('testimonials.index')->with('success', 'Saved Successfully');
+                return redirect()->route('testimonials.index')
+                    ->with('success', $this->successMessage(Testimonial::class, 'updated'));
             }
         } catch (\Exception $e) {
             DB::rollback();

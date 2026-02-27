@@ -405,7 +405,8 @@ class {$controllerName} extends Controller
 {$syncManyToMany}
             DB::commit();
 
-            return redirect()->route('{$viewFolder}.index')->with('success', 'Saved Successfully');
+            return redirect()->route('{$viewFolder}.index')
+                ->with('success', $this->successMessage({$modelName}::class, 'added'));
         } catch (\\Exception \$e) {
             DB::rollBack();
             Log::error('{$viewFolder} creation failed: ' . \$e->getMessage());
@@ -435,7 +436,8 @@ class {$controllerName} extends Controller
 {$syncManyToMany}
             DB::commit();
 
-            return redirect()->route('{$viewFolder}.index')->with('success', 'Saved Successfully');
+            return redirect()->route('{$viewFolder}.index')
+                ->with('success', $this->successMessage({$modelName}::class, 'updated'));
         } catch (\\Exception \$e) {
             DB::rollBack();
             Log::error('{$viewFolder} update failed: ' . \$e->getMessage());

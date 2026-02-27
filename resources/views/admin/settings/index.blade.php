@@ -1,4 +1,5 @@
 @extends('admin.layouts.common')
+@section('title', 'Settings')
 @section('css')
     <style>
         /* Active tab background */

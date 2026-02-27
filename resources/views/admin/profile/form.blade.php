@@ -1,4 +1,5 @@
 @extends('admin.layouts.common')
+@section('title', 'My Profile')
 @section('content')
     <h4 class="py-3 mb-4"><span class="text-muted fw-light">My Profile/</span> Edit</h4>
     @if (session('success'))

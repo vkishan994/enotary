@@ -15,50 +15,50 @@
 
           <ul class="menu-inner py-1">
               <!-- Dashboards -->
-              <li class="menu-item">
-                  <a href="{{ route('dashboard') }}" class="menu-link">
+              <li class="menu-item {{ request()->routeIs('dashboard') ? 'active' : '' }}">
+                  <a href="{{ route('dashboard') }}" class="menu-link {{ request()->routeIs('dashboard') ? 'active' : '' }}">
                       <i class="menu-icon tf-icons bx bx-home-circle"></i>
                       <div data-i18n="Dashboards">Dashboards</div>
                   </a>
               </li>
 
-              <li class="menu-item">
-                  <a href="{{ route('testimonials.index') }}" class="menu-link">
+              <li class="menu-item {{ request()->routeIs('testimonials.*') ? 'active' : '' }}">
+                  <a href="{{ route('testimonials.index') }}" class="menu-link {{ request()->routeIs('testimonials.*') ? 'active' : '' }}">
                       <i class="menu-icon tf-icons bx bx-message-dots"></i>
                       <div data-i18n="Dashboards">Testimonials</div>
                   </a>
               </li>
 
-              <li class="menu-item">
-                  <a href="{{ route('notary-service-types.index') }}" class="menu-link">
+              <li class="menu-item {{ request()->routeIs('notary-service-types.*') ? 'active' : '' }}">
+                  <a href="{{ route('notary-service-types.index') }}" class="menu-link {{ request()->routeIs('notary-service-types.*') ? 'active' : '' }}">
                       <i class="menu-icon tf-icons bx bx-badge-check"></i>
                       <div data-i18n="Dashboards">Notary Service Types</div>
                   </a>
               </li>
 
-              <li class="menu-item">
-                  <a href="{{ route('documents.index') }}" class="menu-link">
+              <li class="menu-item {{ request()->routeIs('documents.*') ? 'active' : '' }}">
+                  <a href="{{ route('documents.index') }}" class="menu-link {{ request()->routeIs('documents.*') ? 'active' : '' }}">
                       <i class="menu-icon tf-icons bx bx-file"></i>
                       <div data-i18n="Dashboards">Documents</div>
                   </a>
               </li>
 
-              <li class="menu-item">
-                  <a href="{{ route('upload-documents.index') }}" class="menu-link">
+              <li class="menu-item {{ request()->routeIs('upload-documents.*') ? 'active' : '' }}">
+                  <a href="{{ route('upload-documents.index') }}" class="menu-link {{ request()->routeIs('upload-documents.*') ? 'active' : '' }}">
                       <i class="menu-icon tf-icons bx bx-file"></i>
                       <div data-i18n="Dashboards">Upload Documents</div>
                   </a>
               </li>
 
-              <li class="menu-item">
-                  <a href="{{ route('admin.orders.index') }}" class="menu-link">
+              <li class="menu-item {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">
+                  <a href="{{ route('admin.orders.index') }}" class="menu-link {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">
                       <i class="menu-icon tf-icons bx bx-cart"></i>
                       <div data-i18n="Dashboards">Orders</div>
                   </a>
               </li>
 
-              <li class="menu-item">
-                  <a href="{{ route('admin.schedule.meetings.index') }}" class="menu-link">
+              <li class="menu-item {{ request()->routeIs('admin.schedule.*') ? 'active' : '' }}">
+                  <a href="{{ route('admin.schedule.meetings.index') }}" class="menu-link {{ request()->routeIs('admin.schedule.*') ? 'active' : '' }}">
                       <i class="menu-icon tf-icons bx bx-calendar"></i>
                       <div data-i18n="Dashboards">Schedule Meetings</div>
                   </a>
@@ -71,15 +71,15 @@
                   </a>
               </li> --}}
 
-              <li class="menu-item">
-                  <a href="{{ route('admin.settings') }}" class="menu-link">
+              <li class="menu-item {{ request()->routeIs('admin.settings') ? 'active' : '' }}">
+                  <a href="{{ route('admin.settings') }}" class="menu-link {{ request()->routeIs('admin.settings') ? 'active' : '' }}">
                       <i class="menu-icon tf-icons bx bx-cog"></i>
                       <div data-i18n="Dashboards">Settings</div>
                   </a>
               </li>
 
-              <li class="menu-item">
-                  <a href="{{ route('customers.list') }}" class="menu-link">
+              <li class="menu-item {{ request()->routeIs('customers.*') ? 'active' : '' }}">
+                  <a href="{{ route('customers.list') }}" class="menu-link {{ request()->routeIs('customers.*') ? 'active' : '' }}">
                       <i class="menu-icon tf-icons bx bx-group"></i>
                       <div data-i18n="Dashboards">Customers</div>
                   </a>

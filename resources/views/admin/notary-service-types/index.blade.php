@@ -1,4 +1,5 @@
 @extends('admin.layouts.common')
+@section('title', 'Notary Service Types - List')
 @section('content')
     <div class="row">
         <div class="col-md-6">

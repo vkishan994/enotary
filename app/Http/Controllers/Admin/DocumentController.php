@@ -51,7 +51,8 @@ class DocumentController extends Controller
             $document->notaryServiceTypes()->sync($request->input('notary_service_types', []));
             DB::commit();
 
-            return redirect()->route('documents.index')->with('success', 'Saved Successfully');
+            return redirect()->route('documents.index')
+                ->with('success', $this->successMessage(Document::class, 'added'));
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('documents creation failed: ' . $e->getMessage());
@@ -82,7 +83,8 @@ class DocumentController extends Controller
             $record->uploadDocuments()->sync($request->input('upload_documents', []));
             DB::commit();
 
-            return redirect()->route('documents.index')->with('success', 'Saved Successfully');
+            return redirect()->route('documents.index')
+                ->with('success', $this->successMessage(Document::class, 'updated'));
         } catch (\Exception $e) {
             // dd($e->getMessage());
             DB::rollBack();

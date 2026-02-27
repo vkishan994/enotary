@@ -1,4 +1,5 @@
 @extends('admin.layouts.common')
+@section('title', 'Order - Detail')
 
 @section('css')
     <style>

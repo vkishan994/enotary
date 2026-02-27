@@ -49,7 +49,8 @@ class NotaryServiceTypeController extends Controller
 
             DB::commit();
 
-            return redirect()->route('notary-service-types.index')->with('success', 'Saved Successfully');
+            return redirect()->route('notary-service-types.index')
+                ->with('success', $this->successMessage(NotaryServiceType::class, 'added'));
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('notary-service-types creation failed: ' . $e->getMessage());
@@ -79,7 +80,8 @@ class NotaryServiceTypeController extends Controller
 
             DB::commit();
 
-            return redirect()->route('notary-service-types.index')->with('success', 'Saved Successfully');
+            return redirect()->route('notary-service-types.index')
+                ->with('success', $this->successMessage(NotaryServiceType::class, 'updated'));
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('notary-service-types update failed: ' . $e->getMessage());

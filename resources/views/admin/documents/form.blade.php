@@ -1,4 +1,11 @@
 @extends('admin.layouts.common')
+@section('title')
+    @if(isset($record))
+        Document - Edit
+    @else
+        Document - Create
+    @endif
+@endsection
 @section('css')
     <!-- Select2 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -22,7 +29,7 @@
 
                         <div class="row">
                             <div class="col-md-6">
-                                <label class="form-label" for="name">Name</label>
+                                <label class="form-label" for="name">Name <span class="text-danger">*</span></label>
                                 <input type="text" name="name" class="form-control"
                                     value="{{ old('name', isset($record) ? $record->name : '') }}" id="name"
                                     placeholder="Enter Name" />
@@ -34,7 +41,7 @@
                             </div>
 
                             <div class="col-md-6">
-                                <label class="form-label" for="price">Price</label>
+                                <label class="form-label" for="price">Price <span class="text-danger">*</span></label>
                                 <input type="number" step="0.01" name="price" class="form-control"
                                     value="{{ old('price', isset($record) ? $record->price : '') }}" id="price"
                                     placeholder="Enter Price" />
