@@ -2,16 +2,16 @@
 @section('title', 'Settings')
 @section('css')
     <style>
-        /* Active tab background */
         .nav-tabs .nav-link.active {
-            background-color: var(--bs-primary);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: #fff !important;
-            border-color: var(--bs-primary) var(--bs-primary) #fff;
+            border: 2px solid transparent;
+            border-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-image-slice: 1;
         }
 
-        /* Hover state */
         .nav-tabs .nav-link:hover {
-            border-color: var(--bs-primary);
+            border-color: #667eea;
         }
     </style>
 @endsection

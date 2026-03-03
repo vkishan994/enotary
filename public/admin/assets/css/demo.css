@@ -137,3 +137,16 @@
 }
 
 
+/** Custom ***/
+
+.bg-menu-theme .menu-link, .bg-menu-theme .menu-horizontal-prev, .bg-menu-theme .menu-horizontal-next {
+    color: #384551 !important;
+}
+
+.card-header{
+    color: #384551 !important;
+}
+
+.table:not(.table-dark) th {
+    color: #384551 !important;
+}
