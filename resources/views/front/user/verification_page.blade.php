@@ -51,49 +51,24 @@
                                     $status = $VeriffData->status ?? 'not_started';
                                 @endphp
 
-                                @if ($status == 'approved')
-                                    <span class="badge bg-success">
-                                        <i class="fa fa-check-circle me-1"></i> Verified
-                                    </span>
-                                @elseif (in_array($status, ['started', 'submitted']))
-                                    <span class="badge bg-warning text-dark">
-                                        <i class="fa fa-clock me-1"></i> Verification in progress
-                                    </span>
-                                @elseif ($status === 'resubmission_requested')
-                                    <span class="badge bg-info text-dark">
-                                        <i class="fa fa-redo me-1"></i> Action required
-                                    </span>
-                                @elseif (in_array($status, ['declined']))
-                                    <span class="badge bg-danger">
-                                        <i class="fa fa-times-circle me-1"></i> Verification failed
-                                    </span>
-                                @elseif (in_array($status, ['expired', 'abandoned']))
-                                    <span class="badge bg-secondary">
-                                        <i class="fa fa-ban me-1"></i> Verification expired
-                                    </span>
-                                @elseif ($status === 'created')
-                                    <span class="badge bg-light text-dark">
-                                        <i class="fa fa-info-circle me-1"></i> Not started
-                                    </span>
-                                @else
-                                    <span class="badge bg-secondary">
-                                        <i class="fa fa-question-circle me-1"></i> Not started
-                                    </span>
-                                @endif
+                                {!! veriffStatus($VeriffData->status ?? null) !!}
                             </div>
                         </div>
 
                         {{-- Action --}}
-                        <div class="mt-4 text-end">
+                        <div class="mt-4 {{ $status === 'approved' ? 'text-start' : 'text-end' }}">
                             @if ($status === 'approved')
                                 <div class="alert alert-success mb-0">
                                     <i class="fa fa-check-circle me-1"></i>
                                     You have successfully verified your identity.
                                 </div>
                             @elseif ($status === 'started')
-                                <button class="btn btn-secondary" disabled>
-                                    Verification in progress
-                                </button>
+                                <form method="POST" action="{{ route('user.veriff.start', ['order_id' => $order_id]) }}">
+                                    @csrf
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="fa fa-play me-1"></i> Start Verification
+                                    </button>
+                                </form>
                             @else
                                 <form method="POST" action="{{ route('user.veriff.start', ['order_id' => $order_id]) }}">
                                     @csrf
@@ -107,21 +82,22 @@
 
                     {{-- Info box --}}
                     @if ($status != 'approved')
-                    <div class="alert alert-info mt-4">
-                        <strong>What you’ll need to complete verification:</strong>
-                        <ul class="mb-0 mt-2">
-                            <li>A valid government-issued ID (passport, driving licence, or national ID)</li>
-                            <li>
-                                A device with a working camera
-                                <br>
-                                <small class="text-muted">
-                                    (Mobile phone recommended. If you’re on a desktop without a camera, please open the link
-                                    on your phone.)
-                                </small>
-                            </li>
-                            <li>A stable internet connection</li>
-                        </ul>
-                    </div>
+                        <div class="alert alert-info mt-4">
+                            <strong>What you’ll need to complete verification:</strong>
+                            <ul class="mb-0 mt-2">
+                                <li>A valid government-issued ID (passport, driving licence, or national ID)</li>
+                                <li>
+                                    A device with a working camera
+                                    <br>
+                                    <small class="text-muted">
+                                        (Mobile phone recommended. If you’re on a desktop without a camera, please open the
+                                        link
+                                        on your phone.)
+                                    </small>
+                                </li>
+                                <li>A stable internet connection</li>
+                            </ul>
+                        </div>
                     @endif
 
                 </div>

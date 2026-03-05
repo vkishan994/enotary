@@ -282,62 +282,109 @@ if (!function_exists('orderStepStatus')) {
     }
 }
 
+// if (!function_exists('veriffStatus')) {
+//     function veriffStatus($status)
+//     {
+
+//         if (empty($status)) {
+//             return '<span class="badge bg-secondary">Not Started</span>';
+//         }
+//         switch ($status) {
+//             case 'created':
+//                 $class = 'secondary';
+//                 break;
+
+//             case 'started':
+//                 $class = 'info';
+//                 break;
+
+//             case 'submitted':
+//                 $class = 'primary';
+//                 break;
+
+//             case 'approved':
+//                 $class = 'success';
+//                 break;
+
+//             case 'declined':
+//                 $class = 'danger';
+//                 break;
+
+//             case 'resubmission_requested':
+//                 $class = 'warning';
+//                 break;
+
+//             case 'expired':
+//                 $class = 'dark';
+//                 break;
+
+//             case 'abandoned':
+//                 $class = 'dark';
+//                 break;
+
+//             case 'review':
+//                 $class = 'warning';
+//                 break;
+
+//             case 'user_cancelled':
+//                 $class = 'dark';
+//                 break;
+
+//             default:
+//                 $class = 'secondary';
+//                 break;
+//         }
+
+//         // Make status label more readable
+//         $label = ucwords(str_replace('_', ' ', $status));
+
+//         return '<span class="badge bg-' . $class . '">' . $label . '</span>';
+//     }
+// }
+
 if (!function_exists('veriffStatus')) {
     function veriffStatus($status)
     {
+        $status = $status ?? 'not_started';
 
-        if (empty($status)) {
-            return '<span class="badge bg-secondary">Not Started</span>';
-        }
         switch ($status) {
-            case 'created':
-                $class = 'secondary';
-                break;
-
-            case 'started':
-                $class = 'info';
-                break;
-
-            case 'submitted':
-                $class = 'primary';
-                break;
 
             case 'approved':
-                $class = 'success';
-                break;
+                return '<span class="badge bg-success">
+                            <i class="fa fa-check-circle me-1"></i> Verified
+                        </span>';
 
-            case 'declined':
-                $class = 'danger';
-                break;
+            case 'started':
+            case 'submitted':
+                return '<span class="badge bg-warning text-dark">
+                            <i class="fa fa-clock me-1"></i> Verification in progress
+                        </span>';
 
             case 'resubmission_requested':
-                $class = 'warning';
-                break;
+                return '<span class="badge bg-info text-dark">
+                            <i class="fa fa-redo me-1"></i> Action required
+                        </span>';
+
+            case 'declined':
+                return '<span class="badge bg-danger">
+                            <i class="fa fa-times-circle me-1"></i> Verification failed
+                        </span>';
 
             case 'expired':
-                $class = 'dark';
-                break;
-
             case 'abandoned':
-                $class = 'dark';
-                break;
+                return '<span class="badge bg-secondary">
+                            <i class="fa fa-ban me-1"></i> Verification expired
+                        </span>';
 
-            case 'review':
-                $class = 'warning';
-                break;
-
-            case 'user_cancelled':
-                $class = 'dark';
-                break;
+            case 'created':
+                return '<span class="badge bg-light text-dark">
+                            <i class="fa fa-info-circle me-1"></i> Created
+                        </span>';
 
             default:
-                $class = 'secondary';
-                break;
+                return '<span class="badge bg-secondary">
+                            <i class="fa fa-question-circle me-1"></i> Not started
+                        </span>';
         }
-
-        // Make status label more readable
-        $label = ucwords(str_replace('_', ' ', $status));
-
-        return '<span class="badge bg-' . $class . '">' . $label . '</span>';
     }
 }

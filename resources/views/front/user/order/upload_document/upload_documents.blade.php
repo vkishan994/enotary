@@ -88,8 +88,8 @@
         }
 
         /* .document-upload {
-                            height: unset !important;
-                        } */
+                                height: unset !important;
+                            } */
     </style>
 @endsection
 @section('content')
@@ -99,7 +99,7 @@
     <main class="main-content">
 
         <div class="document-upload document-pending"
-            style="overflow: hidden;height: 500px !important;overflow-y: auto; @if (isset($userUploadedDocuments) && $userUploadedDocuments->status == 'submitted') height: 500px; @else height: unset; @endif">
+            style="overflow: hidden;height: 600px !important;overflow-y: auto; @if (isset($userUploadedDocuments) && $userUploadedDocuments->status == 'submitted') height: 500px; @else height: unset; @endif">
             <div class="section-title">
                 <div class="row">
                     <div class="col-6">
@@ -183,7 +183,7 @@
                 </div>
             @endif
 
-            <div id="uploaded-files-list" class="pending-list mt-4"></div>
+            {{-- <div id="uploaded-files-list" class="pending-list mt-4"></div> --}}
 
         </div>
     </main>
@@ -212,9 +212,10 @@
                 maxFilesize: 5,
                 uploadMultiple: false,
                 acceptedFiles: ".pdf,.jpg,.jpeg,.png,.doc,.docx",
-                addRemoveLinks: true, // ✅ SHOW REMOVE LINK
+                addRemoveLinks: true,
 
-                maxFiles: maxAllowedFiles - existingFileCount,
+                // total files allowed
+                maxFiles: maxAllowedFiles,
 
                 headers: {
                     'X-CSRF-TOKEN': document
@@ -226,16 +227,15 @@
 
                     const dz = this;
 
-                    // If already 2 files uploaded
-                    if (existingFileCount >= maxAllowedFiles) {
-                        dz.options.maxFiles = 0;
+                    // subtract already uploaded files
+                    dz.options.maxFiles = maxAllowedFiles - existingFileCount;
 
+                    if (existingFileCount >= maxAllowedFiles) {
                         document.getElementById('dropzone-error').style.display = 'block';
                         document.getElementById('dropzone-error').innerText =
                             "Only 2 files are allowed. Delete one to upload a new file.";
                     }
 
-                    // Prevent exceeding limit
                     dz.on("maxfilesexceeded", function(file) {
                         dz.removeFile(file);
 
@@ -244,19 +244,11 @@
                             "Only 2 files are allowed. Delete one to upload a new file.";
                     });
 
-                    // On upload success
                     dz.on("success", function(file, response) {
 
                         existingFileCount++;
-                        dz.options.maxFiles = maxAllowedFiles - existingFileCount;
 
-                        if (existingFileCount >= maxAllowedFiles) {
-                            document.getElementById('dropzone-error').style.display = 'block';
-                            document.getElementById('dropzone-error').innerText =
-                                "Only 2 files are allowed. Delete one to upload a new file.";
-                        }
-
-                        file.serverId = response.file_id; // store for delete
+                        file.serverId = response.file_id;
 
                         const isImage = /\.(jpg|jpeg|png)$/i.test(response.file_name);
 
@@ -265,27 +257,33 @@
                     id="uploaded-file-${response.file_id}">
                     <div class="pending-item-content d-flex align-items-center gap-3">
                         ${isImage
-                            ? `<img src="${response.download_url}" style="width:50px;height:50px;object-fit:cover;border-radius:4px;">`
-                            : `<i class="fas fa-file-alt fa-2x"></i>`}
+                        ? `<img src="${response.download_url}" style="width:50px;height:50px;object-fit:cover;border-radius:4px;">`
+                        : `<i class="fas fa-file-alt fa-2x"></i>`}
                         <div class="pending-text">
                             <h5>${response.file_name}</h5>
                             <p>Uploaded successfully</p>
                         </div>
                     </div>
                 </div>
-            `;
+                `;
 
-                        document.getElementById("uploaded-files-list")
+                        document
+                            .getElementById("uploaded-files-list")
                             .insertAdjacentHTML("beforeend", fileHTML);
+
+                        // show error when limit reached
+                        if (existingFileCount >= maxAllowedFiles) {
+                            document.getElementById('dropzone-error').style.display = 'block';
+                            document.getElementById('dropzone-error').innerText =
+                                "Only 2 files are allowed.";
+                        } else {
+                            document.getElementById('dropzone-error').style.display = 'none';
+                        }
                     });
 
-                    // ✅ HANDLE REMOVE FROM DROPZONE
                     dz.on("removedfile", function(file) {
 
-                        // If file was not uploaded yet, just reduce counter
-                        if (!file.serverId) {
-                            return;
-                        }
+                        if (!file.serverId) return;
 
                         fetch("{{ route('user.deleteUploadDocument') }}", {
                                 method: "POST",
@@ -300,22 +298,25 @@
                             })
                             .then(res => res.json())
                             .then(response => {
+
                                 if (response.success) {
 
                                     existingFileCount--;
-                                    dz.options.maxFiles = maxAllowedFiles -
-                                        existingFileCount;
 
                                     document.getElementById(
                                         `uploaded-file-${file.serverId}`)?.remove();
 
-                                    document.getElementById('dropzone-error').style
-                                        .display = 'none';
+                                    if (existingFileCount < maxAllowedFiles) {
+                                        document.getElementById('dropzone-error').style
+                                            .display = 'none';
+                                    }
                                 }
+
                             })
                             .catch(error => {
                                 console.error("File delete failed:", error);
                             });
+
                     });
 
                 }

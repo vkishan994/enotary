@@ -5,7 +5,7 @@
         .nav-tabs .nav-link.active {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: #fff !important;
-            border: 2px solid transparent;
+            /* border: 1px solid transparent; */
             border-image: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             border-image-slice: 1;
         }

@@ -57,12 +57,12 @@
                   </a>
               </li>
 
-              <li class="menu-item {{ request()->routeIs('admin.schedule.*') ? 'active' : '' }}">
+              {{-- <li class="menu-item {{ request()->routeIs('admin.schedule.*') ? 'active' : '' }}">
                   <a href="{{ route('admin.schedule.meetings.index') }}" class="menu-link {{ request()->routeIs('admin.schedule.*') ? 'active' : '' }}">
                       <i class="menu-icon tf-icons bx bx-calendar"></i>
                       <div data-i18n="Dashboards">Schedule Meetings</div>
                   </a>
-              </li>
+              </li> --}}
 
               {{-- <li class="menu-item">
                   <a href="{{ route('admin.veriffdata.index') }}" class="menu-link">

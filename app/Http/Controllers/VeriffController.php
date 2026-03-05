@@ -74,15 +74,31 @@ class VeriffController extends Controller
 
             DB::transaction(function () use ($response, $user, $orderid) {
 
-                //  Store in veriff_data table
-                VeriffData::create([
-                    'user_id'             => $user->id,
-                    'order_id'            => $orderid,
-                    'session_id'   => $response['verification']['id'],
-                    'vendor_data'  => $response['verification']['vendorData'] ?? null,
-                    'status'       => $response['verification']['status'] ?? null,
-                    'payload'      => $response, // store full API response
-                ]);
+                $existing = VeriffData::where('order_id', $orderid)
+                    ->where('user_id', $user->id)
+                    ->first();
+
+                if ($existing) {
+
+                    // Update existing record
+                    $existing->update([
+                        'session_id'  => $response['verification']['id'],
+                        'vendor_data' => $response['verification']['vendorData'] ?? null,
+                        'status'      => $response['verification']['status'] ?? 'created',
+                        'payload'     => $response,
+                    ]);
+                } else {
+
+                    // Create new record
+                    VeriffData::create([
+                        'user_id'     => $user->id,
+                        'order_id'    => $orderid,
+                        'session_id'  => $response['verification']['id'],
+                        'vendor_data' => $response['verification']['vendorData'] ?? null,
+                        'status'      => $response['verification']['status'] ?? 'created',
+                        'payload'     => $response,
+                    ]);
+                }
             });
 
             // Redirect user to Veriff hosted page
