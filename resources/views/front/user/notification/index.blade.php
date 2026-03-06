@@ -55,6 +55,15 @@
                                     {{ $notification->data['message'] ?? '' }}
                                 </p>
 
+                                @if (isset($notification->data['extra']['meeting_link']) && $notification->data['extra']['meeting_link'])
+                                    <div class="mt-1">
+                                        <a href="{{ $notification->data['extra']['meeting_link'] }}" target="_blank"
+                                            class="btn btn-sm btn-success">
+                                            Join Meeting
+                                        </a>
+                                    </div>
+                                @endif
+
                                 <small class="text-muted">
                                     {{ $notification->created_at->diffForHumans() }}
                                 </small>
@@ -64,12 +73,9 @@
                         {{-- Action --}}
                         @if (is_null($notification->read_at))
                             <div class="notification-action">
-                                <form method="POST"
-                                      action="{{ route('user.notifications.markRead', $notification->id) }}">
+                                <form method="POST" action="{{ route('user.notifications.markRead', $notification->id) }}">
                                     @csrf
-                                    <button type="submit"
-                                            class="btn btn-sm btn-primary"
-                                            title="Mark as read">
+                                    <button type="submit" class="btn btn-sm btn-primary" title="Mark as read">
                                         Mark as read
                                     </button>
                                 </form>

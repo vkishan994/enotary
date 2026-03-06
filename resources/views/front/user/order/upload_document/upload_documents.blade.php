@@ -135,9 +135,8 @@
                 <div id="dropzone-error" style="margin-top:5px; color:red; display:none;">dropzone error mesasge</div>
             @endif
 
-            @if (isset($userUploadedDocuments) && !empty($userUploadedDocuments))
-                <div id="uploaded-files-list">
-                    @if (isset($userUploadedDocuments->verify_document_items) && !empty($userUploadedDocuments->verify_document_items))
+            <div id="uploaded-files-list">
+                    @if (isset($userUploadedDocuments) && !empty($userUploadedDocuments->verify_document_items))
                         @foreach ($userUploadedDocuments->verify_document_items as $item)
                             @php
                                 $fileUrl = asset('storage/' . $item->file_path);
@@ -180,8 +179,9 @@
                             </div>
                         @endforeach
                     @endif
-                </div>
-            @endif
+                </div> <!-- #uploaded-files-list -->
+            {{-- container always present, even if empty --}}
+            {{-- <div id="uploaded-files-list" class="pending-list mt-4"></div> --}}
 
             {{-- <div id="uploaded-files-list" class="pending-list mt-4"></div> --}}
 
@@ -267,9 +267,20 @@
                 </div>
                 `;
 
-                        document
-                            .getElementById("uploaded-files-list")
-                            .insertAdjacentHTML("beforeend", fileHTML);
+                        const listEl = document.getElementById("uploaded-files-list");
+                        if (listEl) {
+                            listEl.insertAdjacentHTML("beforeend", fileHTML);
+                        } else {
+                            // fallback: append to parent if container missing
+                            const parent = document.querySelector('.document-upload');
+                            if (parent) {
+                                const newDiv = document.createElement('div');
+                                newDiv.id = 'uploaded-files-list';
+                                newDiv.innerHTML = fileHTML;
+                                parent.appendChild(newDiv);
+                            }
+                            console.warn('uploaded-files-list container not found, created dynamically');
+                        }
 
                         // show error when limit reached
                         if (existingFileCount >= maxAllowedFiles) {

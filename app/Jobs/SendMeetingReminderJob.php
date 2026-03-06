@@ -52,6 +52,7 @@ class SendMeetingReminderJob implements ShouldQueue
                     'meeting_id'   => $this->meeting->id,
                     'meeting_date' => $this->meeting->meeting_date,
                     'meeting_time' => $this->meeting->meeting_time,
+                    'meeting_link' => $this->meeting->google_meet_link,
                 ],
             ];
 

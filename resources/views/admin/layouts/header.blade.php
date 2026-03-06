@@ -167,6 +167,15 @@
                                                                 {{ $notification->data['message'] ?? '' }}
                                                             </small>
 
+                                                            @if (isset($notification->data['extra']['meeting_link']) && $notification->data['extra']['meeting_link'])
+                                                                <div class="mt-1">
+                                                                    <a href="{{ $notification->data['extra']['meeting_link'] }}"
+                                                                        target="_blank" class="btn btn-sm btn-success">
+                                                                        Join Meeting
+                                                                    </a>
+                                                                </div>
+                                                            @endif
+
                                                             <small class="text-body-secondary">
                                                                 {{ $notification->created_at->diffForHumans() }}
                                                             </small>

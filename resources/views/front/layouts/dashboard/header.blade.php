@@ -72,16 +72,22 @@
                                         <div class="flex-grow-1">
                                             <strong>{{ $notification->data['title'] }}</strong>
                                             <p>{{ $notification->data['message'] }}</p>
+                                            @if (isset($notification->data['extra']['meeting_link']) && $notification->data['extra']['meeting_link'])
+                                                <div class="mt-1">
+                                                    <a href="{{ $notification->data['extra']['meeting_link'] }}"
+                                                        target="_blank" class="btn btn-sm btn-success">
+                                                        Join Meeting
+                                                    </a>
+                                                </div>
+                                            @endif
                                         </div>
                                         <div class="flex-shrink-0">
                                             <form method="POST"
                                                 action="{{ route('user.notifications.markRead', $notification->id) }}"
                                                 style="display: inline;">
                                                 @csrf
-                                                <button type="submit"
-                                                    class="border-0 bg-transparent p-0"
-                                                    title="Mark as read"
-                                                    style="cursor: pointer;">
+                                                <button type="submit" class="border-0 bg-transparent p-0"
+                                                    title="Mark as read" style="cursor: pointer;">
                                                     <i class="fa fa-times fs-5"></i>
                                                 </button>
                                             </form>

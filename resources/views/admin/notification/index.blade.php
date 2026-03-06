@@ -27,12 +27,6 @@
         @endif
 
     </div>
-
-
-    {{-- Alerts --}}
-    <x-alert type="success" :message="session('success')" />
-    <x-alert type="danger" :message="session('error')" />
-
     <div class="row">
         <div class="col-md-12">
 
@@ -75,7 +69,15 @@
                                 @foreach ($notification->data['extra'] as $key => $value)
                                     <li class="mb-1">
                                         <strong>{{ ucfirst(str_replace('_', ' ', $key)) }}:</strong>
-                                        {{ $value }}
+
+                                        @if ($key === 'meeting_link' && !empty($value))
+                                            <a href="{{ $value }}" target="_blank" class="btn btn-sm btn-primary">
+                                                Join Meeting
+                                            </a>
+                                        @else
+                                            {{ $value }}
+                                        @endif
+
                                     </li>
                                 @endforeach
                             </ul>
@@ -93,20 +95,20 @@
             @endforelse
 
             {{-- Pagination --}}
-            @if($unreadCount > 0)
-            <div class="d-flex justify-content-between align-items-center mt-4">
-                <small class="text-muted">
-                    Showing
-                    {{ $notifications->firstItem() ?? 0 }}
-                    –
-                    {{ $notifications->lastItem() ?? 0 }}
-                    of
-                    {{ $notifications->total() }}
-                    notifications
-                </small>
+            @if ($unreadCount > 0)
+                <div class="d-flex justify-content-between align-items-center mt-4">
+                    <small class="text-muted">
+                        Showing
+                        {{ $notifications->firstItem() ?? 0 }}
+                        –
+                        {{ $notifications->lastItem() ?? 0 }}
+                        of
+                        {{ $notifications->total() }}
+                        notifications
+                    </small>
 
-                {{ $notifications->links('vendor.pagination.bootstrap-5') }}
-            </div>
+                    {{ $notifications->links('vendor.pagination.bootstrap-5') }}
+                </div>
             @endif
 
         </div>
