@@ -1,20 +1,21 @@
 <?php
 
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\VeriffController;
-use App\Http\Controllers\Front\UserController;
 use App\Http\Controllers\Admin\AdminController;
-use App\Http\Controllers\StripeWebhookController;
-use App\Http\Controllers\VeriffWebhookController;
-use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\MyProfileController;
-use App\Http\Controllers\Admin\TwoFactorController;
+use App\Http\Controllers\Admin\SettingsController;
 use App\Http\Controllers\Admin\TestimonialController;
+use App\Http\Controllers\Admin\TwoFactorController;
 use App\Http\Controllers\BillingController;
 use App\Http\Controllers\Front\NotificationController;
-use App\Http\Controllers\Front\UploadDocumentController;
 use App\Http\Controllers\Front\ScheduleMeetingController;
+use App\Http\Controllers\Front\UploadDocumentController;
+use App\Http\Controllers\Front\UserController;
+use App\Http\Controllers\StripeWebhookController;
+use App\Http\Controllers\VeriffController;
+use App\Http\Controllers\VeriffWebhookController;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
 
 Auth::routes(['verify' => true]);
 Route::get('/', [App\Http\Controllers\Front\FrontPagesController::class, 'index'])->name('fronthomepage');
@@ -137,6 +138,8 @@ Route::get('logout', function () {
 // ADMIN ROUTES
 Route::group(['prefix' => 'admin', 'middleware' => ['auth:admin']], function () {
     Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('dashboard');
+
+    Route::get('/dashboard/filter', [App\Http\Controllers\Admin\DashboardController::class, 'filter'])->name('admin.dashboard.filter');
 
     // my proflie
     Route::get('/edit-profile', [MyProfileController::class, 'editProfile'])->name('admin.edit.profile');
