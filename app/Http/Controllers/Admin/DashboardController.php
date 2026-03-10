@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use App\Models\ScheduleMeeting;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -49,17 +50,23 @@ class DashboardController extends Controller
 
         $data['transactionsTotal'] = Order::whereBetween('created_at', [$start, $end])->where('payment_status', 'completed')->sum('amount');
 
+        $data['meetingsCount'] = ScheduleMeeting::whereDate('meeting_date', Carbon::today())->count();
 
-        // Chart Data (example last 7 days orders)
-        $data['ordersChart'] = Order::selectRaw('DATE(created_at) as date, COUNT(*) as total')
-            ->groupBy('date')
-            ->orderBy('date')
-            ->pluck('total');
+        $data['pendingDocumentOrders'] = Order::where('upload_document_status', '!=', 'verified')->count();
 
-        $data['customersChart'] = User::selectRaw('DATE(created_at) as date, COUNT(*) as total')
-            ->groupBy('date')
-            ->orderBy('date')
-            ->pluck('total');
+        $data['pendingDocumentVerification'] = Order::whereHas('verifyDocuments')
+            ->whereHas('verifyDocuments', function ($q) {
+                $q->where('status', '=', 'pending');
+            })
+            ->count();
+
+        $data['pendingUploadDocuments'] = Order::whereDoesntHave('verifyDocuments')->count();
+
+        $data['ordersWithUnverifiedDocs'] = Order::whereHas('verifyDocuments')
+            ->whereHas('verifyDocuments', function ($q) {
+                $q->where('status', '=', 'verified');
+            })
+            ->count();
 
         return view('admin.dashboard', $data);
     }
@@ -69,7 +76,14 @@ class DashboardController extends Controller
         $filter = $request->filter;
         $type = $request->type;
 
+        $start = null;
+        $end = null;
+
         switch ($filter) {
+
+            case 'all':
+                // no date filter
+                break;
 
             case 'yesterday':
                 $start = Carbon::yesterday()->startOfDay();
@@ -96,12 +110,18 @@ class DashboardController extends Controller
                 $end = Carbon::today()->endOfDay();
         }
 
+        // ORDERS
         if ($type == 'orders') {
 
-            $count = Order::whereBetween('created_at', [$start, $end])->count();
+            $query = Order::query();
 
-            $chart = Order::whereBetween('created_at', [$start, $end])
-                ->selectRaw('DATE(created_at) as date, COUNT(*) as total')
+            if ($filter != 'all') {
+                $query->whereBetween('created_at', [$start, $end]);
+            }
+
+            $count = $query->count();
+
+            $chart = $query->selectRaw('DATE(created_at) as date, COUNT(*) as total')
                 ->groupBy('date')
                 ->orderBy('date')
                 ->pluck('total');
@@ -113,12 +133,18 @@ class DashboardController extends Controller
             ]);
         }
 
+        // CUSTOMERS
         if ($type == 'customers') {
 
-            $count = User::whereBetween('created_at', [$start, $end])->count();
+            $query = User::query();
 
-            $chart = User::whereBetween('created_at', [$start, $end])
-                ->selectRaw('DATE(created_at) as date, COUNT(*) as total')
+            if ($filter != 'all') {
+                $query->whereBetween('created_at', [$start, $end]);
+            }
+
+            $count = $query->count();
+
+            $chart = $query->selectRaw('DATE(created_at) as date, COUNT(*) as total')
                 ->groupBy('date')
                 ->orderBy('date')
                 ->pluck('total');
@@ -130,15 +156,18 @@ class DashboardController extends Controller
             ]);
         }
 
+        // TRANSACTIONS
         if ($type == 'transactions') {
 
-            $total = Order::whereBetween('created_at', [$start, $end])
-                ->where('payment_status', 'completed')
-                ->sum('amount');
+            $query = Order::where('payment_status', 'completed');
 
-            $chart = Order::whereBetween('created_at', [$start, $end])
-                ->where('payment_status', 'completed')
-                ->selectRaw('DATE(created_at) as date, SUM(amount) as total')
+            if ($filter != 'all') {
+                $query->whereBetween('created_at', [$start, $end]);
+            }
+
+            $total = $query->sum('amount');
+
+            $chart = $query->selectRaw('DATE(created_at) as date, SUM(amount) as total')
                 ->groupBy('date')
                 ->orderBy('date')
                 ->pluck('total');
