@@ -21,6 +21,9 @@ Auth::routes(['verify' => true]);
 Route::get('/', [App\Http\Controllers\Front\FrontPagesController::class, 'index'])->name('fronthomepage');
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->middleware(['auth', 'verified']);
 
+Route::get('/contact-us', [App\Http\Controllers\Front\FrontPagesController::class, 'contactUsForm'])->name('contact-us');
+Route::post('/contact-us', [App\Http\Controllers\Front\FrontPagesController::class, 'submitContact'])->name('contact.store');
+
 
 // admin routes
 Route::group(['prefix' => 'admin'], function () {

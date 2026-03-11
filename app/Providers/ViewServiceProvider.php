@@ -23,6 +23,7 @@ class ViewServiceProvider extends ServiceProvider
     {
         View::composer([
             'front.layouts.dashboard.header',
+            'front.layouts.logged-in-header',
             'admin.layouts.header',
         ], function ($view) {
 
