@@ -6,7 +6,7 @@
                 <!-- Header -->
                 <div class="modal-header">
                     <h5 class="modal-title">Enable Two-Factor Authentication</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="btn-close cancel2faBtn" data-bs-dismiss="modal"></button>
                 </div>
 
                 <!-- Body -->
@@ -42,7 +42,7 @@
 
                 <!-- Footer -->
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <button type="button" class="btn btn-secondary cancel2faBtn" id="cancel2faBtn" data-bs-dismiss="modal">
                         Cancel
                     </button>
                     <button type="button" class="btn btn-primary" id="verify2faBtn">

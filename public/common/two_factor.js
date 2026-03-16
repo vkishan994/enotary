@@ -77,6 +77,12 @@ document
         }
     });
 
+document.querySelectorAll(".cancel2faBtn").forEach(function (btn) {
+    btn.addEventListener("click", function () {
+        document.getElementById("google2fa_status").checked = false;
+    });
+});
+
 const verifyBtn = document.getElementById("verify2faBtn");
 
 verifyBtn.addEventListener("click", function () {

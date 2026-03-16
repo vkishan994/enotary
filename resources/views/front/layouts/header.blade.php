@@ -11,18 +11,20 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <!-- Favicon -->
-    <link rel="shortcut icon" href="{{ asset('front/img/logo/logo.png')}}" type="image/x-icon" />
+    <link rel="shortcut icon" href="{{ asset('front/img/logo/logo.png') }}" type="image/x-icon" />
 
     <!-- Bootstrap CSS -->
-    <link rel="stylesheet" type="text/css" href="{{ asset('front/css/bootstrap.min.css')}}" />
+    <link rel="stylesheet" type="text/css" href="{{ asset('front/css/bootstrap.min.css') }}" />
     <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.7.2/css/all.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css">
 
     <!-- Custom Styles -->
-   <link id="style" rel="stylesheet" type="text/css" href="{{ asset('front/css/style.css')}}" />
+    <link id="style" rel="stylesheet" type="text/css" href="{{ asset('front/css/style.css') }}" />
 
-   @yield('css')
+    @yield('css')
 
 </head>
 
@@ -32,7 +34,8 @@
     <header class="header-section">
         <nav class="navbar navbar-expand-lg bg-body-tertiary">
             <div class="container-fluid">
-                <a class="navbar-brand" href="{{ route('fronthomepage') }}"><img src="{{ asset('front/img/logo/logo.png')}}" alt="" /> </a>
+                <a class="navbar-brand" href="{{ route('fronthomepage') }}"><img
+                        src="{{ asset('front/img/logo/logo.png') }}" alt="" /> </a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                     data-bs-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false"
                     aria-label="Toggle navigation">
@@ -71,8 +74,8 @@
                     </div>
                 </div>
                 <div class="align-items-center right-btn d-lg-flex d-none">
-                    <a href="{{route('register')}}" class="nav-link">Sign Up</a>
-                    <a href="{{route('login')}}" class="btn btn-primary">Log In</a>
+                    <a href="{{ route('register') }}" class="nav-link">Sign Up</a>
+                    <a href="{{ route('login') }}" class="btn btn-primary">Log In</a>
                 </div>
 
             </div>
