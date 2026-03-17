@@ -15,7 +15,7 @@
 
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" type="text/css" href="{{ asset('front/css/bootstrap.min.css') }}" />
-    <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.7.2/css/all.css">
+    {{-- <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.7.2/css/all.css"> --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
@@ -69,8 +69,8 @@
                         </li>
                     </ul>
                     <div class="d-inline align-items-center right-btn d-lg-none d-block">
-                        <a href="#" class="nav-link">Sign Up</a>
-                        <a href="#" class="btn btn-primary">Log In</a>
+                        <a href="{{ route('register') }}" class="nav-link">Sign Up</a>
+                        <a href="{{ route('login') }}" class="btn btn-primary">Log In</a>
                     </div>
                 </div>
                 <div class="align-items-center right-btn d-lg-flex d-none">

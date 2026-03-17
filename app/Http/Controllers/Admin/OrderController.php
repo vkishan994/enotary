@@ -7,6 +7,8 @@ use App\Mail\DocumentVerificationMail;
 use App\Models\Order;
 use App\Models\VerifyDocument;
 use App\Models\VerifyDocumentItems;
+use App\Notifications\SystemNotification;
+use Barryvdh\DomPDF\Facade\Pdf;
 use DataTables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -14,7 +16,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
-use Barryvdh\DomPDF\Facade\Pdf;
 
 
 class OrderController extends Controller
@@ -118,6 +119,49 @@ class OrderController extends Controller
             );
 
             DB::commit();
+
+            // send notification to user for document status update
+            $statusText = $request->status == 'verified' ? 'verified' : 'rejected';
+
+            $orderLabel = $order->order_number ?? ('#' . $order->id);
+
+            // Get service name safely
+            $serviceName = $order->document->name
+                ?? $order->document->name
+                ?? 'Notary Service';
+
+            $notificationData = [
+                'type'  => 'document_status_update',
+                'title' => 'Document Status Updated',
+
+                'message' => 'Your document for ' . $serviceName .
+                    ' (Order ' . $orderLabel . ') has been ' . $statusText .
+                    ($request->status === 'rejected' && $request->rejection_note
+                        ? '. Reason: ' . $request->rejection_note
+                        : '.'),
+
+                'icon' => $request->status === 'verified' ? 'check-circle' : 'x-circle',
+
+                'url' => route('user.documentList', ['id' => encrypt($order->id)]), // optional but recommended
+
+                'extra' => [
+                    'document_id'   => $document->id,
+                    'order_id'      => $order->id,
+                    'order_number'  => $order->order_number ?? null,
+                    'service_name'  => $serviceName,
+                    'status'        => $request->status,
+                ],
+            ];
+
+            if ($order->user) {
+                $order->user->notify(new SystemNotification($notificationData));
+
+                Log::info('Document status notification sent', [
+                    'user_id' => $order->user->id,
+                    'document_id' => $document->id,
+                    'status' => $request->status
+                ]);
+            }
 
             // If AJAX request, return JSON success
             if ($request->ajax()) {

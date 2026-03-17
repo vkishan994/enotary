@@ -97,9 +97,6 @@
         </a>
     </div>
 
-    <x-alert type="success" :message="session('success')" />
-    <x-alert type="danger" :message="session('error')" />
-
     <div class="row">
         <div class="col-md-12">
 

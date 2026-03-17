@@ -66,6 +66,7 @@ class ScheduleMeetingController extends Controller
                     'meeting_time' => $data['meeting_time'],
                     'notes'        => $data['notes'] ?? null,
                     'status'       => 'pending', // reset status to pending on update
+                    'admin_notes'  => null, 
                 ]
             );
 

@@ -2,15 +2,16 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Controller;
+use App\Mail\MeetingNotification;
+use App\Models\ScheduleMeeting;
+use App\Notifications\SystemNotification;
+use App\Services\GoogleCalender;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Models\ScheduleMeeting;
-use App\Services\GoogleCalender;
-use App\Mail\MeetingNotification;
-use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
-use Illuminate\Container\Attributes\Log;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class MeetingController extends Controller
@@ -169,6 +170,60 @@ class MeetingController extends Controller
             }
 
             DB::commit();
+
+            $status = $request->status;
+
+            // Format meeting date & time
+            $meetingDate = \Carbon\Carbon::parse($meeting->meeting_date)->format('d M Y');
+            $meetingTime = \Carbon\Carbon::parse($meeting->meeting_time)->format('h:i A');
+
+            // Build message based on status
+            $message = match ($status) {
+                'approved' => "Your meeting has been approved on {$meetingDate} at {$meetingTime}.",
+                'rejected' => "Your meeting request was rejected." .
+                    ($meeting->admin_notes ? " Reason: {$meeting->admin_notes}" : ''),
+                'rescheduled' => "Your meeting has been rescheduled to {$meetingDate} at {$meetingTime}." .
+                    ($meeting->admin_notes ? " Note: {$meeting->admin_notes}" : ''),
+                'verified' => "Your meeting has been verified.",
+                default => "Your meeting status has been updated."
+            };
+
+            // Icon based on status
+            $icon = match ($status) {
+                'approved' => 'check-circle',
+                'rejected' => 'x-circle',
+                'rescheduled' => 'refresh-cw',
+                'verified' => 'shield-check',
+                default => 'calendar'
+            };
+
+            // Notification payload
+            $notificationData = [
+                'type'  => 'meeting_status_update',
+                'title' => 'Meeting Status Updated',
+                'message' => $message,
+                'icon' => $icon,
+
+                'url' => route('user.scheduleMeetingForm', ['order_id' => encrypt($meeting->order_id)]) ?? null, // optional
+
+                'extra' => [
+                    'meeting_id'   => $meeting->id,
+                    'status'       => $status,
+                    'meeting_date' => $meeting->meeting_date,
+                    'meeting_time' => $meeting->meeting_time,
+                    'meeting_link' => $meeting->google_meet_link,
+                ],
+            ];
+
+            if ($meeting->user) {
+                $meeting->user->notify(new SystemNotification($notificationData));
+
+                Log::info('Meeting status notification sent', [
+                    'user_id' => $meeting->user->id,
+                    'meeting_id' => $meeting->id,
+                    'status' => $status
+                ]);
+            }
 
             return redirect()
                 ->back()

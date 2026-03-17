@@ -138,7 +138,7 @@
                                     <textarea name="notes" class="form-control" rows="3" placeholder="Any additional information..."></textarea>
                                 </div>
 
-                                <div class="col-12 text-end mt-3">
+                                <div class="col-12 text-start mt-3">
                                     <button type="submit" class="btn btn-primary">
                                         Schedule Meeting
                                     </button>

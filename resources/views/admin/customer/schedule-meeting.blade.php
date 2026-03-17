@@ -159,29 +159,19 @@
 
 
                         @if ($meeting->status == 'approved')
-                            {{-- Show join button only if today's meeting and within join window --}}
-                            @if ($isTodayMeeting && $canJoinMeeting)
-                                <div class="d-flex flex-column mt-3" style="min-width:140px;">
-                                    <a class="meeting-link-btn btn btn-primary" href="{{ $meeting->google_meet_link }}" target="_blank">
-                                        Join Meeting
-                                    </a>
+                            <div class="d-flex flex-column mt-3" style="min-width:140px;">
+                                <a class="meeting-link-btn btn btn-primary" href="{{ $meeting->google_meet_link }}"
+                                    target="_blank">
+                                    Join Meeting
+                                </a>
 
-                                    <div class="meeting-note text-warning mt-2">
-                                        <small>
-                                            ⚠️ Please join the meeting at the scheduled time.
-                                            If you do not join, the meeting will be cancelled.
-                                        </small>
-                                    </div>
-                                </div>
-                            @else
-                                {{-- Approved but meeting time not started --}}
-                                <div class="meeting-note text-info mt-2">
+                                <div class="meeting-note text-warning mt-2">
                                     <small>
-                                        ⏳ Your meeting has been approved.
-                                        The Google Meet link will appear here shortly before the scheduled meeting time.
+                                        ⚠️ Please join the meeting at the scheduled time.
+                                        If you do not join, the meeting will be cancelled.
                                     </small>
                                 </div>
-                            @endif
+                            </div>
                         @else
                             {{-- Meeting not approved yet --}}
                             <div class="meeting-note text-muted mt-2">
