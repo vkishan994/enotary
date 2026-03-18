@@ -182,7 +182,7 @@ class MeetingController extends Controller
                 'approved' => "Your meeting has been approved on {$meetingDate} at {$meetingTime}.",
                 'rejected' => "Your meeting request was rejected." .
                     ($meeting->admin_notes ? " Reason: {$meeting->admin_notes}" : ''),
-                'rescheduled' => "Your meeting has been rescheduled to {$meetingDate} at {$meetingTime}." .
+                'rescheduled' => "Kindly reschedule your meeting to a different date and time." .
                     ($meeting->admin_notes ? " Note: {$meeting->admin_notes}" : ''),
                 'verified' => "Your meeting has been verified.",
                 default => "Your meeting status has been updated."
@@ -198,21 +198,24 @@ class MeetingController extends Controller
             };
 
             // Notification payload
+            $extra = [
+                'meeting_id'   => $meeting->id,
+                'status'       => $status,
+                'meeting_date' => $meeting->meeting_date,
+                'meeting_time' => $meeting->meeting_time,
+            ];
+
+            if (!in_array($status, ['rescheduled', 'rejected'])) {
+                $extra['meeting_link'] = $meeting->google_meet_link;
+            }
+
             $notificationData = [
                 'type'  => 'meeting_status_update',
                 'title' => 'Meeting Status Updated',
                 'message' => $message,
                 'icon' => $icon,
-
-                'url' => route('user.scheduleMeetingForm', ['order_id' => encrypt($meeting->order_id)]) ?? null, // optional
-
-                'extra' => [
-                    'meeting_id'   => $meeting->id,
-                    'status'       => $status,
-                    'meeting_date' => $meeting->meeting_date,
-                    'meeting_time' => $meeting->meeting_time,
-                    'meeting_link' => $meeting->google_meet_link,
-                ],
+                'url' => route('user.scheduleMeetingForm', ['order_id' => encrypt($meeting->order_id)]) ?? null,
+                'extra' => $extra,
             ];
 
             if ($meeting->user) {

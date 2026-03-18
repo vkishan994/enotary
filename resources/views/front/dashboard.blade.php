@@ -1,82 +1,124 @@
 @extends('front.layouts.common')
 @section('css')
     <style>
-        .upcoming-appointment {
-            padding: 14px;
+        /* Container */
+        .document-card {
+            background: #fff;
+            border-radius: 10px;
+            padding: 16px;
             border: 1px solid #e5e7eb;
-            border-radius: 8px;
-            margin-bottom: 12px;
-            background-color: #f9fafb;
+        }
+
+        /* Title */
+        .document-card h4 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #1f2937;
+        }
+
+        /* Appointment row */
+        .upcoming-appointment {
             display: flex;
             justify-content: space-between;
-            align-items: flex-start;
-            gap: 12px;
-            flex-wrap: wrap;
+            align-items: center;
+            padding: 14px 16px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            background: #fafafa;
+            margin-bottom: 12px;
+            gap: 16px;
         }
 
+        /* LEFT SIDE */
         .appointment-details {
             flex: 1;
-            min-width: 0;
         }
 
+        /* Date + time in one line (FIXED ISSUE) */
         .appointment-time {
             font-size: 14px;
-            color: #374151;
-            margin-bottom: 6px;
+            color: #111827;
+            margin-bottom: 4px;
+        }
+
+        .appointment-time strong {
+            font-weight: 600;
         }
 
         .appointment-time span {
             color: #6b7280;
-            font-weight: 500;
+            margin-left: 6px;
         }
 
-        .meeting-url {
+        /* Service */
+        .service-type {
             font-size: 13px;
-            color: #374151;
-            overflow-wrap: anywhere;
-            word-break: break-word;
+            color: #4b5563;
         }
 
-        .meeting-url span {
-            font-weight: 600;
-            margin-right: 4px;
+        .service-type span {
+            font-weight: 500;
+            color: #6b7280;
         }
 
-        .meeting-url a {
-            color: #2563eb;
-            text-decoration: none;
-            max-width: 100%;
-            display: inline-block;
+        /* RIGHT SIDE */
+        .d-flex.flex-column.align-items-end {
+            align-items: flex-end;
+            justify-content: center;
+            min-width: 150px;
         }
 
-        .meeting-url a:hover {
-            text-decoration: underline;
-        }
-
+        /* Button */
         .meeting-link-btn {
             font-size: 13px;
-            font-weight: 600;
-            color: #ffffff;
+            font-weight: 500;
+            color: #fff;
             background-color: #2563eb;
-            padding: 8px 12px;
+            padding: 8px 14px;
             border-radius: 6px;
             text-decoration: none;
-            white-space: nowrap;
+            display: inline-block;
         }
 
         .meeting-link-btn:hover {
             background-color: #1e40af;
         }
 
-        .service-type {
-            font-size: 13px;
-            color: #374151;
-            margin-bottom: 6px;
+        /* Warning text (FIXED ALIGNMENT) */
+        .meeting-note {
+            font-size: 12px;
+            margin-top: 6px;
+            max-width: 220px;
+            text-align: right;
+            line-height: 1.4;
         }
 
-        .service-type span {
-            font-weight: 600;
-            margin-right: 4px;
+        /* Colors */
+        .text-warning {
+            color: #d97706 !important;
+        }
+
+        .text-muted {
+            color: #6b7280 !important;
+        }
+
+        /* MOBILE FIX */
+        @media (max-width: 768px) {
+            .upcoming-appointment {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .d-flex.flex-column.align-items-end {
+                align-items: flex-start !important;
+                width: 100%;
+            }
+
+            .meeting-note {
+                text-align: left;
+                max-width: 100%;
+            }
         }
     </style>
 @section('content')
@@ -132,13 +174,12 @@
                                     </div>
 
                                     @if ($canJoinMeeting)
-                                        <div class="d-flex flex-column align-items-end" style="min-width:140px;">
+                                        <div class="d-flex flex-column align-items-start" style="min-width:140px;">
                                             <a class="meeting-link-btn" href="{{ $meeting->google_meet_link }}"
                                                 target="_blank">Join Meeting</a>
-                                            <div class="meeting-note text-warning mt-2 text-end">
+                                            <div class="meeting-note text-warning mt-2 text-start">
                                                 <small>
-                                                    ⚠️ Please join the meeting at the scheduled time. If you do not join,
-                                                    the meeting will be cancelled.
+                                                    ⚠️ Please join the meeting at the scheduled time.
                                                 </small>
                                             </div>
                                         </div>
@@ -244,23 +285,23 @@
                                     @endif
 
 
-                                    @if($order->all_docs_verified)
-                                    <div class="pending-item">
-                                        <div class="pending-item-content">
-                                            <div class="pending-icon">
-                                                <img src="{{ asset('front/img/home/icon6.png') }}" alt="" />
+                                    @if ($order->all_docs_verified)
+                                        <div class="pending-item">
+                                            <div class="pending-item-content">
+                                                <div class="pending-icon">
+                                                    <img src="{{ asset('front/img/home/icon6.png') }}" alt="" />
+                                                </div>
+                                                <div class="pending-text">
+                                                    <h5>Schedule a video call meeting</h5>
+                                                    <p>Schedule your video appointment to complete your notarisation.</p>
+                                                </div>
                                             </div>
-                                            <div class="pending-text">
-                                                <h5>Schedule a video call meeting</h5>
-                                                <p>Schedule your video appointment to complete your notarisation.</p>
+                                            <div class="pending-arrow">
+                                                <a
+                                                    href="{{ route('user.scheduleMeetingForm', ['order_id' => encrypt($order->id)]) }}"><i
+                                                        class="fas fa-chevron-right"></i></a>
                                             </div>
                                         </div>
-                                        <div class="pending-arrow">
-                                            <a
-                                                href="{{ route('user.scheduleMeetingForm', ['order_id' => encrypt($order->id)]) }}"><i
-                                                    class="fas fa-chevron-right"></i></a>
-                                        </div>
-                                    </div>
                                     @endif
 
                                     @if (isset($order->scheduleMeeting) && !empty($order->scheduleMeeting) && $order->scheduleMeeting->status == 'verified')
