@@ -174,11 +174,11 @@
                             </div>
                         @else
                             {{-- Meeting not approved yet --}}
-                            <div class="meeting-note text-muted mt-2">
+                            {{-- <div class="meeting-note text-muted mt-2">
                                 <small>
                                     ⏳ Once the meeting is approved, the meeting link will be displayed here.
                                 </small>
-                            </div>
+                            </div> --}}
                         @endif
 
                     </div>
