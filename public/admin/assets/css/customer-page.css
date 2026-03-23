@@ -421,3 +421,46 @@
     background-color: #fff;
 }
 
+.btn-secondary {
+    padding: 10px 20px;
+}
+
+/* Start date */
+.litepicker .container__days .day-item.is-start-date {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: #fff !important;
+}
+
+/* End date */
+.litepicker .container__days .day-item.is-end-date {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+    color: #fff !important;
+}
+
+/* Selected range between start and end - light transparent purple */
+.litepicker .container__days .day-item.is-in-range {
+    background: rgba(123, 95, 195, 0.35) !important; /* darker transparent purple */
+    color: #fff !important;
+}
+
+/* Mobile Responsive Form Filter */
+@media (max-width: 768px) {
+    form.row.mb-3 {
+        display: flex;
+        flex-direction: column;
+        gap: 10px; /* space between fields */
+    }
+
+    form.row.mb-3 .col-md-3,
+    form.row.mb-3 .col-md-1,
+    form.row.mb-3 .col-md-2 {
+        width: 100% !important;
+        flex: 1 0 auto;
+    }
+
+    form.row.mb-3 .form-control,
+    form.row.mb-3 .btn {
+        width: 100% !important;
+    }
+}
+

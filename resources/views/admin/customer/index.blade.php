@@ -3,6 +3,7 @@
 @section('css')
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <link href="{{ asset('admin/assets/css/customer-page.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/litepicker/dist/css/litepicker.css" />
 @endsection
 
 @section('content')
@@ -14,6 +15,49 @@
             </h4>
         </div>
     </div>
+
+    <form method="GET" class="row mb-3">
+
+        <div class="col-md-3">
+            <select name="payment_status" class="form-control">
+                <option value="">Payment</option>
+                <option value="completed" {{ request('payment_status') == 'completed' ? 'selected' : '' }}>Completed
+                </option>
+                <option value="pending" {{ request('payment_status') == 'pending' ? 'selected' : '' }}>Pending</option>
+            </select>
+        </div>
+
+        <!-- Date Range Picker -->
+        <div class="col-md-3">
+            <input type="text" id="dateRange" class="form-control" placeholder="Select date range">
+
+            <input type="hidden" name="from_date" id="from_date" value="{{ request('from_date') }}">
+            <input type="hidden" name="to_date" id="to_date" value="{{ request('to_date') }}">
+        </div>
+
+        <div class="col-md-3">
+            <select name="pending_step" class="form-control">
+                <option value="">Pending Steps</option>
+                <option value="veriff" {{ request('pending_step') == 'veriff' ? 'selected' : '' }}>Verify Identity</option>
+                <option value="documents" {{ request('pending_step') == 'documents' ? 'selected' : '' }}>Upload Document
+                </option>
+                <option value="meeting" {{ request('pending_step') == 'meeting' ? 'selected' : '' }}>Schedule Meeting
+                </option>
+                {{-- <option value="enotary" {{ request('pending_step') == 'enotary' ? 'selected' : '' }}>Download / Notarisation
+                </option> --}}
+            </select>
+        </div>
+
+        <div class="col-md-1">
+            <button class="btn btn-primary w-100">Filter</button>
+        </div>
+
+        <div class="col-md-2">
+            <a href="{{ route('customers.list') }}" class="btn btn-secondary w-100">Reset Filters</a>
+        </div>
+
+    </form>
+
     <div class="main-container">
         <!-- Top Navigation -->
         {{-- <div class="top-nav d-flex justify-content-between align-items-center">
@@ -51,18 +95,19 @@
 
                             <div class="customers-list" id="customersList">
                                 @foreach ($users as $user)
-                                    <a href="{{ route('customers.list', $user->id) }}">
+                                    {{-- <a href="{{ route('customers.list', $user->id) }}"> --}}
+                                    <a
+                                        href="{{ route('customers.list', $user->id) . '?' . http_build_query(request()->except('id')) }}">
                                         <div class="client-item {{ $selectedUser->id == $user->id ? 'active' : '' }}">
                                             <div class="client-name">{{ $user->first_name }} {{ $user->last_name }}</div>
                                             <div class="status-badge">
-                                                <span class="status-text">{{ $user->orders_count }} Orders</span>
+                                                {{-- <span class="status-text">{{ $user->orders_count }} Orders</span> --}}
+                                                <span class="status-text">{{ $user->filtered_orders_count }} Orders</span>
                                             </div>
-
                                         </div>
                                     </a>
                                 @endforeach
                             </div>
-
                         </div>
                     </div>
 
@@ -110,7 +155,7 @@
                                                             {{ orderStepsCompletedCount($order) ?? '0' }} / 4
                                                         </td>
                                                         <td>
-                                                            <a href="{{ route('customers.list', [$selectedUser->id, $order->id]) }}"
+                                                            <a href="{{ route('customers.list', [$selectedUser->id, $order->id]) . '?' . http_build_query(request()->query()) }}"
                                                                 class="btn btn-sm btn-primary">
                                                                 View Details
                                                             </a>
@@ -134,13 +179,10 @@
                                 @if ($selectedOrder)
                                     <div class="card mt-4 shadow-sm border-0 mb-4 current-order">
                                         <div class="card-body text-center">
-
                                             <p class="text-muted mb-2">Current Order</p>
-
                                             <h3 class="fw-bold text-primary mb-0">
                                                 #{{ $selectedOrder->id }}
                                             </h3>
-
                                         </div>
                                     </div>
                                 @endif
@@ -224,7 +266,6 @@
                                             <div class="detail-label">Status:</div>
                                             <div class="detail-value">{!! veriffStatus(isset($selectedOrder->veriffData) ? $selectedOrder->veriffData->status : null) !!}</div>
                                         </div>
-
 
                                         @if (isset($selectedOrder->veriffData) && $selectedOrder->veriffData->status == 'approved')
                                             <div class="detail-item">
@@ -386,7 +427,36 @@
     </div>
     @include('partials.customer_page_modal')
     @push('scripts')
+        <script src="https://cdn.jsdelivr.net/npm/litepicker/dist/litepicker.js"></script>
         <script>
+            document.addEventListener("DOMContentLoaded", function() {
+
+                const fromDate = document.getElementById('from_date').value;
+                const toDate = document.getElementById('to_date').value;
+
+                const picker = new Litepicker({
+                    element: document.getElementById('dateRange'),
+                    singleMode: false,
+                    format: 'YYYY-MM-DD',
+
+                    // Set default selected dates
+                    startDate: fromDate ? fromDate : null,
+                    endDate: toDate ? toDate : null,
+
+                    setup: (picker) => {
+                        picker.on('selected', (start, end) => {
+                            document.getElementById('from_date').value = start.format('YYYY-MM-DD');
+                            document.getElementById('to_date').value = end.format('YYYY-MM-DD');
+                        });
+                    }
+                });
+
+                // Optional: show selected range in input manually
+                if (fromDate && toDate) {
+                    document.getElementById('dateRange').value = fromDate + '  -  ' + toDate;
+                }
+            });
+
             const customerBaseUrl = "{{ url('admin/customers') }}";
             document.getElementById('searchInput').addEventListener('keyup', function() {
 
