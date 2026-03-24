@@ -16,7 +16,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" type="text/css" href="{{ asset('front/css/bootstrap.min.css') }}" />
     {{-- <link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.7.2/css/all.css"> --}}
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css">
 
@@ -76,8 +76,91 @@
                         </li>
                     </ul>
                     <div class="d-inline align-items-center right-btn d-lg-none d-block">
-                        <a href="#" class="nav-link">Sign Up</a>
-                        <a href="#" class="btn btn-primary">Log In</a>
+
+                        @auth
+                            <!-- Mobile Notification -->
+                            <div class="dropdown notification-dropdown mb-2">
+                                <a href="#" class="notification-icon" data-bs-toggle="dropdown">
+                                    <i class="fa fa-bell"></i>
+
+                                    @if (isset($unreadCount) && $unreadCount > 0)
+                                        <span class="notification-badge">{{ $unreadCount }}</span>
+                                    @endif
+                                </a>
+
+                                <div class="dropdown-menu notification-menu">
+                                    <div class="notification-header">
+                                        <strong>Notifications</strong>
+                                    </div>
+
+                                    @forelse($notifications ?? [] as $notification)
+                                        <div class="dropdown-item">
+                                            <strong>{{ $notification->data['title'] ?? '' }}</strong>
+                                            <p class="mb-0">{{ $notification->data['message'] ?? '' }}</p>
+                                        </div>
+                                    @empty
+                                        <div class="dropdown-item text-center">No notifications</div>
+                                    @endforelse
+                                </div>
+                            </div>
+
+                            <!-- Mobile Profile -->
+                            <div class="profile dropdown">
+                                <a href="#" class="d-flex align-items-center username text-decoration-none"
+                                    data-bs-toggle="dropdown">
+
+                                    <span>
+                                        {{ auth()->user()->first_name ?? '' }}
+                                        {{ auth()->user()->last_name ?? '' }}
+                                    </span>
+
+                                    <img src="{{ asset('front/img/home/down-icon.png') }}" class="rounded-circle mx-2"
+                                        width="30">
+                                </a>
+
+                                <ul class="dropdown-menu shadow">
+
+                                    <li>
+                                        <div class="dropdown-header">
+                                            <h6 class="mb-0">
+                                                {{ auth()->user()->first_name ?? '' }}
+                                                {{ auth()->user()->last_name ?? '' }}
+                                            </h6>
+
+                                            <small class="text-muted">
+                                                {{ auth()->user()->email ?? '' }}
+                                            </small>
+                                        </div>
+                                    </li>
+
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+
+                                    <li>
+                                        <a class="dropdown-item" href="{{ route('user.update-profile.user-form') }}">
+                                            My Profile
+                                        </a>
+                                    </li>
+
+                                    <li>
+                                        <hr class="dropdown-divider">
+                                    </li>
+
+                                    <li>
+                                        <a class="dropdown-item text-danger" href="{{ route('logout') }}">
+                                            Logout
+                                        </a>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        @else
+                            <!-- Guest Mobile -->
+                            <a href="{{ route('register') }}" class="nav-link">Sign Up</a>
+                            <a href="{{ route('login') }}" class="btn btn-primary">Log In</a>
+                        @endauth
+
                     </div>
                 </div>
                 <div class="align-items-center right-btn d-lg-flex d-none">
