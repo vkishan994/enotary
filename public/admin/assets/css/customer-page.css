@@ -464,3 +464,87 @@
     }
 }
 
+
+/* =============================
+   RESPONSIVE BREAKPOINTS
+============================= */
+
+/* Tablet */
+@media (max-width: 992px) {
+    .details-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .client-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .progress-steps {
+        flex-direction: column;
+    }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+
+    /* Stack sidebar and content */
+    .row {
+        flex-direction: column;
+    }
+
+    .sidebar {
+        border-right: none;
+        border-bottom: 1px solid #eee;
+        max-height: unset;
+    }
+
+    .client-header {
+        text-align: center;
+        align-items: center;
+    }
+
+    .client-avatar {
+        width: 50px;
+        height: 50px;
+    }
+
+    .details-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .step-item {
+        width: 100%;
+    }
+
+    .table th,
+    .table td {
+        font-size: 12px;
+    }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+    .client-name {
+        font-size: 13px;
+    }
+
+    .status-text {
+        font-size: 11px;
+    }
+
+    .client-avatar {
+        width: 45px;
+        height: 45px;
+        font-size: 14px;
+    }
+
+    h2 {
+        font-size: 18px;
+    }
+
+    .detail-card {
+        padding: 12px;
+    }
+}
+

@@ -103,8 +103,22 @@
             color: #6b7280 !important;
         }
 
+        @media (max-width: 1024px) {
+            .dashboard-header .menu-toogle {
+                position: relative;
+            }
+
+            .dashboard-header .menu-toogle img {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+            }
+        }
+
         /* MOBILE FIX */
         @media (max-width: 768px) {
+
             .upcoming-appointment {
                 flex-direction: column;
                 align-items: flex-start;

@@ -98,7 +98,8 @@
                                     {{-- <a href="{{ route('customers.list', $user->id) }}"> --}}
                                     <a
                                         href="{{ route('customers.list', $user->id) . '?' . http_build_query(request()->except('id')) }}">
-                                        <div class="client-item {{ $selectedUser->id == $user->id ? 'active' : '' }}">
+                                        <div
+                                            class="client-item {{ optional($selectedUser)->id == $user->id ? 'active' : '' }}">
                                             <div class="client-name">{{ $user->first_name }} {{ $user->last_name }}</div>
                                             <div class="status-badge">
                                                 {{-- <span class="status-text">{{ $user->orders_count }} Orders</span> --}}
@@ -117,13 +118,15 @@
                             <!-- Client Header -->
                             <div class="client-header">
                                 <div class="client-avatar">
-                                    {{ strtoupper(substr($selectedUser->first_name, 0, 1) . substr($selectedUser->last_name, 0, 1)) }}
+                                    {{ strtoupper(substr(optional($selectedUser)->first_name ?? '', 0, 1) . substr(optional($selectedUser)->last_name ?? '', 0, 1)) }}
                                 </div>
                                 <div class="client-info">
-                                    <h2>{{ $selectedUser->first_name }} {{ $selectedUser->last_name }}</h2>
-                                    <div class="client-id">Client ID: {{ $selectedUser->id }}</div>
+                                    <h2>{{ optional($selectedUser)->first_name ?? '' }}
+                                        {{ optional($selectedUser)->last_name ?? '' }}</h2>
+                                    <div class="client-id">Client ID: {{ optional($selectedUser)->id ?? '-' }}</div>
                                     <div class="contact-info">
-                                        <span><i class="fas fa-envelope"></i> {{ $selectedUser->email }}</span>
+                                        <span><i class="fas fa-envelope"></i>
+                                            {{ optional($selectedUser)->email ?? '-' }}</span>
                                     </div>
                                 </div>
                             </div>
@@ -398,7 +401,7 @@
                     <!-- Soft Background Accent -->
                     <div class="position-absolute top-0 start-50 translate-middle-x"
                         style="width: 200px; height: 200px; background: linear-gradient(135deg, #eef2ff, #f8fafc);
-                    border-radius: 50%; z-index: 0; filter: blur(40px); opacity: 0.7;">
+                border-radius: 50%; z-index: 0; filter: blur(40px); opacity: 0.7;">
                     </div>
 
                     <div class="position-relative" style="z-index: 1;">
@@ -412,12 +415,12 @@
                         </div>
 
                         <!-- Heading -->
-                        <h4 class="fw-bold mb-2">No Customers Found</h4>
+                        <h4 class="fw-bold mb-2">No Customers to Display</h4>
 
                         <!-- Description -->
                         <p class="text-muted mb-4" style="font-size: 15px;">
-                            There are currently no registered customers in the system.
-                            Once users sign up, they will appear here.
+                            There are currently no customers to show. This can happen if no customers exist in the system
+                            or if the filter/search criteria returned no results.
                         </p>
 
                     </div>
