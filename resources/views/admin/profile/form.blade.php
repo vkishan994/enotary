@@ -199,6 +199,21 @@
         <script>
             var user2faGenerate = "{{ route('admin.2fa.generate') }}";
             var userVerifyTwoFactor = "{{ route('admin.2fa.verify') }}";
+
+            const modal = document.getElementById('enable2faModal');
+            const toggle = document.getElementById('google2fa_status');
+
+            modal.addEventListener('hidden.bs.modal', function () {
+                // Turn OFF the switch when modal closes
+                toggle.checked = false;
+
+                // Optional: clear OTP field
+                document.getElementById('otp').value = '';
+
+                // Optional: hide error
+                document.getElementById('otpError').classList.add('d-none');
+            });
+
         </script>
         <script src="{{ asset('common/two_factor.js') }}?v={{ time() }}"></script>
 

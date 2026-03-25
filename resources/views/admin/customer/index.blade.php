@@ -142,6 +142,7 @@
                                                     <th>Payment Status</th>
                                                     <th>Date</th>
                                                     <th>Steps Completed</th>
+                                                    <th>Invoice</th>
                                                     <th>Action</th>
                                                 </tr>
                                             </thead>
@@ -156,6 +157,17 @@
                                                         <td>{{ $order->created_at->format('d M Y') }}</td>
                                                         <td>
                                                             {{ orderStepsCompletedCount($order) ?? '0' }} / 4
+                                                        </td>
+                                                        <td>
+                                                            @if ($order->invoice_file_path)
+                                                                <a href="{{ asset('storage/' . $order->invoice_file_path) }}"
+                                                                    target="_blank" class="action-btn"
+                                                                    title="Open in new tab">
+                                                                    <i class="fas fa-external-link-alt"></i>
+                                                                </a>
+                                                            @else
+                                                                <span class="text-muted">Not Available</span>
+                                                            @endif
                                                         </td>
                                                         <td>
                                                             <a href="{{ route('customers.list', [$selectedUser->id, $order->id]) . '?' . http_build_query(request()->query()) }}"

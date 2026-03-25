@@ -4,7 +4,7 @@
             <div class="row align-items-center">
                 <div class="col-6">
                     <div class="logo-sec">
-                        <a href="#"><img src="img/logo/logo.png" alt="" /> </a>
+                        <a href="{{route('fronthomepage')}}"><img src="img/logo/logo.png" alt="" /> </a>
                     </div>
                 </div>
                 <div class="col-6">

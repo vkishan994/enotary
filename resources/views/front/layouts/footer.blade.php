@@ -2,7 +2,7 @@
     <footer class="footer-section pt-4 pb-80">
         <div class="container">
             <div class="logo-sec text-center">
-                <a href="#"><img class="mb-4" src="{{ asset('front/img/logo/white-horse.png')}}" alt="" /></a>
+                <a href="{{route('fronthomepage')}}"><img class="mb-4" src="{{ asset('front/img/logo/white-horse.png')}}" alt="" /></a>
                 <p>© {{ date('Y') }} M M Karim Notary Public London Inc. White Horse Solicitors & Notary Public & White Horse
                     Notary Public Limited. White Horse Notary Public Limited is a Company registered in England under
                     Company Number 11175979. This firm is authorised and regulated by the Master of Faculties Office of
