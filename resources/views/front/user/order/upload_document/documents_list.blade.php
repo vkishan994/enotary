@@ -38,7 +38,7 @@
                 </div>
             @endif
 
-            @if (isset($allUploaded) && $allUploaded === true)
+            @if (isset($allUploaded) && $allUploaded === true && $order->upload_document_status != 'verified')
                 <div class="alert alert-success d-flex justify-content-between align-items-center">
                     <span>
                         All required documents have been uploaded successfully.
@@ -104,7 +104,7 @@
                         Submit for Verification
                     </button>
                 </form>
-            @elseif($order->upload_document_status === 'verified')
+            @elseif($order->upload_document_status == 'verified')
                 <div class="alert alert-success d-flex align-items-center">
                     <i class="fa fa-check-circle me-2"></i>
                     <span>
