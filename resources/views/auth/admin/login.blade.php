@@ -49,6 +49,15 @@
             box-shadow: none;
             border-color: #b47e0a !important;
         }
+
+        .input-group-merge:focus-within {
+            border-color: #b47e0a !important;
+        }
+
+        .input-group-merge:focus-within .input-group-text {
+            border-color: #b47e0a !important;
+            box-shadow: none;
+        }
     </style>
 </head>
 
