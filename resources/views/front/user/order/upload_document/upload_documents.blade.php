@@ -25,11 +25,21 @@
         .uploaded-file-item h5 {
             margin-bottom: 2px;
             font-size: 15px;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            max-width: 100%;
         }
 
         .uploaded-file-item p {
             font-size: 13px;
             color: #6c757d;
+        }
+
+        /* Pending text container */
+        .pending-text {
+            min-width: 0;
+            flex: 1;
+            word-break: break-word;
         }
 
         /* Buttons container */
@@ -87,6 +97,140 @@
             color: #fff;
         }
 
+        /* Dropzone responsive styles */
+        .upload-document-section {
+            margin-bottom: 20px;
+        }
+
+        #documentDropzone {
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        #documentDropzone .dz-message {
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            width: 100%;
+        }
+
+        #documentDropzone .dz-message h5 {
+            font-size: 18px;
+            font-weight: 600;
+            margin: 10px 0;
+            word-break: break-word;
+        }
+
+        #documentDropzone .dz-message p {
+            font-size: 14px;
+            color: #666;
+            word-break: break-word;
+        }
+
+        #documentDropzone .dz-message i {
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        /* Mobile responsive styles */
+        @media (max-width: 768px) {
+            .uploaded-file-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 12px;
+            }
+
+            .pending-item-content {
+                width: 100%;
+            }
+
+            .pending-actions {
+                width: 100%;
+                justify-content: flex-start;
+                flex-wrap: wrap;
+            }
+
+            .uploaded-file-item h5 {
+                font-size: 14px;
+                word-break: break-word;
+            }
+
+            .uploaded-file-item p {
+                font-size: 12px;
+            }
+
+            #documentDropzone {
+                min-height: 250px;
+            }
+
+            #documentDropzone .dz-message h5 {
+                font-size: 16px;
+            }
+
+            #documentDropzone .dz-message p {
+                font-size: 13px;
+            }
+
+            #documentDropzone .dz-message i {
+                font-size: 2rem !important;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .btn-download,
+            .action-btn,
+            .btn-delete {
+                width: 40px;
+                height: 40px;
+            }
+
+            .btn-download i,
+            .action-btn i,
+            .btn-delete i {
+                font-size: 13px;
+            }
+
+            .pending-actions {
+                gap: 10px;
+            }
+
+            .uploaded-file-item {
+                padding: 12px;
+            }
+
+            .uploaded-file-item h5 {
+                word-break: break-word;
+                overflow-wrap: break-word;
+            }
+
+            #documentDropzone {
+                min-height: 220px;
+                width: 100%;
+            }
+
+            #documentDropzone .dz-message {
+                padding: 15px;
+            }
+
+            #documentDropzone .dz-message h5 {
+                font-size: 14px;
+                word-break: break-word;
+            }
+
+            #documentDropzone .dz-message p {
+                font-size: 12px;
+                word-break: break-word;
+            }
+
+            #documentDropzone .dz-message i {
+                font-size: 2.5rem !important;
+            }
+        }
+
         /* .document-upload {
                                 height: unset !important;
                             } */
@@ -99,14 +243,14 @@
     <main class="main-content">
 
         <div class="document-upload document-pending"
-            style="overflow: hidden;height: 600px !important;overflow-y: auto; @if (isset($userUploadedDocuments) && $userUploadedDocuments->status == 'submitted') height: 500px; @else height: unset; @endif">
+            style=" @if (isset($userUploadedDocuments) && $userUploadedDocuments->status == 'submitted') @else @endif">
             <div class="section-title">
                 <div class="row">
                     <div class="col-6">
                         <h4>{{ $uploadDocument ? $uploadDocument->name : '' }}</h4>
                     </div>
                     <div class="col-6 text-end">
-                        <a href="{{ route('user.documentList', ['id' => $order_id]) }}" class="btn back-btn">Back <a>
+                        <a href="{{ route('user.documentList', ['id' => $order_id]) }}" class="btn back-btn mb-4">Back </a>
                     </div>
                 </div>
 
@@ -135,7 +279,7 @@
                 <div id="dropzone-error" style="margin-top:5px; color:red; display:none;">dropzone error mesasge</div>
             @endif
 
-            <div id="uploaded-files-list">
+            <div id="uploaded-files-list" style="overflow: visible;height: 450px;overflow-y: visible;">
                     @if (isset($userUploadedDocuments) && !empty($userUploadedDocuments->verify_document_items))
                         @foreach ($userUploadedDocuments->verify_document_items as $item)
                             @php
@@ -263,6 +407,19 @@
                             <h5>${response.file_name}</h5>
                             <p>Uploaded successfully</p>
                         </div>
+                    </div>
+                    <div class="pending-actions d-flex gap-2">
+                        <a href="${response.download_url}" target="_blank" class="action-btn"
+                            title="Open in new tab">
+                            <i class="fas fa-external-link-alt"></i>
+                        </a>
+                        <a href="${response.download_url}" download class="action-btn" title="Download">
+                            <i class="fas fa-download"></i>
+                        </a>
+                        <button type="button" class="btn-delete delete-uploaded-file action-btn"
+                            data-file-id="${response.file_id}" title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </button>
                     </div>
                 </div>
                 `;

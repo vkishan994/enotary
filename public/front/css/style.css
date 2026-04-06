@@ -586,6 +586,14 @@ aside.sidebar .navbar-nav .nav-link {
   color: #34394c;
 }
 
+.dashboard-header .profile img {
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+}
+.dropdown.notification-dropdown a:hover {
+    color: #222222 !important;
+}
 .main-content {
   position: relative;
   background: #eaeaea;
@@ -639,9 +647,16 @@ aside.sidebar .navbar-nav .nav-link {
   font-size: 32px;
   font-weight: bold;
   line-height: 38px;
-  padding-bottom: 24px;
+  padding-bottom: 20px;
 }
-
+.document-pending .section-title .row {
+    align-items: center;
+}
+.document-pending .section-title .back-btn {
+    margin-bottom: 0px;
+}
+.document-upload.document-pending {
+}
 .document-pending .nav-tabs {
   border: none;
   gap: 0.5rem;
@@ -1457,7 +1472,12 @@ aside.sidebar .navbar-nav .nav-link {
     font-size: 16px;
     line-height: 24px;
   }
-
+.notification-menu {
+    width: 280px;
+}
+.dashboard-header .gap-3 {
+    gap: 0.4rem !important;
+}
   .dashboard-header .menu-toogle,
   .dashboard-header .profile img {
     width: 50px;

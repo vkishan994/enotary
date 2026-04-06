@@ -12,14 +12,14 @@
                         <h4>Upload Documents</h4>
                     </div>
                     <div class="col-6 text-end">
-                        <a href="{{ route('user.account-dashboard') }}" class="btn back-btn">Back <a>
+                        <a href="{{ route('user.account-dashboard') }}" class="btn back-btn mb-3">Back </a>
                     </div>
                 </div>
             </div>
 
 
             @if (isset($uploadDocuments) && !empty($uploadDocuments))
-                <div class="pending-list mb-4" style="overflow: hidden;height: 500px;overflow-y: auto;">
+                <div class="pending-list mb-4" style="overflow: hidden;height: 380px;overflow-y: auto;">
                     <!-- Document 1 -->
                     @foreach ($uploadDocuments as $uploadDocument)
                         <div class="pending-item">
@@ -112,6 +112,7 @@
                     </span>
                 </div>
             @else
+
                 <div class="alert alert-warning d-flex align-items-center">
                     <i class="fa fa-exclamation-triangle me-2"></i>
                     <span>

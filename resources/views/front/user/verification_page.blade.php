@@ -11,15 +11,19 @@
                 <div class="row">
                     <div class="col-6">
                         <h4>Identity Verification</h4>
+
                     </div>
                     <div class="col-6 text-end">
                         <a href="{{ route('user.account-dashboard') }}" class="btn back-btn">Back <a>
                     </div>
-                </div>
-                <p class="text-muted mt-1 mb-2">
+                    <div class="col-12">
+                         <p class="text-muted mt-1 mb-4">
                     To continue with notarization, please verify your identity.
                     This process takes 2–3 minutes.
                 </p>
+                    </div>
+                </div>
+
 
             </div>
 

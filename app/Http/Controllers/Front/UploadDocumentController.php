@@ -2,20 +2,22 @@
 
 namespace App\Http\Controllers\Front;
 
-use App\Models\Order;
+use App\Http\Controllers\Controller;
+use App\Mail\DocumentVerificationRequestMail;
+use App\Models\Admin;
 use App\Models\Document;
-use Illuminate\Http\Request;
-use App\Services\ImageUpload;
+use App\Models\Order;
 use App\Models\UploadDocument;
 use App\Models\VerifyDocument;
-use Google\AccessToken\Verify;
-use Illuminate\Support\Facades\DB;
 use App\Models\VerifyDocumentItems;
-use Illuminate\Support\Facades\Log;
-use App\Http\Controllers\Controller;
+use App\Notifications\SystemNotification;
+use App\Services\ImageUpload;
+use Google\AccessToken\Verify;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\DocumentVerificationRequestMail;
 
 class UploadDocumentController extends Controller
 {
@@ -29,6 +31,7 @@ class UploadDocumentController extends Controller
             ? $order->document->uploadDocuments // This returns UploadDocument collection
             : collect();
 
+
         $upload_document_ids = $uploadDocuments->pluck('id');
 
         $uploadedDocs = VerifyDocument::whereIn('upload_documents_id', $upload_document_ids)
@@ -41,14 +44,21 @@ class UploadDocumentController extends Controller
             })
             ->get();
 
+
         /**
          * All required documents uploaded IF:
          * 1. Count matches
          * 2. Each has at least one uploaded item
          */
+        // $allUploaded =
+        //     $uploadedDocs->count()  === $upload_document_ids->count() &&
+        //     $uploadedDocs->every(fn($doc) => $doc->verify_document_items_count > 0);
+
         $allUploaded =
+            $uploadedDocs->isNotEmpty() &&
             $uploadedDocs->count() === $upload_document_ids->count() &&
             $uploadedDocs->every(fn($doc) => $doc->verify_document_items_count > 0);
+
 
         $alreadySubmitted = VerifyDocument::whereIn('upload_documents_id', $upload_document_ids)
             ->where('user_id', Auth::id())
@@ -270,10 +280,30 @@ class UploadDocumentController extends Controller
                 )
             );
 
+            $admin = Admin::first();
+
+            /** ---------------- ADMIN ---------------- */
+            if ($admin) {
+                $admin->notify(new SystemNotification([
+                    'type' => 'document_submission',
+                    'title' => 'New Document Submission',
+                    'message' => Auth::user()->first_name . ' ' . Auth::user()->last_name . ' has submitted documents for verification (Order #' . $order_id . ')',
+                    'url' => route('customers.list', Auth::user()->id, $order_id),
+                    'icon' => 'file-check',
+                    'extra' => [
+                        'user_id' => Auth::id(),
+                        'order_id' => $order_id,
+                        'user_name' => Auth::user()->first_name . ' ' . Auth::user()->last_name,
+                        'documents_count' => $uploadedDocs->count()
+                    ]
+                ]));
+            }
+
             DB::commit();
 
             return redirect()->back()->with('success', 'Documents submitted for verification successfully.');
         } catch (\Exception $e) {
+            // dd($e->getMessage());
             DB::rollBack();
 
             Log::error('Submit Documents for Verification Error: ' . $e->getMessage());

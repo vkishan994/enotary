@@ -176,6 +176,14 @@
                                                                 </div>
                                                             @endif
 
+                                                            @if (!empty($notification->data['url']))
+                                                                <div class="mt-1">
+                                                                    <a href="{{ $notification->data['url'] }}" class="btn btn-sm btn-primary">
+                                                                        View Order
+                                                                    </a>
+                                                                </div>
+                                                            @endif
+
                                                             <small class="text-body-secondary">
                                                                 {{ $notification->created_at->diffForHumans() }}
                                                             </small>

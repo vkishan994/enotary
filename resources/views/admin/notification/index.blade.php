@@ -61,6 +61,14 @@
                             @endif
                         </div>
 
+                        @if (!empty($notification->data['url']))
+                            <div class="mb-3">
+                                <a href="{{ $notification->data['url'] }}" class="btn btn-sm btn-primary">
+                                    View Order
+                                </a>
+                            </div>
+                        @endif
+
                         @if (!empty($notification->data['extra']))
                             <hr>
                             <h6 class="mb-2">Details</h6>

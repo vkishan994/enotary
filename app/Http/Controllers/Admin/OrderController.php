@@ -109,16 +109,49 @@ class OrderController extends Controller
                 $order->save();
             }
 
-            Mail::to($order->user->email)->send(
-                new DocumentVerificationMail(
-                    $order->user,
-                    $document,
-                    $request->status,
-                    $request->rejection_note ?? null
-                )
-            );
-
             DB::commit();
+
+            // Send email after successful commit
+            if ($order->user && $order->user->email) {
+                try {
+                    Log::info('Attempting to send document verification email', [
+                        'user_email' => $order->user->email,
+                        'document_id' => $document->id,
+                        'status' => $request->status
+                    ]);
+
+                    Mail::to($order->user->email)->send(
+                        new DocumentVerificationMail(
+                            $order->user,
+                            $document,
+                            $request->status,
+                            $request->rejection_note ?? null
+                        )
+                    );
+
+                    Log::info('Document verification email sent successfully', [
+                        'user_email' => $order->user->email,
+                        'document_id' => $document->id
+                    ]);
+                } catch (\Exception $mailException) {
+                    Log::error('Failed to send document verification email: ' . $mailException->getMessage(), [
+                        'user_id' => $order->user->id,
+                        'user_email' => $order->user->email,
+                        'document_id' => $document->id,
+                        'status' => $request->status,
+                        'exception' => $mailException->getTraceAsString()
+                    ]);
+
+                    // For debugging, you can temporarily change MAIL_MAILER=log in .env
+                    // This will log emails instead of sending them
+                }
+            } else {
+                Log::warning('Cannot send document verification email - user or email missing', [
+                    'user_exists' => $order->user ? true : false,
+                    'email_exists' => $order->user && $order->user->email ? true : false,
+                    'document_id' => $document->id
+                ]);
+            }
 
             // send notification to user for document status update
             $statusText = $request->status == 'verified' ? 'verified' : 'rejected';
@@ -176,7 +209,11 @@ class OrderController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
 
-            Log::error('Error updating document status: ' . $e->getMessage());
+            Log::error('Error updating document status: ' . $e->getMessage(), [
+                'document_id' => $id ?? null,
+                'request_data' => $request->all(),
+                'admin_id' => Auth::guard('admin')->id()
+            ]);
 
             if ($request->ajax()) {
                 return response()->json([
