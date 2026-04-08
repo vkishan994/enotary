@@ -18,6 +18,15 @@ class DocumentRequest extends FormRequest
             'price' => 'required|numeric|min:0',
             'notary_service_types' => 'array',
             'notary_service_types.*' => 'exists:notary_service_types,id',
+            'upload_documents' => 'required|array|min:1',
+            'upload_documents.*' => 'exists:upload_documents,id',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'upload_documents.required' => 'This is a required field',
         ];
     }
 }

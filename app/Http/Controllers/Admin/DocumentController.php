@@ -49,6 +49,7 @@ class DocumentController extends Controller
         try {
             $document = Document::create($request->validated());
             $document->notaryServiceTypes()->sync($request->input('notary_service_types', []));
+            $document->uploadDocuments()->sync($request->input('upload_documents', []));
             DB::commit();
 
             return redirect()->route('documents.index')

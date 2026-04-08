@@ -17,10 +17,10 @@
                         <a href="{{ route('user.account-dashboard') }}" class="btn back-btn">Back <a>
                     </div>
                     <div class="col-12">
-                         <p class="text-muted mt-1 mb-4">
-                    To continue with notarization, please verify your identity.
-                    This process takes 2–3 minutes.
-                </p>
+                        <p class="text-muted mt-1 mb-4">
+                            To continue with notarization, please verify your identity.
+                            This process takes 2–3 minutes.
+                        </p>
                     </div>
                 </div>
 
