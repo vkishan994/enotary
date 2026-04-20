@@ -35,7 +35,7 @@
 
                     {{-- Verification Card --}}
                     <div class="card p-4 shadow-sm">
-                        <div class="d-flex align-items-start gap-3">
+                        <div class="d-flex align-items-start gap-3" style="overflow: hidden;height: 200px;overflow-y: auto;">
 
                             {{-- Icon --}}
                             <div>
