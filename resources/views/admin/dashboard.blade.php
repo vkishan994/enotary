@@ -99,7 +99,7 @@
 
                 <div class="card-body">
 
-                    <h3 class="mb-3 stat-number" id="transactionsTotal">₹
+                    <h3 class="mb-3 stat-number" id="transactionsTotal">£
                         {{ number_format($transactionsTotal ?? 0, 2) }}
                     </h3>
 
@@ -241,7 +241,7 @@
                     }
 
                     if (res.type == 'transactions') {
-                        $('#transactionsTotal').text('₹ ' + Number(res.total).toLocaleString());
+                        $('#transactionsTotal').text('£ ' + Number(res.total).toLocaleString());
                     }
 
                 }
