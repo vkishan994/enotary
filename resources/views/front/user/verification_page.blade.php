@@ -11,19 +11,19 @@
                 <div class="row">
                     <div class="col-6">
                         <h4>Identity Verification</h4>
-
                     </div>
                     <div class="col-6 text-end">
-                        <a href="{{ route('user.account-dashboard') }}" class="btn back-btn">Back <a>
+                        <a href="{{ route('user.account-dashboard') }}" class="btn back-btn" style="margin-bottom:15px !important">Back </a>
                     </div>
                     <div class="col-12">
                         <p class="text-muted mt-1 mb-4">
-                            To continue with notarization, please verify your identity.
-                            This process takes 2–3 minutes.
+                            @if (isset($status) && $status === 'approved')
+                                To continue with notarization, please verify your identity.
+                                This process takes 2–3 minutes.
+                            @endif
                         </p>
                     </div>
                 </div>
-
 
             </div>
 
@@ -35,7 +35,8 @@
 
                     {{-- Verification Card --}}
                     <div class="card p-4 shadow-sm">
-                        <div class="d-flex align-items-start gap-3" style="overflow: hidden;height: 200px;overflow-y: auto;">
+                        <div class="d-flex align-items-start gap-3"
+                            style="overflow: hidden;height: 200px;overflow-y: auto;">
 
                             {{-- Icon --}}
                             <div>
