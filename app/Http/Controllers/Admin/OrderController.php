@@ -23,7 +23,24 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $data = Order::with(['user', 'document', 'notaryServiceType'])->latest()->get();
+            $query = Order::with(['user', 'document', 'notaryServiceType'])->latest();
+
+            // Filter by Payment Status
+            if ($request->has('payment_status') && !empty($request->payment_status)) {
+                $query->where('payment_status', $request->payment_status);
+            }
+
+            // Filter by Document Status
+            if ($request->has('document_status') && !empty($request->document_status)) {
+                $query->where('upload_document_status', $request->document_status);
+            }
+
+            // Filter by Document ID
+            if ($request->has('document_id') && !empty($request->document_id)) {
+                $query->where('document_id', $request->document_id);
+            }
+
+            $data = $query->get();
 
             return Datatables::of($data)
                 ->addColumn('id',  fn($row) => $row->id)
@@ -59,7 +76,8 @@ class OrderController extends Controller
                 ->make(true);
         }
 
-        return view('admin.orders.index');
+        $documents = \App\Models\Document::all();
+        return view('admin.orders.index', compact('documents'));
     }
 
     public function orderDetial($id)

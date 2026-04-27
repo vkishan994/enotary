@@ -9,6 +9,44 @@
         </div>
     </div>
 
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-3">
+                    <label class="form-label">Payment Status</label>
+                    <select id="filter_payment_status" class="form-select filter-input">
+                        <option value="">All</option>
+                        <option value="pending">Pending</option>
+                        <option value="completed">Completed</option>
+                        <option value="failed">Failed</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Document Status</label>
+                    <select id="filter_document_status" class="form-select filter-input">
+                        <option value="">All</option>
+                        <option value="pending">Pending</option>
+                        <option value="submitted">Submitted</option>
+                        <option value="verified">Verified</option>
+                        <option value="reupload">Re-upload Required</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label">Document</label>
+                    <select id="filter_document_id" class="form-select filter-input">
+                        <option value="">All</option>
+                        @foreach ($documents as $doc)
+                            <option value="{{ $doc->id }}">{{ $doc->name }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-3 d-flex align-items-end">
+                    <button type="button" class="btn btn-secondary w-100" id="reset_filters">Reset Filters</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <div class="card">
         <h5 class="card-header">All Orders</h5>
         <div class="card-body">
@@ -34,10 +72,17 @@
     @push('scripts')
         <script>
             $(document).ready(function() {
-                $('#ordersTable').DataTable({
+                var table = $('#ordersTable').DataTable({
                     processing: true,
                     serverSide: true,
-                    ajax: "{{ route('admin.orders.index') }}",
+                    ajax: {
+                        url: "{{ route('admin.orders.index') }}",
+                        data: function(d) {
+                            d.payment_status = $('#filter_payment_status').val();
+                            d.document_status = $('#filter_document_status').val();
+                            d.document_id = $('#filter_document_id').val();
+                        }
+                    },
                     columns: [{
                             data: 'id',
                             name: 'id',
@@ -77,6 +122,15 @@
                             searchable: false
                         },
                     ]
+                });
+
+                $('.filter-input').change(function() {
+                    table.draw();
+                });
+
+                $('#reset_filters').click(function() {
+                    $('.filter-input').val('');
+                    table.draw();
                 });
             });
         </script>
