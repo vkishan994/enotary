@@ -32,7 +32,15 @@ class OrderController extends Controller
 
             // Filter by Document Status
             if ($request->has('document_status') && !empty($request->document_status)) {
-                $query->where('upload_document_status', $request->document_status);
+
+                if ($request->document_status === 'pending') {
+                    $query->where(function ($q) {
+                        $q->whereNull('upload_document_status')
+                          ->orWhere('upload_document_status', 'pending');
+                    });
+                } else {
+                    $query->where('upload_document_status', $request->document_status);
+                }
             }
 
             // Filter by Document ID
