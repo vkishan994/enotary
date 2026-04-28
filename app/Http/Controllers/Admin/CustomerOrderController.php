@@ -152,6 +152,30 @@ class CustomerOrderController extends Controller
                     if ($request->filled('to_date')) {
                         $query->whereDate('created_at', '<=', $request->to_date);
                     }
+                    if ($request->filled('pending_step')) {
+                        $step = $request->pending_step;
+
+                        if ($step === 'veriff') {
+                            $query->where(function ($q2) {
+                                $q2->whereDoesntHave('veriffData')
+                                    ->orWhereHas('veriffData', function ($q3) {
+                                        $q3->whereNotIn('status', ['verified', 'approved']);
+                                    });
+                            });
+                        } elseif ($step === 'documents' || $step === 'document_verification') {
+                            $query->where(function ($q2) {
+                                $q2->whereNull('upload_document_status')
+                                    ->orWhere('upload_document_status', '!=', 'verified');
+                            });
+                        } elseif ($step === 'meeting') {
+                            $query->where(function ($q2) {
+                                $q2->whereDoesntHave('scheduleMeeting')
+                                    ->orWhereHas('scheduleMeeting', function ($q3) {
+                                        $q3->where('status', '!=', 'verified');
+                                    });
+                            });
+                        }
+                    }
                 }
             ])
                 ->when(
@@ -256,7 +280,7 @@ class CustomerOrderController extends Controller
                 // Selected order
                 $selectedOrder = $order_id
                     ? $selectedUser->orders()->where('id', $order_id)->first()
-                    : $selectedUser->orders()->latest()->first();
+                    : (clone $ordersQuery)->first();
             }
 
             return view('admin.customer.index', compact('users', 'selectedUser', 'orders', 'selectedOrder'));

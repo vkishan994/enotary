@@ -16,10 +16,10 @@
         </div>
     </div>
 
-    <form method="GET" class="row mb-3">
+    <form method="GET" id="filterForm" class="row mb-3">
 
         <div class="col-md-3">
-            <select name="payment_status" class="form-control">
+            <select name="payment_status" class="form-control" onchange="document.getElementById('filterForm').submit();">
                 <option value="">Payment</option>
                 <option value="completed" {{ request('payment_status') == 'completed' ? 'selected' : '' }}>Completed
                 </option>
@@ -36,7 +36,7 @@
         </div>
 
         <div class="col-md-3">
-            <select name="pending_step" class="form-control">
+            <select name="pending_step" class="form-control" onchange="document.getElementById('filterForm').submit();">
                 <option value="">Pending Steps</option>
                 <option value="veriff" {{ request('pending_step') == 'veriff' ? 'selected' : '' }}>Verify Identity</option>
                 <option value="documents" {{ request('pending_step') == 'documents' ? 'selected' : '' }}>Upload Document
@@ -48,11 +48,7 @@
             </select>
         </div>
 
-        <div class="col-md-1">
-            <button class="btn btn-primary w-100">Filter</button>
-        </div>
-
-        <div class="col-md-2">
+        <div class="col-md-3">
             <a href="{{ route('customers.list') }}" class="btn btn-secondary w-100">Reset Filters</a>
         </div>
 
@@ -462,6 +458,7 @@
                         picker.on('selected', (start, end) => {
                             document.getElementById('from_date').value = start.format('YYYY-MM-DD');
                             document.getElementById('to_date').value = end.format('YYYY-MM-DD');
+                            document.getElementById('filterForm').submit();
                         });
                     }
                 });
