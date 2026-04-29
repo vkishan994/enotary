@@ -395,6 +395,7 @@
 /* Pagination Styles */
 .pagination {
     gap: 5px;
+    flex-wrap: wrap;
 }
 
 .pagination .page-item .page-link {

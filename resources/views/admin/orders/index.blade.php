@@ -50,23 +50,25 @@
     <div class="card">
         <h5 class="card-header">All Orders</h5>
         <div class="card-body">
-            <table class="datatables-ajax table table-bordered" id="ordersTable">
-                <thead>
-                    <tr>
-                        <th>Order Id</th>
-                        <th>User Name</th>
-                        <th>Email</th>
-                        <th>Document</th>
-                        <th>Amount</th>
-                        <th>Payment Status</th>
-                        <th>Document Status</th>
-                        <th>Date</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                </tbody>
-            </table>
+            <div class="table-responsive text-nowrap">
+                <table class="datatables-ajax table table-bordered" id="ordersTable">
+                    <thead>
+                        <tr>
+                            <th>Order Id</th>
+                            <th>User Name</th>
+                            <th>Email</th>
+                            <th>Document</th>
+                            <th>Amount</th>
+                            <th>Payment Status</th>
+                            <th>Document Status</th>
+                            <th>Date</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
     @push('scripts')

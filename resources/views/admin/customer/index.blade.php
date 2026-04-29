@@ -181,8 +181,8 @@
                                                 @endforelse
                                             </tbody>
                                         </table>
-                                        <div class="mt-3">
-                                            {{ $orders->links() }}
+                                        <div class="mt-3 d-flex justify-content-end">
+                                            {{ $orders->links('pagination::bootstrap-4') }}
                                         </div>
                                     </div>
                                 </div>
