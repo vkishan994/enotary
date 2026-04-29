@@ -1,58 +1,58 @@
-.main-content{
-    margin-left:0 !important;
-    padding:100px 40px 100px 40px !important;
-    background:#eaeaea;
+.main-content {
+    margin-left: 0 !important;
+    padding: 100px 40px 100px 40px !important;
+    background: #eaeaea;
 }
 
 /* Card Styling */
-.contact-card{
-    border-radius:12px;
-    box-shadow:0 8px 20px rgba(0,0,0,0.06);
+.contact-card {
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
 }
 
 /* Title */
-.contact-title{
-    font-weight:600;
-    color:#1f2937;
+.contact-title {
+    font-weight: 600;
+    color: #1f2937;
 }
 
 /* Inputs */
-.contact-form .form-control{
-    border-radius:8px;
-    padding:10px 14px;
-    border:1px solid #e3e6ed;
-    transition:all .2s ease;
+.contact-form .form-control {
+    border-radius: 8px;
+    padding: 10px 14px;
+    border: 1px solid #e3e6ed;
+    transition: all .2s ease;
 }
 
-.contact-form .form-control:focus{
-    border-color:#b07a07;
-    box-shadow:0 0 0 0.15rem rgba(176,122,7,0.15);
+.contact-form .form-control:focus {
+    border-color: #b07a07;
+    box-shadow: 0 0 0 0.15rem rgba(176, 122, 7, 0.15);
 }
 
 /* Labels */
-.contact-form label{
-    font-weight:500;
-    color:#374151;
+.contact-form label {
+    font-weight: 500;
+    color: #374151;
 }
 
 /* Button */
-.contact-btn{
-    background:#b07a07;
-    border:none;
-    padding:10px 30px;
-    border-radius:8px;
-    font-weight:500;
-    transition:all .2s ease;
+.contact-btn {
+    background: #b07a07;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all .2s ease;
 }
 
-.contact-btn:hover{
-    background:#9a6a05;
-    transform:translateY(-1px);
+.contact-btn:hover {
+    background: #9a6a05;
+    transform: translateY(-1px);
 }
 
 /* Responsive spacing */
-@media(max-width:768px){
-    .main-content{
-        padding:90px 20px 60px 20px !important;
+@media(max-width:768px) {
+    .main-content {
+        padding: 40px 5px 40px 5px !important;
     }
 }

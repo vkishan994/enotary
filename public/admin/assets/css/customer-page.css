@@ -345,7 +345,7 @@
     margin-bottom: 40px;
 }
 
-.current-order{
+.current-order {
     background: #f8f9fa;
     border-radius: 8px;
     border: 1px solid #e9ecef !important;
@@ -357,7 +357,7 @@
     -webkit-text-fill-color: transparent;
 }
 
-.customers-list{
+.customers-list {
     position: sticky;
     top: 0;
     height: 80vh;
@@ -373,7 +373,7 @@
 }
 
 .veriff-card:hover {
-    box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05);
     transform: translateY(-2px);
 }
 
@@ -426,7 +426,7 @@
     padding: 6px 10px;
 }
 
-.btn-primary  {
+.btn-primary {
     padding: 6px 10px !important;
 }
 
@@ -444,7 +444,8 @@
 
 /* Selected range between start and end - light transparent purple */
 .litepicker .container__days .day-item.is-in-range {
-    background: rgba(123, 95, 195, 0.35) !important; /* darker transparent purple */
+    background: rgba(123, 95, 195, 0.35) !important;
+    /* darker transparent purple */
     color: #fff !important;
 }
 
@@ -453,7 +454,8 @@
     form.row.mb-3 {
         display: flex;
         flex-direction: column;
-        gap: 10px; /* space between fields */
+        gap: 10px;
+        /* space between fields */
     }
 
     form.row.mb-3 .col-md-3,
@@ -487,11 +489,19 @@
 
     .progress-steps {
         flex-direction: column;
+        gap: 24px;
+    }
+
+    .customers-list {
+        height: auto;
     }
 }
 
 /* Mobile */
 @media (max-width: 768px) {
+    .main-content {
+        padding: 15px;
+    }
 
     /* Stack sidebar and content */
     .row {
@@ -552,4 +562,3 @@
         padding: 12px;
     }
 }
-

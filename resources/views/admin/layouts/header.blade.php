@@ -243,7 +243,7 @@
                                 <ul class="dropdown-menu dropdown-menu-end">
                                     <li>
                                         <a class="dropdown-item" href="#">
-                                            <div class="d-flex">
+                                            <div class="d-flex align-items-center">
                                                 <div class="flex-shrink-0 me-3">
                                                     <div class="avatar avatar-online">
                                                         <img src="{{ asset('admin/assets/img/avatars/user-logo.png') }}"
