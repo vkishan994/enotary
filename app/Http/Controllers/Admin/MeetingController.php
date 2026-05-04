@@ -90,6 +90,27 @@ class MeetingController extends Controller
             $meeting = ScheduleMeeting::with('user')->findOrFail($id);
             $admin   = Auth::user();
 
+            if (in_array($request->status, ['rejected', 'rescheduled']) && !empty($meeting->google_event_id)) {
+                try {
+                    GoogleCalender::deleteMeeting(
+                        getValuesByKey('google_refresh_token'),
+                        $meeting->google_event_id,
+                        getValuesByKey('google_calendar_id') ?? 'primary'
+                    );
+                } catch (\Exception $e) {
+                    Log::warning('Google Calendar deletion failed for rejected/rescheduled meeting', [
+                        'meeting_id' => $meeting->id,
+                        'google_event_id' => $meeting->google_event_id,
+                        'error' => $e->getMessage(),
+                    ]);
+                }
+
+                $meeting->google_event_id = null;
+                $meeting->google_meet_link = null;
+                $meeting->calendar_link = null;
+                $meeting->calender_meeting_status = null;
+            }
+
             // -----------------------------
             // APPROVED
             // -----------------------------

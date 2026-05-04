@@ -99,6 +99,38 @@ class GoogleCalender
         return $response->json();
     }
 
+    public static function deleteMeeting(
+        string $refreshToken,
+        string $eventId,
+        string $calendarId = 'primary'
+    ): bool {
+        $accessToken = self::getGoogleAccessToken($refreshToken);
+        $calendarId = urlencode($calendarId);
+        $eventId = rawurlencode($eventId);
+
+        $http = Http::withToken($accessToken);
+        if (App::environment('local')) {
+            $http = $http->withoutVerifying();
+        }
+
+        $response = $http->delete(
+            "https://www.googleapis.com/calendar/v3/calendars/{$calendarId}/events/{$eventId}"
+        );
+
+        if (! $response->successful()) {
+            logger()->warning('Failed to delete Google Calendar event', [
+                'status' => $response->status(),
+                'body' => $response->body(),
+                'event_id' => $eventId,
+                'calendar_id' => $calendarId,
+            ]);
+
+            return false;
+        }
+
+        return true;
+    }
+
     public static function getCalendarEvents(
         string $refreshToken,
         string $calendarId = 'primary',
