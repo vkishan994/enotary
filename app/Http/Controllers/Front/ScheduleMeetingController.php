@@ -4,11 +4,13 @@ namespace App\Http\Controllers\Front;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Models\Admin;
 use App\Models\ScheduleMeeting;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Notifications\SystemNotification;
 
 class ScheduleMeetingController extends Controller
 {
@@ -66,9 +68,29 @@ class ScheduleMeetingController extends Controller
                     'meeting_time' => $data['meeting_time'],
                     'notes'        => $data['notes'] ?? null,
                     'status'       => 'pending', // reset status to pending on update
-                    'admin_notes'  => null, 
+                    'admin_notes'  => null,
                 ]
             );
+
+            // Send notification to admin
+            $admin = Admin::first();
+            if ($admin) {
+                $user = Auth::user();
+                $admin->notify(new SystemNotification([
+                    'type'    => 'meeting_scheduled',
+                    'title'   => 'New Meeting Request',
+                    'message' => $user->name . ' has requested a meeting on ' . $data['meeting_date'] . ' at ' . $data['meeting_time'],
+                    'url'     => route('customers.list', ['user_id' => $user->id, 'order_id' => decrypt($data['order_id'])]),
+                    'icon'    => 'calendar',
+                    'extra'   => [
+                        'meeting_id' => $meeting->id,
+                        'user_id'    => $user->id,
+                        'user_name'  => $user->name,
+                        'meeting_date' => $data['meeting_date'],
+                        'meeting_time' => $data['meeting_time'],
+                    ],
+                ]));
+            }
 
             // Optional: create Google Calendar event
             // $this->createGoogleCalendarEvent($meeting);
