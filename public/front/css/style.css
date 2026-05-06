@@ -1096,6 +1096,11 @@ aside.sidebar .navbar-nav .nav-link {
   padding: 4px 8px;
 }
 
+.dropdown-item:active {
+    background-color: #b47e0a !important;
+    color: #fff !important;
+}
+
 @media (max-width: 767px) {
 
   .document-pending .service-notary .form-container .col-md-6,
