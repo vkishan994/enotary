@@ -7,6 +7,8 @@
             border-radius: 10px;
             padding: 16px;
             border: 1px solid #e5e7eb;
+            overflow: hidden;
+            box-sizing: border-box;
         }
 
         /* Title */
@@ -15,6 +17,25 @@
             font-weight: 600;
             margin-bottom: 16px;
             color: #1f2937;
+        }
+
+        /* Remove scrollbar from document-card and children */
+        .document-card,
+        .document-card * {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        .document-card::-webkit-scrollbar,
+        .document-card *::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Ensure button fits properly */
+        .document-card .btn {
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
         }
 
         /* Appointment row */
