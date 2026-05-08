@@ -159,7 +159,8 @@ class CustomerOrderController extends Controller
                             $query->where(function ($q2) {
                                 $q2->whereDoesntHave('veriffData')
                                     ->orWhereHas('veriffData', function ($q3) {
-                                        $q3->whereNotIn('status', ['verified', 'approved']);
+                                        $q3->whereNotIn('status', ['verified', 'approved'])
+                                            ->orWhereNull('status');
                                     });
                             });
                         } elseif ($step === 'documents' || $step === 'document_verification') {
@@ -171,7 +172,8 @@ class CustomerOrderController extends Controller
                             $query->where(function ($q2) {
                                 $q2->whereDoesntHave('scheduleMeeting')
                                     ->orWhereHas('scheduleMeeting', function ($q3) {
-                                        $q3->where('status', '!=', 'verified');
+                                        $q3->where('status', '!=', 'verified')
+                                            ->orWhereNull('status');
                                     });
                             });
                         }
@@ -201,7 +203,8 @@ class CustomerOrderController extends Controller
                                     $q->where(function ($q2) {
                                         $q2->whereDoesntHave('veriffData')
                                             ->orWhereHas('veriffData', function ($q3) {
-                                                $q3->whereNotIn('status', ['verified', 'approved']);
+                                                $q3->whereNotIn('status', ['verified', 'approved'])
+                                                    ->orWhereNull('status');
                                             });
                                     });
                                 } elseif ($step === 'documents' || $step === 'document_verification') {
@@ -213,7 +216,8 @@ class CustomerOrderController extends Controller
                                     $q->where(function ($q2) {
                                         $q2->whereDoesntHave('scheduleMeeting') // no meeting yet
                                             ->orWhereHas('scheduleMeeting', function ($q3) {
-                                                $q3->where('status', '!=', 'verified'); // meeting exists but not verified
+                                                $q3->where('status', '!=', 'verified') // meeting exists but not verified
+                                                    ->orWhereNull('status');
                                             });
                                     });
                                 }
@@ -234,7 +238,7 @@ class CustomerOrderController extends Controller
             // =============================
             // Selected User and Orders
             // =============================
-            $selectedUser = $user_id ? $users->where('id', $user_id)->first() : $users->first();
+            $selectedUser = $users->where('id', $user_id)->first() ?? $users->first();
             $orders = collect();
             $selectedOrder = null;
 
@@ -245,8 +249,11 @@ class CustomerOrderController extends Controller
                 if ($request->filled('payment_status')) {
                     $ordersQuery->where('payment_status', $request->payment_status);
                 }
-                if ($request->filled('from_date') && $request->filled('to_date')) {
-                    $ordersQuery->whereBetween('created_at', [$request->from_date, $request->to_date]);
+                if ($request->filled('from_date')) {
+                    $ordersQuery->whereDate('created_at', '>=', $request->from_date);
+                }
+                if ($request->filled('to_date')) {
+                    $ordersQuery->whereDate('created_at', '<=', $request->to_date);
                 }
 
                 // Pending steps filter
@@ -257,7 +264,8 @@ class CustomerOrderController extends Controller
                         $ordersQuery->where(function ($q) {
                             $q->whereDoesntHave('veriffData')
                                 ->orWhereHas('veriffData', function ($q2) {
-                                    $q2->whereNotIn('status', ['verified', 'approved']);
+                                    $q2->whereNotIn('status', ['verified', 'approved'])
+                                        ->orWhereNull('status');
                                 });
                         });
                     } elseif ($step === 'documents' || $step === 'document_verification') {
@@ -269,7 +277,8 @@ class CustomerOrderController extends Controller
                         $ordersQuery->where(function ($q) {
                             $q->whereDoesntHave('scheduleMeeting') // no meeting yet
                                 ->orWhereHas('scheduleMeeting', function ($q2) {
-                                    $q2->where('status', '!=', 'verified'); 
+                                    $q2->where('status', '!=', 'verified')
+                                        ->orWhereNull('status');
                                 });
                         });
                     }
@@ -277,10 +286,14 @@ class CustomerOrderController extends Controller
 
                 $orders = $ordersQuery->paginate(5)->appends($request->query());
 
-                // Selected order
-                $selectedOrder = $order_id
-                    ? $selectedUser->orders()->where('id', $order_id)->first()
-                    : (clone $ordersQuery)->first();
+                $selectedOrder = null;
+                if ($order_id) {
+                    $selectedOrder = (clone $ordersQuery)->where('id', $order_id)->first();
+                }
+
+                if (!$selectedOrder) {
+                    $selectedOrder = (clone $ordersQuery)->first();
+                }
             }
 
             return view('admin.customer.index', compact('users', 'selectedUser', 'orders', 'selectedOrder'));

@@ -360,7 +360,7 @@
                         </div>
                     @else
                        <div class="document-card">
-                            <h4>No upcoming appointments</h4>
+                            <h4>No Upcoming Appointments</h4>
                             <p>There are currently no sessions booked. </p>
                             <p>Please schedule a new one if needed.</p>
                         </div>
@@ -369,10 +369,10 @@
                 </div>
                 <div class="col-lg-6 mb-3">
                     <div class="document-card notarise-card">
-                        <h4>Notarise a new document</h4>
+                        <h4>Notarise A New Document</h4>
                         <p>Notarise your document online and<br> schedule a video appointment.</p>
-                        <a href="{{ route('user.notarise-documents') }}" class="btn btn-primary w-100 py-2 mt-2">Notarise a
-                            new document +</a>
+                        <a href="{{ route('user.notarise-documents') }}" class="btn btn-primary w-100 py-2 mt-2">Notarise A
+                            New Document +</a>
                     </div>
                 </div>
             </div>
@@ -381,7 +381,7 @@
         @if (isset($orders) && $orders->count() > 0)
             <div class="document-pending">
                 <div class="section-title">
-                    <h4>Pending Documents for Notarisation</h4>
+                    <h4>Pending Documents For Notarisation</h4>
                 </div>
 
                 <ul class="nav nav-tabs" id="notarisationTabs" role="tablist">

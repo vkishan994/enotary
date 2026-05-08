@@ -39,9 +39,9 @@
             <select name="pending_step" class="form-control" onchange="document.getElementById('filterForm').submit();">
                 <option value="">Pending Steps</option>
                 <option value="veriff" {{ request('pending_step') == 'veriff' ? 'selected' : '' }}>Verify Identity</option>
-                <option value="documents" {{ request('pending_step') == 'documents' ? 'selected' : '' }}>Upload Document
+                <option value="documents" {{ request('pending_step') == 'documents' ? 'selected' : '' }}>Verify Upload Document
                 </option>
-                <option value="meeting" {{ request('pending_step') == 'meeting' ? 'selected' : '' }}>Schedule Meeting
+                <option value="meeting" {{ request('pending_step') == 'meeting' ? 'selected' : '' }}>Verify By Scheduled Meeting
                 </option>
                 {{-- <option value="enotary" {{ request('pending_step') == 'enotary' ? 'selected' : '' }}>Download / Notarisation
                 </option> --}}
@@ -82,7 +82,7 @@
                             <div class="search-box">
                                 {{-- <i class="fas fa-search"></i>
                                 <input type="text" placeholder="Search clients..."> --}}
-                                <form method="GET" action="{{ route('customers.list', request()->route('id')) }}">
+                                <form method="GET" action="{{ route('customers.list') }}">
                                     <i class="fas fa-search"></i>
                                     <input type="text" name="search" id="searchInput" value="{{ request('search') }}"
                                         placeholder="Search clients..." class="form-control">
@@ -93,7 +93,7 @@
                                 @foreach ($users as $user)
                                     {{-- <a href="{{ route('customers.list', $user->id) }}"> --}}
                                     <a
-                                        href="{{ route('customers.list', $user->id) . '?' . http_build_query(request()->except('id')) }}">
+                                        href="{{ route('customers.list', $user->id) . '?' . http_build_query(request()->query()) }}">
                                         <div
                                             class="client-item {{ optional($selectedUser)->id == $user->id ? 'active' : '' }}">
                                             <div class="client-name">{{ $user->first_name }} {{ $user->last_name }}</div>
