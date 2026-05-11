@@ -35,11 +35,9 @@
 
                     {{-- Verification Card --}}
                     <div class="card p-4 shadow-sm">
-                        <div class="d-flex align-items-start gap-3"
-                            style="overflow: hidden;height: 200px;overflow-y: auto;">
-
+                        <div class="d-flex align-items-start gap-3">
                             {{-- Icon --}}
-                            <div>
+                            <div class="flex-shrink-0">
                                 <i class="fa fa-id-card fa-2x text-primary"></i>
                             </div>
 
