@@ -93,7 +93,7 @@
                                 @foreach ($users as $user)
                                     {{-- <a href="{{ route('customers.list', $user->id) }}"> --}}
                                     <a
-                                        href="{{ route('customers.list', $user->id) . '?' . http_build_query(request()->query()) }}">
+                                        href="{{ route('customers.list', array_merge(['user_id' => $user->id], request()->query())) }}">
                                         <div
                                             class="client-item {{ optional($selectedUser)->id == $user->id ? 'active' : '' }}">
                                             <div class="client-name">{{ $user->first_name }} {{ $user->last_name }}</div>
@@ -166,7 +166,7 @@
                                                             @endif
                                                         </td>
                                                         <td>
-                                                            <a href="{{ route('customers.list', [$selectedUser->id, $order->id]) . '?' . http_build_query(request()->query()) }}"
+                                                            <a href="{{ route('customers.list', array_merge(['user_id' => $selectedUser->id, 'order_id' => $order->id], request()->query())) }}"
                                                                 class="btn btn-sm btn-primary">
                                                                 View Details
                                                             </a>
