@@ -18,6 +18,12 @@ use PragmaRX\Google2FA\Google2FA;
 use Stripe\Stripe;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Notification;
+use App\Models\Admin;
+use App\Mail\OrderConfirmationMail;
+use App\Mail\NewOrderAdminMail;
+use App\Notifications\SystemNotification;
 
 class MyProfileController extends Controller
 {
@@ -251,6 +257,37 @@ class MyProfileController extends Controller
                 $order->invoice_file_path = $filePath;      // Full relative path
 
                 $order->save();
+
+                // Send email to user
+                try {
+                    Mail::to($order->user->email)->send(new OrderConfirmationMail($order));
+                } catch (\Exception $e) {
+                    \Log::error('Order Confirmation Email Error: ' . $e->getMessage());
+                }
+
+                // Send email and notification to single admin
+                $admin = Admin::first();
+                if ($admin) {
+                    // Send Email
+                    try {
+                        Mail::to($admin->email)->send(new NewOrderAdminMail($order));
+                    } catch (\Exception $e) {
+                        \Log::error('New Order Admin Email Error: ' . $e->getMessage());
+                    }
+
+                    // Send Database Notification
+                    try {
+                        $admin->notify(new SystemNotification([
+                            'type'    => 'new_order',
+                            'title'   => 'New Order Received',
+                            'message' => 'Order #' . $order->id . ' has been completed by ' . $order->user->first_name,
+                            'url'     => route('admin.orders.detail', $order->id),
+                            'icon'    => 'shopping-cart',
+                        ]));
+                    } catch (\Exception $e) {
+                        \Log::error('New Order Admin Notification Error: ' . $e->getMessage());
+                    }
+                }
             }
         }
 
