@@ -23,7 +23,7 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         if ($request->ajax()) {
-            $query = Order::with(['user', 'document', 'notaryServiceType'])->latest();
+            $query = Order::with(['user', 'document', 'notaryServiceType'])->latest('id');
 
             // Filter by Payment Status
             if ($request->has('payment_status') && !empty($request->payment_status)) {

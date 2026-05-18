@@ -77,6 +77,7 @@
                 var table = $('#ordersTable').DataTable({
                     processing: true,
                     serverSide: true,
+                    order: [[0, 'desc']],
                     ajax: {
                         url: "{{ route('admin.orders.index') }}",
                         data: function(d) {
